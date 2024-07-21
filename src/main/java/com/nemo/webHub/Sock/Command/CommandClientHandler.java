@@ -111,7 +111,20 @@ public class CommandClientHandler extends TextWebSocketHandler {
         switch (command.command()) {
             case MOVE, TURRET -> robotService.updateAndSendRobotState(robotId, command);
             case STOP -> robotService.sendStopToRobot(robotId);
-            case AIM -> System.out.println("Received command to aim");
+            case AIM -> {
+                Boolean success = robotService.startAimAndSendResult(robotId);
+
+                if (Boolean.TRUE.equals(success)) {
+                    session.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
+                } else if (Boolean.FALSE.equals(success)) {
+                    session.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
+                } else {
+                    session.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
+                }
+            }
+            case SHOOT -> session.sendMessage(createRegularJsonTextMessage(
+                    "I hear you, but you have to use use your imagination for now :("
+            ));
         }
 
     }

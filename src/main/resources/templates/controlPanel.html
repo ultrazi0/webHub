@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WebHub - Control Panel</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script th:insert="~{js/controlPanel.js}" th:inline="javascript"></script>
+
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Control Panel</h1>
+
+    <table>
+        <tr>
+            <td>
+                <img src="" id="image-field" alt="Image stream from Camera 0" width="640px" height="480px">
+            </td>
+            <td>
+                <label>
+                    Type
+                    <select id="selectCommandType" th:id="'selectCommandType'"
+                            onchange="javascript: onSelectCommandTypeChange();">
+                        <option value=""></option>
+                        <option th:each="type : ${allCommandTypes}"
+                                th:value="${type}"
+                                th:text="${type}">MOVE</option>
+                    </select>
+                </label>
+
+                <br><br>
+
+                <div id="commandValues" hidden="hidden"></div>
+
+                <br><br>
+                <input type="submit" onclick="javascript: sendJson();" value="Submit">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <textarea id="feedbackTextArea" rows="15" cols="80" readonly></textarea>
+            </td>
+        </tr>
+
+    </table>
+</body>
+</html>

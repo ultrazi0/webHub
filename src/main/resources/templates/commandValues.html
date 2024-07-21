@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <table th:unless="${#lists.isEmpty(arguments)}" th:fragment="valuesTable">
+        <thead>
+            <tr>
+                <th th:text="'Argument/key'">Argument/key</th>
+                <th th:text="'Value'">Value</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="key : ${arguments}">
+                <td th:text="${key}">Speed</td>
+                <td><label><input type="text" id="SpeedValue" class="commandValue" name="Speed"
+                                  th:name="${key}" th:id="${key} + 'Value'"></label></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

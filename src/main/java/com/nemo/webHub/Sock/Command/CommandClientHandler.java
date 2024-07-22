@@ -153,9 +153,11 @@ public class CommandClientHandler extends TextWebSocketHandler {
 
             if (messageNode.get("command").asText().equals("AIM")) {
 
-                if (JsonImage.lastImage != null) {
+                JsonImage lastImage = JsonImage.getLastImage();
 
-                    double[] angles = AimLogic.aim(JsonImage.lastImage, config);
+                if (lastImage != null) {
+
+                    double[] angles = AimLogic.aim(lastImage, config);
 
                     if (angles != null) {
                         JsonCommand aimCommand = AimLogic.createCommand(angles);

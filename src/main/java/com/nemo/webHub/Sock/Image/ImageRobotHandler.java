@@ -54,7 +54,7 @@ public class ImageRobotHandler extends TextWebSocketHandler {
             JsonImage image = JsonImage.createFromJson(message.getPayload());
 
             if (image != null) {
-                JsonImage.lastImage = image;
+                JsonImage.setLastImage(image);
             } else {
                 message = createRegularJsonTextMessage(
                         "Server>>> Provided JSON has no image field and/or is not messageType \"image\""

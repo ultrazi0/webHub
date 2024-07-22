@@ -14,7 +14,7 @@ import java.util.Base64;
 
 public record JsonImage(Mat image) {
 
-    public static JsonImage lastImage = null;
+    private static JsonImage lastImage = null;
 
     @Nullable
     public static JsonImage createFromJson(String json) throws IOException {
@@ -80,6 +80,14 @@ public record JsonImage(Mat image) {
         Imgcodecs.imencode(".JPG", image, encodedBytes);
 
         return Base64.getEncoder().encodeToString(encodedBytes.toArray());
+    }
+
+    public static JsonImage getLastImage() {
+        return lastImage;
+    }
+
+    public static void setLastImage(JsonImage lastImage) {
+        JsonImage.lastImage = lastImage;
     }
 
     @Override

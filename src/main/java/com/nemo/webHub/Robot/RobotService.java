@@ -58,8 +58,10 @@ public class RobotService {
 
     @Nullable
     public Boolean startAimAndSendResult(int id) throws IOException {
-        if (JsonImage.lastImage != null) {
-            double[] angles = AimLogic.aim(JsonImage.lastImage,config);
+        JsonImage lastImage = JsonImage.getLastImage();
+
+        if (lastImage != null) {
+            double[] angles = AimLogic.aim(lastImage,config);
 
             if (angles != null) {
                 JsonCommand aimCommand = AimLogic.createCommand(angles);

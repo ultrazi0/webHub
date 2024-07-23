@@ -1,7 +1,9 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
+	id 'org.springframework.boot' version '3.3.2'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "org.jooq.jooq-codegen-gradle" version "3.19.10"
+	id "org.flywaydb.flyway" version "10.16.0"
 }
 
 group = 'com.nemo'
@@ -23,10 +25,14 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.+'
 
 	implementation 'org.openpnp:opencv:4.9.0-0'
-	implementation 'org.flywaydb:flyway-core:+'
-	implementation 'org.flywaydb:flyway-database-postgresql:+'
+	implementation 'org.flywaydb:flyway-core:10.+'
+	implementation 'org.flywaydb:flyway-database-postgresql:10.+'
 
-	implementation 'org.postgresql:postgresql:42.+'
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	//implementation 'org.jooq:jooq-codegen-gradle:3.19.10'
+
+	runtimeOnly 'org.postgresql:postgresql:42.+'
+	jooqCodegen 'org.postgresql:postgresql:42.+'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -34,4 +40,26 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jooq {
+	configuration {
+		jdbc {
+			driver = "org.postgresql.Driver"
+			url = "jdbc:postgresql://localhost:5432/webHubDB"
+			user = "server"
+			password = "server"
+		}
+		generator {
+			database {
+				name = "org.jooq.meta.postgres.PostgresDatabase"
+				excludes = "flyway_schema_history"
+				inputSchema = "public"
+			}
+			target {
+				packageName = "org.jooq.generated"
+				directory = "src/main/java"
+			}
+		}
+	}
 }

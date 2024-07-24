@@ -3,6 +3,8 @@ package com.nemo.webHub.Sock;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.nemo.webHub.Decibel.RobotEntity;
+import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sock.Command.CommandClientHandler;
 import com.nemo.webHub.Sock.Command.CommandRobotHandler;
@@ -28,6 +30,7 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -38,6 +41,8 @@ public class WebSockConfig implements WebSocketConfigurer {
     private Operators operators;
     @Autowired
     private RobotService robotService;
+    @Autowired
+    private RobotRepository robotRepository;
     @Autowired
     private ImageSubscribers imageSubscribers;
 
@@ -213,15 +218,32 @@ public class WebSockConfig implements WebSocketConfigurer {
 
     @Nullable
     private Integer getRobotIdFromRequest(@NotNull ServerHttpRequest request) {
-        Integer robotId = null;
 
         String path = request.getURI().getPath();
-        try {
-            robotId = Integer.valueOf(path.substring(path.lastIndexOf('/') + 1));
-        } catch (NumberFormatException ignored) {
-            System.out.println("Connection requested without a valid ID parameter - connection refused");
+
+        String robotName = path.substring(path.lastIndexOf('/')+1);
+
+        RobotEntity robot = robotRepository.findRobotByName(robotName);
+        Integer robotId = null;
+
+        if (robot == null) {
+            System.out.println("No robot with robotName \"" + robotName + "\" found - connection refused");
+        } else {
+            robotId = robot.getId();
         }
 
         return robotId;
+    }
+
+    private static Map<String, String> getQueryParametersMap(String query) {
+        Map<String, String> map = new HashMap<>();
+
+        for (String param : query.split("&")) {
+            String[] splitParam = param.split("=");
+
+            map.put(splitParam[0], splitParam[1]);
+        }
+
+        return map;
     }
 }

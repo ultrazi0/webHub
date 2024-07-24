@@ -1,3 +1,9 @@
+buildscript {
+	dependencies {
+		classpath('org.flywaydb:flyway-database-postgresql:10.16.0')
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.2'
@@ -21,15 +27,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.+'
 
 	implementation 'org.openpnp:opencv:4.9.0-0'
+
 	implementation 'org.flywaydb:flyway-core:10.+'
-	implementation 'org.flywaydb:flyway-database-postgresql:10.+'
+	runtimeOnly 'org.flywaydb:flyway-database-postgresql:10.+'
 
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
-	//implementation 'org.jooq:jooq-codegen-gradle:3.19.10'
 
 	runtimeOnly 'org.postgresql:postgresql:42.+'
 	jooqCodegen 'org.postgresql:postgresql:42.+'
@@ -42,19 +48,27 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+processResources {
+	filesMatching("**/application.properties") {
+		expand(project.properties)
+	}
+}
+
+jooqCodegen.dependsOn flywayMigrate
+
 jooq {
 	configuration {
 		jdbc {
-			driver = "org.postgresql.Driver"
-			url = "jdbc:postgresql://localhost:5432/webHubDB"
-			user = "server"
-			password = "server"
+			driver = project.properties.databaseDriver
+			url = project.properties.databaseUrl
+			user = project.properties.databaseUsername
+			password = project.properties.databasePassword
 		}
 		generator {
 			database {
 				name = "org.jooq.meta.postgres.PostgresDatabase"
 				excludes = "flyway_schema_history"
-				inputSchema = "public"
+				inputSchema = project.properties.databaseSchema
 			}
 			target {
 				packageName = "org.jooq.generated"
@@ -62,4 +76,12 @@ jooq {
 			}
 		}
 	}
+}
+
+flyway {
+	url = project.properties.databaseUrl
+	user = project.properties.databaseUsername
+	password = project.properties.databasePassword
+	driver = project.properties.databaseDriver
+	schemas = [project.properties.databaseSchema]
 }

@@ -9,14 +9,18 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.objdetect.QRCodeDetector;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.nemo.webHub.Commands.Aim.AimLogic.aim;
 
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        OpenCV.loadLocally();
+/*        OpenCV.loadLocally();
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
@@ -33,6 +37,21 @@ public class Test {
         Point[] vertices = pointMat.toArray();
         for (Point vertex : vertices) {
             System.out.println("(" + vertex.x + ", " + vertex.y + ")");
+        }*/
+
+        URL url = new URL("https://www.youtube.com/watch?v=dQw4w9WgXcQ&q=rickroll");
+        System.out.println(getQueryParametersMap(url.getQuery()));
+    }
+
+    public static Map<String, String> getQueryParametersMap(String query) {
+        Map<String, String> map = new HashMap<>();
+
+        for (String param : query.split("&")) {
+            String[] splitParam = param.split("=");
+
+            map.put(splitParam[0], splitParam[1]);
         }
+
+        return map;
     }
 }

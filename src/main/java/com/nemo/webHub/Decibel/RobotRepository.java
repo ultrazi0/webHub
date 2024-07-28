@@ -4,9 +4,12 @@ import jakarta.annotation.Nullable;
 import org.jooq.*;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.jooq.generated.Tables.*;
 
@@ -52,9 +55,24 @@ public class RobotRepository {
         );
     }
 
-    public void insertNewRobot(String name) {
+    public boolean insertNewRobot(String name) {
         RobotsRecord newRobot = db.newRecord(ROBOTS);
         newRobot.setName(name);
-        newRobot.store();
+        try {
+            newRobot.store();
+        } catch (DataAccessException e) {
+            // Key already exists
+            System.out.println("I caught it!");
+            return false;
+        }
+        return true;
+    }
+
+    public RobotEntity[] getAllRobots() {
+        RobotsRecord[] robotsRecords = db.selectFrom(ROBOTS).fetchArray();
+        return Arrays.stream(robotsRecords)
+                .map(record -> new RobotEntity(record.getId(), record.getName(), record.getCreatedAt()))
+                .toArray(RobotEntity[]::new);
+
     }
 }

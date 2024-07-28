@@ -39,7 +39,12 @@ public class OnionAPIController {
     }
 
     @PostMapping("/insertNewRobot")
-    public void insertNewRobot(@NotNull @RequestParam("name") String name) {
-        robotRepository.insertNewRobot(name);
+    public boolean insertNewRobot(@NotNull @RequestParam("name") String name) {
+        return robotRepository.insertNewRobot(name);
+    }
+
+    @GetMapping("/getAllRobots")
+    public RobotEntity[] getAllRobots() {
+        return robotRepository.getAllRobots();
     }
 }

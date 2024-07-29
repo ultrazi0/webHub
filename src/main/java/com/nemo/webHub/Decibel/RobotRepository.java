@@ -68,6 +68,27 @@ public class RobotRepository {
         return true;
     }
 
+    public boolean updateRobot(int id, String name) {
+        try {
+            int updated = db.update(ROBOTS)
+                    .set(ROBOTS.NAME, name)
+                    .where(ROBOTS.ID.equal(id))
+                    .execute();
+            if (updated == 0) {
+                return false;
+            }
+        } catch (DataAccessException e) {
+            System.out.println("Name is taken");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteRobot(int id) {
+        int deleted = db.deleteFrom(ROBOTS).where(ROBOTS.ID.equal(id)).execute();
+        return deleted > 0;
+    }
+
     public RobotEntity[] getAllRobots() {
         RobotsRecord[] robotsRecords = db.selectFrom(ROBOTS).fetchArray();
         return Arrays.stream(robotsRecords)

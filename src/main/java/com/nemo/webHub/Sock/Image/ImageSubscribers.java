@@ -1,8 +1,10 @@
 package com.nemo.webHub.Sock.Image;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.*;
 
 @Component
@@ -10,8 +12,14 @@ public class ImageSubscribers {
     private final HashMap<Integer, LinkedList<WebSocketSession>> robotIdToSessionsHashMap = new HashMap<>();
     private final Set<Integer> connectedRobots = new HashSet<>();
 
-    public LinkedList<WebSocketSession> getSessionsByRobotId(Integer id) {
+    private LinkedList<WebSocketSession> getSessionsByRobotId(Integer id) {
         return robotIdToSessionsHashMap.get(id);
+    }
+
+    public void sendMessageToAllSessions(int robotId, TextMessage message) throws IOException {
+        for (WebSocketSession session : getSessionsByRobotId(robotId)) {
+            session.sendMessage(message);
+        }
     }
 
     public boolean hashMapHasThisRobotId(Integer id) {

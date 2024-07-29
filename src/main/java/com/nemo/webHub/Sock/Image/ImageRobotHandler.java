@@ -51,22 +51,19 @@ public class ImageRobotHandler extends TextWebSocketHandler {
 
         try {
 
+            int robotId = (int) session.getAttributes().get("robotId");
             JsonImage image = JsonImage.createFromJson(message.getPayload());
 
             if (image != null) {
-                JsonImage.setLastImage(image);
+                JsonImage.setLastImage(robotId, image);
             } else {
                 message = createRegularJsonTextMessage(
                         "Server>>> Provided JSON has no image field and/or is not messageType \"image\""
                 );
             }
-            System.out.println("Server>>> Got image: " + message);
+            // System.out.println("Server>>> Got image: " + message);
 
-            int robotId = (int) session.getAttributes().get("robotId");
-
-            for (WebSocketSession sessionListener : imageSubscribers.getSessionsByRobotId(robotId)) {
-                sessionListener.sendMessage(message);
-            }
+            imageSubscribers.sendMessageToAllSessions(robotId, message);
         } catch (IOException e) {
             System.out.println("!>> Supplied file is incorrect");
             throw e;

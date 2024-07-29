@@ -6,6 +6,7 @@ import com.nemo.webHub.Commands.Aim.AimLogic;
 import com.nemo.webHub.Commands.JsonCommand;
 import com.nemo.webHub.Config;
 import com.nemo.webHub.Robot.RobotService;
+import com.nemo.webHub.Sock.Image.ImageSubscribers;
 import com.nemo.webHub.Sock.Image.JsonImage;
 import com.nemo.webHub.Sock.Operators;
 import org.springframework.beans.TypeMismatchException;
@@ -33,13 +34,13 @@ public class CommandClientHandler extends TextWebSocketHandler {
     * */
 
     @Autowired
-    private CommandSubscribers commandSubscribers;
-    @Autowired
     private RobotService robotService;
     @Autowired
     private Operators operators;
     @Autowired
     private Config config;
+    @Autowired
+    ImageSubscribers imageSubscribers;
 
     private static final HashMap<String, WebSocketSession> sessionIdToSessionMap = new HashMap<>();
 
@@ -112,14 +113,21 @@ public class CommandClientHandler extends TextWebSocketHandler {
             case MOVE, TURRET -> robotService.updateAndSendRobotState(robotId, command);
             case STOP -> robotService.sendStopToRobot(robotId);
             case AIM -> {
-                Boolean success = robotService.startAimAndSendResult(robotId);
+                JsonImage lastImage = JsonImage.getLastImage(robotId);
 
-                if (Boolean.TRUE.equals(success)) {
-                    session.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
-                } else if (Boolean.FALSE.equals(success)) {
-                    session.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
-                } else {
+                if (lastImage == null) {
                     session.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
+                    break;
+                }
+
+                boolean success = robotService.startAimAndSendResult(robotId, lastImage);
+
+                imageSubscribers.sendMessageToAllSessions(robotId, new TextMessage(lastImage.jsonify("lastImage")));
+
+                if (success) {
+                    session.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
+                } else {
+                    session.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
                 }
             }
             case SHOOT -> session.sendMessage(createRegularJsonTextMessage(
@@ -131,50 +139,5 @@ public class CommandClientHandler extends TextWebSocketHandler {
 
     static WebSocketSession getSession(String sessionId) {
         return sessionIdToSessionMap.get(sessionId);
-    }
-
-    @Deprecated
-    protected void handleTextMessageDeprecated(WebSocketSession session, TextMessage message) throws Exception {
-
-        System.out.println("Transmitting message from client: " + message.getPayload());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode messageNode = objectMapper.readTree(message.getPayload());
-        JsonNode messageType = messageNode.get("messageType");
-
-        if (messageType == null) {
-            throw new NoSuchFieldException("Message type not provided, revise your JSON");
-        } else if (messageType.asText().equals("command")) {
-
-            if (!messageNode.has("command")) {
-                throw new NoSuchFieldException("Message is categorised as a command, and yet has no \"command\" field");
-            }
-
-            if (messageNode.get("command").asText().equals("AIM")) {
-
-                JsonImage lastImage = JsonImage.getLastImage();
-
-                if (lastImage != null) {
-
-                    double[] angles = AimLogic.aim(lastImage, config);
-
-                    if (angles != null) {
-                        JsonCommand aimCommand = AimLogic.createCommand(angles);
-
-                        message = new TextMessage(aimCommand.jsonify());
-                    } else {
-                        session.sendMessage(createRegularJsonTextMessage("No QR-code detected"));
-                    }
-                }
-            }
-
-            for (WebSocketSession value : commandSubscribers.getSubscribers().values()) {
-                value.sendMessage(message);
-            }
-        } else {
-            session.sendMessage(createRegularJsonTextMessage("Unknown or unsupported message type"));
-        }
-
     }
 }

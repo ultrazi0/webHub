@@ -32,15 +32,29 @@ public class OnionAPIController {
     }
 
     @GetMapping("/getRobotById")
-    public String getRobotById(@NotNull @RequestParam("id") int robotId) {
+    public RobotEntity getRobotById(@NotNull @RequestParam("id") int robotId) {
         RobotEntity robot = robotRepository.findRobotById(robotId);
 
-        return robot != null ? robot.toString() : "No robot with ID #" + robotId;
+        if (robot == null) {
+            throw new IllegalArgumentException("No robot with ID #" + robotId);
+        }
+
+        return robot;
     }
 
     @PostMapping("/insertNewRobot")
     public boolean insertNewRobot(@NotNull @RequestParam("name") String name) {
         return robotRepository.insertNewRobot(name);
+    }
+
+    @PostMapping("/updateRobot")
+    public boolean updateRobot(@NotNull @RequestParam("id") int id, @NotNull @RequestParam("name") String name) {
+        return robotRepository.updateRobot(id, name);
+    }
+
+    @DeleteMapping("/deleteRobot")
+    public boolean deleteRobot(@NotNull @RequestParam("id") int id) {
+        return robotRepository.deleteRobot(id);
     }
 
     @GetMapping("/getAllRobots")

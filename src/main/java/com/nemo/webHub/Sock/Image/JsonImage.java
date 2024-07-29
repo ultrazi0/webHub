@@ -2,7 +2,6 @@ package com.nemo.webHub.Sock.Image;
 
 import com.fasterxml.jackson.core.*;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Null;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -11,10 +10,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 public record JsonImage(Mat image) {
 
-    private static JsonImage lastImage = null;
+    private static final Map<Integer, JsonImage> lastImageMap = new HashMap<>();
 
     @Nullable
     public static JsonImage createFromJson(String json) throws IOException {
@@ -49,7 +50,7 @@ public record JsonImage(Mat image) {
 
     }
 
-    public String jsonify() throws IOException {
+    public String jsonify(String messageType) throws IOException {
         // See https://www.baeldung.com/jackson-streaming-api
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -58,6 +59,7 @@ public record JsonImage(Mat image) {
         JsonGenerator jsonGenerator = jsonFactory.createGenerator(stream, JsonEncoding.UTF8);
 
         jsonGenerator.writeStartObject();
+        jsonGenerator.writeStringField("messageType", messageType);
         jsonGenerator.writeStringField("image", encode(image));
         jsonGenerator.writeEndObject();
 
@@ -82,12 +84,18 @@ public record JsonImage(Mat image) {
         return Base64.getEncoder().encodeToString(encodedBytes.toArray());
     }
 
-    public static JsonImage getLastImage() {
-        return lastImage;
+    @Nullable
+    public static JsonImage getLastImage(int robotId) {
+        System.out.println("Last image map: " + lastImageMap);
+        return lastImageMap.get(robotId);
     }
 
-    public static void setLastImage(JsonImage lastImage) {
-        JsonImage.lastImage = lastImage;
+    public static void setLastImage(int robotId, JsonImage lastImage) {
+        lastImageMap.put(robotId, lastImage);
+    }
+
+    public static void removeFromLastImageMap(int robotId) {
+        lastImageMap.remove(robotId);
     }
 
     @Override

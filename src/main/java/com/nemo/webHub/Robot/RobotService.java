@@ -5,6 +5,7 @@ import com.nemo.webHub.Commands.JsonCommand;
 import com.nemo.webHub.Config;
 import com.nemo.webHub.Sock.Image.JsonImage;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
@@ -29,6 +30,8 @@ public class RobotService {
 
     public void removeConnectedRobot(int id) {
         connectedRobotsHashMap.remove(id);
+        JsonImage.removeFromLastImageMap(id);
+
         System.out.println("Robot disconnected, hashmap: " + connectedRobotsHashMap.toString());
     }
 
@@ -56,25 +59,20 @@ public class RobotService {
         connectedRobotsHashMap.get(id).sendStop();
     }
 
-    @Nullable
-    public Boolean startAimAndSendResult(int id) throws IOException {
-        JsonImage lastImage = JsonImage.getLastImage();
+    public boolean startAimAndSendResult(int id, @NotNull JsonImage lastImage) throws IOException {
+        double[] angles = AimLogic.aim(lastImage,config);
 
-        if (lastImage != null) {
-            double[] angles = AimLogic.aim(lastImage,config);
+        if (angles != null) {
+            JsonCommand aimCommand = AimLogic.createCommand(angles);
 
-            if (angles != null) {
-                JsonCommand aimCommand = AimLogic.createCommand(angles);
+            Robot robot = connectedRobotsHashMap.get(id);
+            robot.sendMessage(new TextMessage(aimCommand.jsonify()));
 
-                Robot robot = connectedRobotsHashMap.get(id);
-                robot.sendMessage(new TextMessage(aimCommand.jsonify()));
-
-                return true;
-            } else {
-                return false;
-            }
+            return true;
+        } else {
+            return false;
         }
-        return null;
+
     }
 
     public void sendRobotState(int id) throws IOException {

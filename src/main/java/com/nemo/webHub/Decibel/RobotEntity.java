@@ -1,6 +1,7 @@
 package com.nemo.webHub.Decibel;
 
 import jakarta.validation.constraints.NotNull;
+import org.jooq.generated.tables.records.RobotsRecord;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,12 @@ public class RobotEntity {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
+    }
+
+    public RobotEntity(RobotsRecord robotsRecord) {
+        this.id = robotsRecord.getId();
+        this.name = robotsRecord.getName();
+        this.createdAt = robotsRecord.getCreatedAt();
     }
 
     public int getId() {

@@ -1,14 +1,11 @@
 package com.nemo.webHub.Decibel;
 
-import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.jooq.*;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.jooq.generated.Tables.*;
@@ -19,7 +16,7 @@ public class RobotRepository {
     @Autowired
     private DSLContext db;
 
-    @Nullable
+    @NotNull
     public RobotEntity findRobotById(int id) {
         RobotsRecord robotsRecord = db
                 .selectFrom(ROBOTS)
@@ -27,7 +24,7 @@ public class RobotRepository {
                 .fetchOne();
 
         if (robotsRecord == null) {
-            return null;
+            throw new RobotNotFoundException(id);
         }
 
         return new RobotEntity(
@@ -37,7 +34,7 @@ public class RobotRepository {
         );
     }
 
-    @Nullable
+    @NotNull
     public RobotEntity findRobotByName(String name) {;
         RobotsRecord robotsRecord = db
                 .selectFrom(ROBOTS)
@@ -45,7 +42,7 @@ public class RobotRepository {
                 .fetchOne();
 
         if (robotsRecord == null) {
-            return null;
+            throw new RobotNotFoundException(name);
         }
 
         return new RobotEntity(
@@ -55,38 +52,41 @@ public class RobotRepository {
         );
     }
 
-    public boolean insertNewRobot(String name) {
-        RobotsRecord newRobot = db.newRecord(ROBOTS);
-        newRobot.setName(name);
-        try {
-            newRobot.store();
-        } catch (DataAccessException e) {
-            // Key already exists
-            System.out.println("I caught it!");
-            return false;
+    public RobotEntity insertNewRobot(String name) {
+        RobotsRecord newRobot = db
+                .insertInto(ROBOTS)
+                .columns(ROBOTS.NAME)
+                .values(name)
+                .returning()
+                .fetchOne();
+
+        if (newRobot == null) {
+            throw new RuntimeException("Newly inserted robot is null");
         }
-        return true;
+
+        return new RobotEntity(newRobot);
     }
 
-    public boolean updateRobot(int id, String name) {
-        try {
-            int updated = db.update(ROBOTS)
-                    .set(ROBOTS.NAME, name)
-                    .where(ROBOTS.ID.equal(id))
-                    .execute();
-            if (updated == 0) {
-                return false;
-            }
-        } catch (DataAccessException e) {
-            System.out.println("Name is taken");
-            return false;
+    public RobotEntity updateRobot(int id, String name) {
+        RobotsRecord robot = db.update(ROBOTS)
+                .set(ROBOTS.NAME, name)
+                .where(ROBOTS.ID.equal(id))
+                .returning()
+                .fetchOne();
+
+        if (robot == null) {
+            throw new RobotNotFoundException(id);
         }
-        return true;
+
+        return new RobotEntity(robot);
     }
 
-    public boolean deleteRobot(int id) {
+    public void deleteRobot(int id) {
         int deleted = db.deleteFrom(ROBOTS).where(ROBOTS.ID.equal(id)).execute();
-        return deleted > 0;
+
+        if (deleted < 1) {
+            throw new RobotNotFoundException(id);
+        }
     }
 
     public RobotEntity[] getAllRobots() {

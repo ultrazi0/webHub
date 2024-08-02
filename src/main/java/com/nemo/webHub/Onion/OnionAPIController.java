@@ -6,7 +6,18 @@ import com.nemo.webHub.Decibel.RobotRepository;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api")
@@ -14,6 +25,8 @@ public class OnionAPIController {
 
     @Autowired
     private RobotRepository robotRepository;
+    @Autowired
+    private RobotModelAssembler robotModelAssembler;
 
     @GetMapping("/getAllCommands")
     public CommandType[] getAllCommands() {
@@ -31,34 +44,46 @@ public class OnionAPIController {
         return commandType.getKeys();
     }
 
-    @GetMapping("/getRobotById")
-    public RobotEntity getRobotById(@NotNull @RequestParam("id") int robotId) {
+    @GetMapping("/robots/{robotId}")
+    public EntityModel<RobotEntity> getRobotById(@PathVariable int robotId) {
         RobotEntity robot = robotRepository.findRobotById(robotId);
 
-        if (robot == null) {
-            throw new IllegalArgumentException("No robot with ID #" + robotId);
-        }
-
-        return robot;
+        return robotModelAssembler.toModel(robot);
     }
 
-    @PostMapping("/insertNewRobot")
-    public boolean insertNewRobot(@NotNull @RequestParam("name") String name) {
-        return robotRepository.insertNewRobot(name);
+    @PostMapping("/robots")
+    public ResponseEntity<EntityModel<RobotEntity>> insertNewRobot(@NotNull @RequestParam("name") String name) {
+        EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(robotRepository.insertNewRobot(name));
+
+        return ResponseEntity
+                .created(robotEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(robotEntityModel);
     }
 
-    @PostMapping("/updateRobot")
-    public boolean updateRobot(@NotNull @RequestParam("id") int id, @NotNull @RequestParam("name") String name) {
-        return robotRepository.updateRobot(id, name);
+    @PutMapping("/robots/{robotId}")
+    public ResponseEntity<EntityModel<RobotEntity>> updateRobot(
+            @PathVariable int robotId, @NotNull @RequestParam("name") String name) {  // TODO: consider @RequestBody
+
+        EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(robotRepository.updateRobot(robotId, name));
+
+        return ResponseEntity
+                .created(robotEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(robotEntityModel);
     }
 
-    @DeleteMapping("/deleteRobot")
-    public boolean deleteRobot(@NotNull @RequestParam("id") int id) {
-        return robotRepository.deleteRobot(id);
+    @DeleteMapping("/robots/{robotId}")
+    public ResponseEntity<?> deleteRobot(@PathVariable int robotId) {
+        robotRepository.deleteRobot(robotId);
+
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/getAllRobots")
-    public RobotEntity[] getAllRobots() {
-        return robotRepository.getAllRobots();
+    @GetMapping("/robots")
+    public CollectionModel<EntityModel<RobotEntity>> getAllRobots() {
+
+        List<EntityModel<RobotEntity>> robots = Arrays.stream(robotRepository.getAllRobots())
+                .map(robotModelAssembler::toModel).toList();
+
+        return CollectionModel.of(robots, linkTo(methodOn(this.getClass()).getAllRobots()).withSelfRel());
     }
 }

@@ -3,6 +3,8 @@ package com.nemo.webHub.Onion;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,14 +13,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RobotControllerAdvice {
 
     @ExceptionHandler(RobotNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String robotNotFoundHandler(RobotNotFoundException e) {
-        return "{error: \"" + e.getMessage() + "\"}";
+    ResponseEntity<String> robotNotFoundHandler(RobotNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .header("Content-Type", "application/json")
+                .body("{\"error\": \"" + e.getMessage() + "\"}");
     }
 
     @ExceptionHandler(DataAccessException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    String robotNameAlreadyTaken(DataAccessException e) {
-        return "{error: \"Name already taken\"}";
+    ResponseEntity<String> robotNameAlreadyTaken(DataAccessException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .header("Content-Type", "application/json")
+                .body("{\"error\": \"Name already taken\"}");
     }
 }

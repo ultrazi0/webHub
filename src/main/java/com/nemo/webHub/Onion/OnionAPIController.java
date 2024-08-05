@@ -72,7 +72,7 @@ public class OnionAPIController {
     }
 
     @DeleteMapping("/robots/{robotId}")
-    public ResponseEntity<?> deleteRobot(@PathVariable int robotId) {
+    public ResponseEntity<Void> deleteRobot(@PathVariable int robotId) {
         robotRepository.deleteRobot(robotId);
 
         return ResponseEntity.noContent().build();

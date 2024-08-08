@@ -4,17 +4,22 @@
 package org.jooq.generated.tables;
 
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
+import org.jooq.Record;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -25,8 +30,11 @@ import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.generated.Bot;
 import org.jooq.generated.Keys;
+import org.jooq.generated.tables.UserRobotRelations.UserRobotRelationsPath;
+import org.jooq.generated.tables.Users.UsersPath;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -53,9 +61,9 @@ public class Robots extends TableImpl<RobotsRecord> {
     }
 
     /**
-     * The column <code>bot.robots.id</code>.
+     * The column <code>bot.robots.robot_id</code>.
      */
-    public final TableField<RobotsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<RobotsRecord, Integer> ROBOT_ID = createField(DSL.name("robot_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>bot.robots.name</code>.
@@ -65,7 +73,7 @@ public class Robots extends TableImpl<RobotsRecord> {
     /**
      * The column <code>bot.robots.created_at</code>.
      */
-    public final TableField<RobotsRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<RobotsRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     private Robots(Name alias, Table<RobotsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -96,6 +104,39 @@ public class Robots extends TableImpl<RobotsRecord> {
         this(DSL.name("robots"), null);
     }
 
+    public <O extends Record> Robots(Table<O> path, ForeignKey<O, RobotsRecord> childPath, InverseForeignKey<O, RobotsRecord> parentPath) {
+        super(path, childPath, parentPath, ROBOTS);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class RobotsPath extends Robots implements Path<RobotsRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> RobotsPath(Table<O> path, ForeignKey<O, RobotsRecord> childPath, InverseForeignKey<O, RobotsRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private RobotsPath(Name alias, Table<RobotsRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public RobotsPath as(String alias) {
+            return new RobotsPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public RobotsPath as(Name alias) {
+            return new RobotsPath(alias, this);
+        }
+
+        @Override
+        public RobotsPath as(Table<?> alias) {
+            return new RobotsPath(alias.getQualifiedName(), this);
+        }
+    }
+
     @Override
     public Schema getSchema() {
         return aliased() ? null : Bot.BOT;
@@ -114,6 +155,34 @@ public class Robots extends TableImpl<RobotsRecord> {
     @Override
     public List<UniqueKey<RobotsRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.ROBOTS_NAME_KEY);
+    }
+
+    private transient UserRobotRelationsPath _userRobotRelations;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>bot.user_robot_relations</code> table
+     */
+    public UserRobotRelationsPath userRobotRelations() {
+        if (_userRobotRelations == null)
+            _userRobotRelations = new UserRobotRelationsPath(this, null, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_ROBOT_ID_FKEY.getInverseKey());
+
+        return _userRobotRelations;
+    }
+
+    /**
+     * Get the implicit many-to-many join path to the <code>bot.users</code>
+     * table
+     */
+    public UsersPath users() {
+        return userRobotRelations().users();
+    }
+
+    @Override
+    public List<Check<RobotsRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("robots_name_check"), "((TRIM(BOTH FROM name) <> ''::text))", true)
+        );
     }
 
     @Override

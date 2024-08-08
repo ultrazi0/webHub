@@ -14,7 +14,7 @@ public class RobotModelAssembler implements RepresentationModelAssembler<RobotEn
     public EntityModel<RobotEntity> toModel(RobotEntity robot) {
 
         return EntityModel.of(robot,
-                linkTo(methodOn(OnionAPIController.class).getRobotById(robot.getId())).withSelfRel(),
-                linkTo(methodOn(OnionAPIController.class).getAllRobots()).withRel("robots"));
+                linkTo(methodOn(RobotAPIController.class).getRobotById(robot.getId())).withSelfRel(),
+                linkTo(methodOn(RobotAPIController.class).getUserRobots()).withRel("robots"));
     }
 }

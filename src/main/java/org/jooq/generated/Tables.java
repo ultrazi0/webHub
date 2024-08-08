@@ -5,6 +5,8 @@ package org.jooq.generated;
 
 
 import org.jooq.generated.tables.Robots;
+import org.jooq.generated.tables.UserRobotRelations;
+import org.jooq.generated.tables.Users;
 
 
 /**
@@ -17,4 +19,14 @@ public class Tables {
      * The table <code>bot.robots</code>.
      */
     public static final Robots ROBOTS = Robots.ROBOTS;
+
+    /**
+     * The table <code>bot.user_robot_relations</code>.
+     */
+    public static final UserRobotRelations USER_ROBOT_RELATIONS = UserRobotRelations.USER_ROBOT_RELATIONS;
+
+    /**
+     * The table <code>bot.users</code>.
+     */
+    public static final Users USERS = Users.USERS;
 }

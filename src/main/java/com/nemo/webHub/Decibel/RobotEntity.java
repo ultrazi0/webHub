@@ -4,21 +4,22 @@ import jakarta.validation.constraints.NotNull;
 import org.jooq.generated.tables.records.RobotsRecord;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class RobotEntity {
     private final int id;  // int cannot be null
     @NotNull
     private String name;
-    private final LocalDateTime createdAt;
+    private final OffsetDateTime createdAt;
 
-    public RobotEntity(int id, String name, LocalDateTime createdAt) {
+    public RobotEntity(int id, String name, OffsetDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
     }
 
     public RobotEntity(RobotsRecord robotsRecord) {
-        this.id = robotsRecord.getId();
+        this.id = robotsRecord.getRobotId();
         this.name = robotsRecord.getName();
         this.createdAt = robotsRecord.getCreatedAt();
     }
@@ -31,7 +32,7 @@ public class RobotEntity {
         return name;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 

@@ -4,7 +4,7 @@
 package org.jooq.generated.tables.records;
 
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.jooq.Record1;
 import org.jooq.generated.tables.Robots;
@@ -20,16 +20,16 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>bot.robots.id</code>.
+     * Setter for <code>bot.robots.robot_id</code>.
      */
-    public void setId(Integer value) {
+    public void setRobotId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>bot.robots.id</code>.
+     * Getter for <code>bot.robots.robot_id</code>.
      */
-    public Integer getId() {
+    public Integer getRobotId() {
         return (Integer) get(0);
     }
 
@@ -50,15 +50,15 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
     /**
      * Setter for <code>bot.robots.created_at</code>.
      */
-    public void setCreatedAt(LocalDateTime value) {
+    public void setCreatedAt(OffsetDateTime value) {
         set(2, value);
     }
 
     /**
      * Getter for <code>bot.robots.created_at</code>.
      */
-    public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(2);
+    public OffsetDateTime getCreatedAt() {
+        return (OffsetDateTime) get(2);
     }
 
     // -------------------------------------------------------------------------
@@ -84,10 +84,10 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
     /**
      * Create a detached, initialised RobotsRecord
      */
-    public RobotsRecord(Integer id, String name, LocalDateTime createdAt) {
+    public RobotsRecord(Integer robotId, String name, OffsetDateTime createdAt) {
         super(Robots.ROBOTS);
 
-        setId(id);
+        setRobotId(robotId);
         setName(name);
         setCreatedAt(createdAt);
         resetChangedOnNotNull();

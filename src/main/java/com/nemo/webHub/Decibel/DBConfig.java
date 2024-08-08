@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.jooq.generated.Tables.*;
 
@@ -28,9 +29,9 @@ public class DBConfig {
                 .from(ROBOTS).fetch();
 
         for (Record r : result) {
-            Integer id = r.getValue(ROBOTS.ID);
+            Integer id = r.getValue(ROBOTS.ROBOT_ID);
             String name = r.getValue(ROBOTS.NAME);
-            LocalDateTime createdAt = r.getValue(ROBOTS.CREATED_AT);
+            OffsetDateTime createdAt = r.getValue(ROBOTS.CREATED_AT);
 
             System.out.println("ID: " + id + "; name: " + name + "; created at: " + createdAt);
         }

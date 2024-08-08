@@ -4,9 +4,7 @@ import com.nemo.webHub.Decibel.RobotNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -20,7 +18,7 @@ public class RobotControllerAdvice {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    ResponseEntity<String> robotNameAlreadyTaken(DataAccessException e) {
+    ResponseEntity<String> nameAlreadyTaken(DataAccessException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .header("Content-Type", "application/json")
                 .body("{\"error\": \"Name already taken\"}");

@@ -8,8 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.generated.tables.Robots;
+import org.jooq.generated.tables.UserRobotRelations;
+import org.jooq.generated.tables.Users;
 import org.jooq.impl.SchemaImpl;
 
 
@@ -32,6 +35,16 @@ public class Bot extends SchemaImpl {
     public final Robots ROBOTS = Robots.ROBOTS;
 
     /**
+     * The table <code>bot.user_robot_relations</code>.
+     */
+    public final UserRobotRelations USER_ROBOT_RELATIONS = UserRobotRelations.USER_ROBOT_RELATIONS;
+
+    /**
+     * The table <code>bot.users</code>.
+     */
+    public final Users USERS = Users.USERS;
+
+    /**
      * No further instances allowed
      */
     private Bot() {
@@ -45,9 +58,18 @@ public class Bot extends SchemaImpl {
     }
 
     @Override
+    public final List<Sequence<?>> getSequences() {
+        return Arrays.asList(
+            Sequences.ROBOTS_ID_SEQ
+        );
+    }
+
+    @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            Robots.ROBOTS
+            Robots.ROBOTS,
+            UserRobotRelations.USER_ROBOT_RELATIONS,
+            Users.USERS
         );
     }
 }

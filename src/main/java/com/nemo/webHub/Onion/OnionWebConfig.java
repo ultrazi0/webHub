@@ -15,9 +15,7 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 
-@Configuration
-@EnableWebMvc
-@ComponentScan
+@Deprecated
 public class OnionWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     private ApplicationContext applicationContext;

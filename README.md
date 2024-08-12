@@ -1,4 +1,4 @@
-# WORK IN PROGRES!
+# WORK IN PROGRESS!
 
 ## *Project Name:* **WebHub**
 

@@ -36,9 +36,8 @@ public class UserApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/test")
-    public UserEntity test(@AuthenticationPrincipal UserEntity user) {
-
+    @GetMapping("/user")
+    public UserEntity getUser(@AuthenticationPrincipal UserEntity user) {
         return user;
     }
 

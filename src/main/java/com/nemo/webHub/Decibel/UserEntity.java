@@ -1,9 +1,11 @@
 package com.nemo.webHub.Decibel;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import org.jooq.generated.tables.records.UsersRecord;
 
 import java.time.OffsetDateTime;
 
+@JsonIncludeProperties("username")
 public class UserEntity {
 
     private final int id;

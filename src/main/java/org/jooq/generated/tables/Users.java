@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -33,6 +34,7 @@ import org.jooq.generated.tables.Robots.RobotsPath;
 import org.jooq.generated.tables.UserRobotRelations.UserRobotRelationsPath;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -69,6 +71,11 @@ public class Users extends TableImpl<UsersRecord> {
     public final TableField<UsersRecord, String> USERNAME = createField(DSL.name("username"), SQLDataType.VARCHAR(25).nullable(false), this, "");
 
     /**
+     * The column <code>bot.users.password</code>.
+     */
+    public final TableField<UsersRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
      * The column <code>bot.users.roles</code>.
      */
     public final TableField<UsersRecord, String[]> ROLES = createField(DSL.name("roles"), SQLDataType.VARCHAR(15).nullable(false).array(), this, "");
@@ -77,11 +84,6 @@ public class Users extends TableImpl<UsersRecord> {
      * The column <code>bot.users.created_at</code>.
      */
     public final TableField<UsersRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
-
-    /**
-     * The column <code>bot.users.password</code>.
-     */
-    public final TableField<UsersRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.CLOB.nullable(false), this, "");
 
     private Users(Name alias, Table<UsersRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -165,6 +167,18 @@ public class Users extends TableImpl<UsersRecord> {
         return Arrays.asList(Keys.USERS_USERNAME_KEY);
     }
 
+    private transient RobotsPath _robots;
+
+    /**
+     * Get the implicit to-many join path to the <code>bot.robots</code> table
+     */
+    public RobotsPath robots() {
+        if (_robots == null)
+            _robots = new RobotsPath(this, null, Keys.ROBOTS__ROBOTS_OWNER_ID_FKEY.getInverseKey());
+
+        return _robots;
+    }
+
     private transient UserRobotRelationsPath _userRobotRelations;
 
     /**
@@ -178,12 +192,11 @@ public class Users extends TableImpl<UsersRecord> {
         return _userRobotRelations;
     }
 
-    /**
-     * Get the implicit many-to-many join path to the <code>bot.robots</code>
-     * table
-     */
-    public RobotsPath robots() {
-        return userRobotRelations().robots();
+    @Override
+    public List<Check<UsersRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("users_password_check"), "((length(TRIM(BOTH FROM password)) > 0))", true)
+        );
     }
 
     @Override

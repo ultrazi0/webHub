@@ -41,5 +41,10 @@ public class UserApiController {
         return user;
     }
 
+    @GetMapping("/user/{userId}")
+    public UserEntity getUserById(@PathVariable int userId) {
+        return userRepository.findUserById(userId);
+    }
+
     public record LoginRequest(String username, String password) {}
 }

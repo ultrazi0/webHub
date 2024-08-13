@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(Customizer.withDefaults())  // to disable use AbstractHttpConfigurer::disable
+                .csrf(AbstractHttpConfigurer::disable)  // to disable use AbstractHttpConfigurer::disable
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/error", "/api/register", "/api/csrf").permitAll()
                         .anyRequest().authenticated())

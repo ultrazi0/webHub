@@ -61,6 +61,20 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
         return (OffsetDateTime) get(2);
     }
 
+    /**
+     * Setter for <code>bot.robots.owner_id</code>.
+     */
+    public void setOwnerId(Integer value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>bot.robots.owner_id</code>.
+     */
+    public Integer getOwnerId() {
+        return (Integer) get(3);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -84,12 +98,13 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
     /**
      * Create a detached, initialised RobotsRecord
      */
-    public RobotsRecord(Integer robotId, String name, OffsetDateTime createdAt) {
+    public RobotsRecord(Integer robotId, String name, OffsetDateTime createdAt, Integer ownerId) {
         super(Robots.ROBOTS);
 
         setRobotId(robotId);
         setName(name);
         setCreatedAt(createdAt);
+        setOwnerId(ownerId);
         resetChangedOnNotNull();
     }
 }

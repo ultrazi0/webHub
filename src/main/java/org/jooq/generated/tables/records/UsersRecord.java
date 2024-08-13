@@ -48,45 +48,45 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> {
     }
 
     /**
-     * Setter for <code>bot.users.roles</code>.
-     */
-    public void setRoles(String[] value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>bot.users.roles</code>.
-     */
-    public String[] getRoles() {
-        return (String[]) get(2);
-    }
-
-    /**
-     * Setter for <code>bot.users.created_at</code>.
-     */
-    public void setCreatedAt(OffsetDateTime value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>bot.users.created_at</code>.
-     */
-    public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(3);
-    }
-
-    /**
      * Setter for <code>bot.users.password</code>.
      */
     public void setPassword(String value) {
-        set(4, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>bot.users.password</code>.
      */
     public String getPassword() {
-        return (String) get(4);
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>bot.users.roles</code>.
+     */
+    public void setRoles(String[] value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>bot.users.roles</code>.
+     */
+    public String[] getRoles() {
+        return (String[]) get(3);
+    }
+
+    /**
+     * Setter for <code>bot.users.created_at</code>.
+     */
+    public void setCreatedAt(OffsetDateTime value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>bot.users.created_at</code>.
+     */
+    public OffsetDateTime getCreatedAt() {
+        return (OffsetDateTime) get(4);
     }
 
     // -------------------------------------------------------------------------
@@ -112,14 +112,14 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> {
     /**
      * Create a detached, initialised UsersRecord
      */
-    public UsersRecord(Integer userId, String username, String[] roles, OffsetDateTime createdAt, String password) {
+    public UsersRecord(Integer userId, String username, String password, String[] roles, OffsetDateTime createdAt) {
         super(Users.USERS);
 
         setUserId(userId);
         setUsername(username);
+        setPassword(password);
         setRoles(roles);
         setCreatedAt(createdAt);
-        setPassword(password);
         resetChangedOnNotNull();
     }
 }

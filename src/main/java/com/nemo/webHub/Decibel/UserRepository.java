@@ -32,6 +32,18 @@ public class UserRepository {
         return new UserEntity(user);
     }
 
+    public UserEntity findUserById(int id) {
+        UsersRecord user = db
+                .selectFrom(USERS)
+                .where(USERS.USER_ID.equal(id))
+                .fetchOne();
+
+        if (user == null) {
+            throw new UserNotFoundException(id);
+        }
+        return new UserEntity(user);
+    }
+
     public UserEntity addNewUser(String username, String password) {
         UsersRecord newUser = db
                 .insertInto(USERS)

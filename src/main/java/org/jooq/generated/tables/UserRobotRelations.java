@@ -68,11 +68,6 @@ public class UserRobotRelations extends TableImpl<UserRobotRelationsRecord> {
     public final TableField<UserRobotRelationsRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>bot.user_robot_relations.user_is_owner</code>.
-     */
-    public final TableField<UserRobotRelationsRecord, Boolean> USER_IS_OWNER = createField(DSL.name("user_is_owner"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "");
-
-    /**
      * The column <code>bot.user_robot_relations.robot_id</code>.
      */
     public final TableField<UserRobotRelationsRecord, Integer> ROBOT_ID = createField(DSL.name("robot_id"), SQLDataType.INTEGER.nullable(false), this, "");

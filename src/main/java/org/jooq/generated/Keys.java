@@ -38,6 +38,7 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<RobotsRecord, UsersRecord> ROBOTS__ROBOTS_OWNER_ID_FKEY = Internal.createForeignKey(Robots.ROBOTS, DSL.name("robots_owner_id_fkey"), new TableField[] { Robots.ROBOTS.OWNER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.USER_ID }, true);
     public static final ForeignKey<UserRobotRelationsRecord, RobotsRecord> USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_ROBOT_ID_FKEY = Internal.createForeignKey(UserRobotRelations.USER_ROBOT_RELATIONS, DSL.name("user_robot_relations_robot_id_fkey"), new TableField[] { UserRobotRelations.USER_ROBOT_RELATIONS.ROBOT_ID }, Keys.ROBOTS_PKEY, new TableField[] { Robots.ROBOTS.ROBOT_ID }, true);
     public static final ForeignKey<UserRobotRelationsRecord, UsersRecord> USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_USER_ID_FKEY = Internal.createForeignKey(UserRobotRelations.USER_ROBOT_RELATIONS, DSL.name("user_robot_relations_user_id_fkey"), new TableField[] { UserRobotRelations.USER_ROBOT_RELATIONS.USER_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.USER_ID }, true);
 }

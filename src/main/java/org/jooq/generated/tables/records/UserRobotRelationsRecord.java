@@ -46,31 +46,17 @@ public class UserRobotRelationsRecord extends UpdatableRecordImpl<UserRobotRelat
     }
 
     /**
-     * Setter for <code>bot.user_robot_relations.user_is_owner</code>.
-     */
-    public void setUserIsOwner(Boolean value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>bot.user_robot_relations.user_is_owner</code>.
-     */
-    public Boolean getUserIsOwner() {
-        return (Boolean) get(2);
-    }
-
-    /**
      * Setter for <code>bot.user_robot_relations.robot_id</code>.
      */
     public void setRobotId(Integer value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>bot.user_robot_relations.robot_id</code>.
      */
     public Integer getRobotId() {
-        return (Integer) get(3);
+        return (Integer) get(2);
     }
 
     // -------------------------------------------------------------------------
@@ -96,12 +82,11 @@ public class UserRobotRelationsRecord extends UpdatableRecordImpl<UserRobotRelat
     /**
      * Create a detached, initialised UserRobotRelationsRecord
      */
-    public UserRobotRelationsRecord(Integer relationId, Integer userId, Boolean userIsOwner, Integer robotId) {
+    public UserRobotRelationsRecord(Integer relationId, Integer userId, Integer robotId) {
         super(UserRobotRelations.USER_ROBOT_RELATIONS);
 
         setRelationId(relationId);
         setUserId(userId);
-        setUserIsOwner(userIsOwner);
         setRobotId(robotId);
         resetChangedOnNotNull();
     }

@@ -50,15 +50,15 @@ public class RobotAPIController {
     }
 
     @GetMapping("/robots/{robotId}")
-    public EntityModel<RobotEntity> getRobotById(@PathVariable int robotId) {
-        RobotEntity robot = robotRepository.findRobotById(robotId);
+    public EntityModel<RobotEntity> getRobotById(@PathVariable int robotId, @AuthenticationPrincipal UserEntity user) {
+        RobotEntity robot = robotRepository.findRobotByIdIfAllowed(robotId, user.getId());
 
         return robotModelAssembler.toModel(robot);
     }
 
     @PostMapping("/robots")
-    public ResponseEntity<EntityModel<RobotEntity>> insertNewRobot(@NotNull @RequestParam("name") String name) {
-        UserEntity user = readCurrentUserFromContext();
+    public ResponseEntity<EntityModel<RobotEntity>> insertNewRobot(
+            @NotNull @RequestParam("name") String name, @AuthenticationPrincipal UserEntity user) {
 
         EntityModel<RobotEntity> robotEntityModel = robotModelAssembler
                 .toModel(robotRepository.insertNewRobot(name, user.getId()));
@@ -70,9 +70,11 @@ public class RobotAPIController {
 
     @PutMapping("/robots/{robotId}")
     public ResponseEntity<EntityModel<RobotEntity>> updateRobot(
-            @PathVariable int robotId, @NotNull @RequestParam("name") String name) {  // TODO: consider @RequestBody
+            @PathVariable int robotId, @NotNull @RequestParam("name") String name,
+            @AuthenticationPrincipal UserEntity user) {  // TODO: consider @RequestBody
 
-        EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(robotRepository.updateRobot(robotId, name));
+        EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(
+                robotRepository.updateRobot(robotId, name, user.getId()));
 
         return ResponseEntity
                 .created(robotEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -80,23 +82,22 @@ public class RobotAPIController {
     }
 
     @DeleteMapping("/robots/{robotId}")
-    public ResponseEntity<Void> deleteRobot(@PathVariable int robotId) {
-        robotRepository.deleteRobot(robotId);
+    public ResponseEntity<Void> deleteRobot(@PathVariable int robotId, @AuthenticationPrincipal UserEntity user) {
+        robotRepository.deleteRobot(robotId, user.getId());
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/robots")
-    public CollectionModel<EntityModel<RobotEntity>> getUserRobots() {
-
-        UserEntity user = readCurrentUserFromContext();
+    public CollectionModel<EntityModel<RobotEntity>> getUserRobots(@AuthenticationPrincipal UserEntity user) {
 
         List<EntityModel<RobotEntity>> robots = Arrays.stream(robotRepository.getUserRobots(user.getId()))
                 .map(robotModelAssembler::toModel).toList();
 
-        return CollectionModel.of(robots, linkTo(methodOn(this.getClass()).getUserRobots()).withSelfRel());
+        return CollectionModel.of(robots, linkTo(methodOn(this.getClass()).getUserRobots(user)).withSelfRel());
     }
 
+    @Deprecated
     private UserEntity readCurrentUserFromContext() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();

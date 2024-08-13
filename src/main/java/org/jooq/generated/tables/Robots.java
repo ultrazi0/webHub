@@ -75,6 +75,11 @@ public class Robots extends TableImpl<RobotsRecord> {
      */
     public final TableField<RobotsRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
+    /**
+     * The column <code>bot.robots.owner_id</code>.
+     */
+    public final TableField<RobotsRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
     private Robots(Name alias, Table<RobotsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -157,6 +162,23 @@ public class Robots extends TableImpl<RobotsRecord> {
         return Arrays.asList(Keys.ROBOTS_NAME_KEY);
     }
 
+    @Override
+    public List<ForeignKey<RobotsRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.ROBOTS__ROBOTS_OWNER_ID_FKEY);
+    }
+
+    private transient UsersPath _users;
+
+    /**
+     * Get the implicit join path to the <code>bot.users</code> table.
+     */
+    public UsersPath users() {
+        if (_users == null)
+            _users = new UsersPath(this, Keys.ROBOTS__ROBOTS_OWNER_ID_FKEY, null);
+
+        return _users;
+    }
+
     private transient UserRobotRelationsPath _userRobotRelations;
 
     /**
@@ -168,14 +190,6 @@ public class Robots extends TableImpl<RobotsRecord> {
             _userRobotRelations = new UserRobotRelationsPath(this, null, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_ROBOT_ID_FKEY.getInverseKey());
 
         return _userRobotRelations;
-    }
-
-    /**
-     * Get the implicit many-to-many join path to the <code>bot.users</code>
-     * table
-     */
-    public UsersPath users() {
-        return userRobotRelations().users();
     }
 
     @Override

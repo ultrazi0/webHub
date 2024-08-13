@@ -2,7 +2,7 @@ package com.nemo.webHub.Onion;
 
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Decibel.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import com.nemo.webHub.Sect.UserRepositoryUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +21,16 @@ public class UserApiController {
         return ResponseEntity.ok().body(token);
     }
 
+    @GetMapping("/user")
+    public UserEntity getUser(@AuthenticationPrincipal UserEntity user) {
+        return user;
+    }
+
+    @GetMapping("/user/{userId}")
+    public UserEntity getUserById(@PathVariable int userId) {
+        return userRepository.findUserById(userId);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<UserEntity> registerNewUser(@ModelAttribute LoginRequest registerRequest) {
         UserEntity user = userRepository.addNewUser(registerRequest.username(),
@@ -36,15 +46,38 @@ public class UserApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user")
-    public UserEntity getUser(@AuthenticationPrincipal UserEntity user) {
-        return user;
-    }
+    @PutMapping("/user")
+    public ResponseEntity<UserEntity> updateUser(@AuthenticationPrincipal UserEntity user, @ModelAttribute EditRequest editRequest) {
+        System.out.println(editRequest);
+        String newUsername = editRequest.username();
+        String oldPassword = editRequest.oldPassword();
+        String newPassword = editRequest.newPassword();
 
-    @GetMapping("/user/{userId}")
-    public UserEntity getUserById(@PathVariable int userId) {
-        return userRepository.findUserById(userId);
+        UserEntity newUser;
+
+        if (newPassword != null && newPassword.isBlank()) {
+            newPassword = null;
+        }
+
+        if (newUsername == null && newPassword == null ||
+                oldPassword == null || oldPassword.equals(newPassword)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (newUsername == null) {
+            newUser = userRepository.updateUserPassword(user.getId(), oldPassword, newPassword);
+        } else if (newPassword == null) {
+            newUser = userRepository.updateUserUsername(user.getId(), newUsername, oldPassword);
+        } else {
+            newUser = userRepository.updateUser(user.getId(), newUsername, oldPassword, newPassword);
+        }
+
+        user.updateUser(newUser);
+
+        return ResponseEntity.ok(user);
     }
 
     public record LoginRequest(String username, String password) {}
+
+    public record EditRequest(String username, String oldPassword, String newPassword) {}
 }

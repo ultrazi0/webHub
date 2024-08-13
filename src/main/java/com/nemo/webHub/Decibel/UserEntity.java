@@ -5,11 +5,11 @@ import org.jooq.generated.tables.records.UsersRecord;
 
 import java.time.OffsetDateTime;
 
-@JsonIncludeProperties("username")
+@JsonIncludeProperties({"id", "username"})
 public class UserEntity {
 
     private final int id;
-    private final String username;
+    private String username;
     private String password;
     private final String[] roles;
     private final OffsetDateTime createdAt;
@@ -52,5 +52,9 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void updateUser(UserEntity referenceUser) {
+        this.username = referenceUser.getUsername();
     }
 }

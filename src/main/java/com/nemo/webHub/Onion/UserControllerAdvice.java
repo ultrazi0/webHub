@@ -13,6 +13,6 @@ public class UserControllerAdvice {
     ResponseEntity<String> userNotFoundHandler(UserNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .header("Content-Type", "application/json")
-                .body("{\"error\": \"" + e.getMessage() + "\"");
+                .body("{\"error\": \"" + e.getMessage() + "\"}");
     }
 }

@@ -1,16 +1,10 @@
 package com.nemo.webHub.Decibel;
 
-import jakarta.annotation.PostConstruct;
 import org.jooq.DSLContext;
-import org.jooq.generated.tables.Users;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import org.springframework.util.Assert;
 
 import static org.jooq.generated.Tables.*;
 
@@ -52,9 +46,50 @@ public class UserRepository {
                 .returning()
                 .fetchOne();
 
+        Assert.notNull(newUser, "Newly created user is somehow null");
+        return new UserEntity(newUser);
+    }
+
+    public UserEntity updateUser(int id, String newUsername, String oldPassword, String newPassword) {
+        UsersRecord newUser = db.update(USERS)
+                .set(USERS.USERNAME, newUsername)
+                .set(USERS.PASSWORD, encodePassword(newPassword))
+                .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
+                .returning()
+                .fetchOne();
+
         if (newUser == null) {
-            throw new RuntimeException("Newly created user is somehow null");
+            throw new UserNotFoundException(id);
         }
+
+        return new UserEntity(newUser);
+    }
+
+    public UserEntity updateUserUsername(int id, String newUsername, String oldPassword) {
+        UsersRecord newUser = db.update(USERS)
+                .set(USERS.USERNAME, newUsername)
+                .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
+                .returning()
+                .fetchOne();
+
+        if (newUser == null) {
+            throw new UserNotFoundException(id);
+        }
+
+        return new UserEntity(newUser);
+    }
+
+    public UserEntity updateUserPassword(int id, String oldPassword, String newPassword) {
+        UsersRecord newUser = db.update(USERS)
+                .set(USERS.PASSWORD, encodePassword(newPassword))
+                .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
+                .returning()
+                .fetchOne();
+
+        if (newUser == null) {
+            throw new UserNotFoundException(id);
+        }
+
         return new UserEntity(newUser);
     }
 
@@ -64,5 +99,10 @@ public class UserRepository {
         if (deleted < 1) {
             throw new UserNotFoundException(id);
         }
+    }
+
+    private String encodePassword(String password) {
+        // TODO: this should obviously be replaced with a correct encoder
+        return "{noop}" + password;
     }
 }

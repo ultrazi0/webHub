@@ -3,6 +3,8 @@ package com.nemo.webHub.Onion;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Decibel.UserRepository;
 import com.nemo.webHub.Sect.UserRepositoryUserDetailsService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,10 +34,12 @@ public class UserApiController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserEntity> registerNewUser(@ModelAttribute LoginRequest registerRequest) {
+    public ResponseEntity<UserEntity> registerNewUser(@ModelAttribute LoginRequest registerRequest,
+                                                      HttpServletRequest request) throws ServletException {
         UserEntity user = userRepository.addNewUser(registerRequest.username(),
                 "{noop}" + registerRequest.password());  // TODO: fix password later
 
+        request.login(user.getUsername(), registerRequest.password());
         return ResponseEntity.ok().body(user);
     }
 

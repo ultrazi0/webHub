@@ -44,9 +44,11 @@ public class UserApiController {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserEntity user,
+                                           HttpServletRequest request) throws ServletException {
         userRepository.deleteUser(user.getId());
 
+        request.logout();
         return ResponseEntity.noContent().build();
     }
 

@@ -40,7 +40,7 @@ public class RobotAPIController {
     }
 
     @Nullable
-    @PostMapping("/commandValues")
+    @GetMapping("/commandValues")
     public String[] commandValues(@Nullable @RequestParam("commandType") CommandType commandType) {
         if (commandType == null) {
             return null;

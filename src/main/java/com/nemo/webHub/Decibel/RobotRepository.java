@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.jooq.generated.Tables.*;
 
@@ -17,7 +18,6 @@ public class RobotRepository {
     @Autowired
     private DSLContext db;
 
-    @Deprecated
     @NotNull
     public RobotEntity findRobotById(int id) {
         RobotsRecord robotsRecord = db
@@ -34,8 +34,13 @@ public class RobotRepository {
 
     @NotNull
     public RobotEntity findRobotByIdIfAllowed(int id, int userId) {
-        Record5<Integer, String, OffsetDateTime, Integer, String> robot =
-                db.select(ROBOTS.ROBOT_ID, ROBOTS.NAME, ROBOTS.CREATED_AT, ROBOTS.OWNER_ID, USERS.USERNAME)
+        Record6<Integer, String, UUID, OffsetDateTime, Integer, String> robot =
+                db.select(ROBOTS.ROBOT_ID,
+                                ROBOTS.NAME,
+                                ROBOTS.PASSWORD,
+                                ROBOTS.CREATED_AT,
+                                ROBOTS.OWNER_ID,
+                                USERS.USERNAME)
                         .from(ROBOTS)
                         .innerJoin(USER_ROBOT_RELATIONS).using(ROBOTS.ROBOT_ID)
                         .innerJoin(USERS).on(ROBOTS.OWNER_ID.equal(USERS.USER_ID))
@@ -46,8 +51,13 @@ public class RobotRepository {
             throw new RobotNotFoundException(id);
         }
 
-        return new RobotEntity(robot.component1(), robot.component2(), robot.component3(), robot.component4())
-                .setOwnerName(robot.component5());
+        return new RobotEntity(
+                robot.component1(),
+                robot.component2(),
+                robot.component3(),
+                robot.component4(),
+                robot.component5()
+        ).setOwnerName(robot.component6());
     }
 
     @NotNull
@@ -137,8 +147,9 @@ public class RobotRepository {
     }
 
     public RobotEntity[] getUserRobots(int userId) {
-        Record5<Integer, String, OffsetDateTime, Integer, String>[] records = db.select(ROBOTS.ROBOT_ID,
+        Record6<Integer, String, UUID, OffsetDateTime, Integer, String>[] records = db.select(ROBOTS.ROBOT_ID,
                         ROBOTS.NAME,
+                        ROBOTS.PASSWORD,
                         ROBOTS.CREATED_AT,
                         ROBOTS.OWNER_ID,
                         USERS.USERNAME
@@ -153,8 +164,9 @@ public class RobotRepository {
                 .map(record -> new RobotEntity(record.component1(),
                         record.component2(),
                         record.component3(),
-                        record.component4()
-                ).setOwnerName(record.component5())
+                        record.component4(),
+                        record.component5()
+                ).setOwnerName(record.component6())
                 ).toArray(RobotEntity[]::new);
     }
 

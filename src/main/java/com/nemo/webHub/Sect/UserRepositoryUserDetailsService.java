@@ -14,6 +14,12 @@ import org.springframework.util.Assert;
 
 import java.util.*;
 
+
+/**
+ * Custom {@link UserDetailsService} to hold {@link UserEntity} objects to provide a better
+ * representation of what is stored in the database, but primarily to store and to be able
+ * to access the user IDs.
+ * */
 @Service
 public class UserRepositoryUserDetailsService implements UserDetailsService {
 

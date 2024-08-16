@@ -6,6 +6,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Robot.RobotService;
+import com.nemo.webHub.Sect.HandshakeInterceptors.CommandClientHandshakeInterceptor;
+import com.nemo.webHub.Sect.HandshakeInterceptors.CommandRobotHandshakeInterceptor;
+import com.nemo.webHub.Sect.HandshakeInterceptors.ImageClientHandshakeInterceptor;
+import com.nemo.webHub.Sect.HandshakeInterceptors.ImageRobotHandshakeInterceptor;
 import com.nemo.webHub.Sock.Command.CommandClientHandler;
 import com.nemo.webHub.Sock.Command.CommandRobotHandler;
 import com.nemo.webHub.Sock.Image.ImageRobotHandler;
@@ -49,16 +53,16 @@ public class WebSockConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(imageClientHandler(), "/api/image/client/{robotId}")
-                .addInterceptors(imageClientHandshakeInterceptor()).setAllowedOrigins("*");
+                .addInterceptors(new ImageClientHandshakeInterceptor(robotRepository)).setAllowedOrigins("*");
 
-        registry.addHandler(imageRobotHandler(), "/api/image/robot/{robotId}")
-                .addInterceptors(imageRobotHandshakeInterceptor());
+        registry.addHandler(imageRobotHandler(), "/api/image/robot")
+                .addInterceptors(new ImageRobotHandshakeInterceptor(imageSubscribers));
 
-        registry.addHandler(commandRobotHandler(), "/api/command/robot/{robotId}")
-                .addInterceptors(commandRobotHandshakeInterceptor());
+        registry.addHandler(commandRobotHandler(), "/api/command/robot")
+                .addInterceptors(new CommandRobotHandshakeInterceptor(robotService));
 
         registry.addHandler(commandClientHandler(), "/api/command/client/{robotId}")
-                .addInterceptors(commandClientHandshakeInterceptor()).setAllowedOrigins("*");
+                .addInterceptors(new CommandClientHandshakeInterceptor(robotRepository, operators)).setAllowedOrigins("*");
     }
 
     @Bean
@@ -79,115 +83,6 @@ public class WebSockConfig implements WebSocketConfigurer {
     @Bean
     public WebSocketHandler commandClientHandler() {
         return new CommandClientHandler();
-    }
-
-    private HandshakeInterceptor commandClientHandshakeInterceptor() {
-        return new HandshakeInterceptor() {
-            @Override
-            public boolean beforeHandshake(ServerHttpRequest request,
-                                           ServerHttpResponse response,
-                                           WebSocketHandler wsHandler,
-                                           Map<String, Object> attributes) throws Exception {
-
-                Integer robotId = getRobotIdFromRequest(request);
-
-                if ((robotId == null) || (operators.getOperatorSessionId(robotId) != null)) {
-                    response.setStatusCode(HttpStatus.BAD_REQUEST);
-                    return false;
-                }
-
-                attributes.put("robotId", robotId);
-
-                return true;
-            }
-
-            @Override
-            public void afterHandshake(ServerHttpRequest request,
-                                       ServerHttpResponse response,
-                                       WebSocketHandler wsHandler,
-                                       Exception exception) {}
-        };
-    }
-
-    private HandshakeInterceptor commandRobotHandshakeInterceptor() {
-        return new HandshakeInterceptor() {
-            @Override
-            public boolean beforeHandshake(ServerHttpRequest request,
-                                           ServerHttpResponse response,
-                                           WebSocketHandler wsHandler,
-                                           Map<String, Object> attributes) throws Exception {
-                Integer robotId = getRobotIdFromRequest(request);
-
-                if ((robotId == null) || (robotService.robotIsConnected(robotId))) {
-                    response.setStatusCode(HttpStatus.BAD_REQUEST);
-                    return false;
-                }
-
-                attributes.put("robotId", robotId);
-
-                return true;
-            }
-
-            @Override
-            public void afterHandshake(ServerHttpRequest request,
-                                       ServerHttpResponse response,
-                                       WebSocketHandler wsHandler,
-                                       Exception exception) {}
-        };
-    }
-
-    private HandshakeInterceptor imageClientHandshakeInterceptor() {
-        return new HandshakeInterceptor() {
-            @Override
-            public boolean beforeHandshake(ServerHttpRequest request,
-                                           ServerHttpResponse response,
-                                           WebSocketHandler wsHandler,
-                                           Map<String, Object> attributes) throws Exception {
-                Integer robotId = getRobotIdFromRequest(request);
-
-                if (robotId == null) {
-                    response.setStatusCode(HttpStatus.BAD_REQUEST);
-                    return false;
-                }
-
-                attributes.put("robotId", robotId);
-
-                return true;
-            }
-
-            @Override
-            public void afterHandshake(ServerHttpRequest request,
-                                       ServerHttpResponse response,
-                                       WebSocketHandler wsHandler,
-                                       Exception exception) {}
-        };
-    }
-
-    private HandshakeInterceptor imageRobotHandshakeInterceptor() {
-        return new HandshakeInterceptor() {
-            @Override
-            public boolean beforeHandshake(ServerHttpRequest request,
-                                           ServerHttpResponse response,
-                                           WebSocketHandler wsHandler,
-                                           Map<String, Object> attributes) throws Exception {
-                Integer robotId = getRobotIdFromRequest(request);
-
-                if ((robotId == null) || (imageSubscribers.robotIsConnected(robotId))) {
-                    response.setStatusCode(HttpStatus.BAD_REQUEST);
-                    return false;
-                }
-
-                attributes.put("robotId", robotId);
-
-                return true;
-            }
-
-            @Override
-            public void afterHandshake(ServerHttpRequest request,
-                                       ServerHttpResponse response,
-                                       WebSocketHandler wsHandler,
-                                       Exception exception) {}
-        };
     }
 
     @Bean
@@ -216,6 +111,7 @@ public class WebSockConfig implements WebSocketConfigurer {
         return new TextMessage(stream.toString(StandardCharsets.UTF_8));
     }
 
+    @Deprecated
     @Nullable
     private Integer getRobotIdFromRequest(@NotNull ServerHttpRequest request) {
 
@@ -235,6 +131,7 @@ public class WebSockConfig implements WebSocketConfigurer {
         return robotId;
     }
 
+    @Deprecated
     private static Map<String, String> getQueryParametersMap(String query) {
         Map<String, String> map = new HashMap<>();
 

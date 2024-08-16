@@ -5,6 +5,7 @@ package org.jooq.generated.tables.records;
 
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 import org.jooq.Record1;
 import org.jooq.generated.tables.Robots;
@@ -75,6 +76,20 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
         return (Integer) get(3);
     }
 
+    /**
+     * Setter for <code>bot.robots.password</code>.
+     */
+    public void setPassword(UUID value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>bot.robots.password</code>.
+     */
+    public UUID getPassword() {
+        return (UUID) get(4);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -98,13 +113,14 @@ public class RobotsRecord extends UpdatableRecordImpl<RobotsRecord> {
     /**
      * Create a detached, initialised RobotsRecord
      */
-    public RobotsRecord(Integer robotId, String name, OffsetDateTime createdAt, Integer ownerId) {
+    public RobotsRecord(Integer robotId, String name, OffsetDateTime createdAt, Integer ownerId, UUID password) {
         super(Robots.ROBOTS);
 
         setRobotId(robotId);
         setName(name);
         setCreatedAt(createdAt);
         setOwnerId(ownerId);
+        setPassword(password);
         resetChangedOnNotNull();
     }
 }

@@ -27,7 +27,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<RobotsRecord> ROBOTS_NAME_KEY = Internal.createUniqueKey(Robots.ROBOTS, DSL.name("robots_name_key"), new TableField[] { Robots.ROBOTS.NAME }, true);
+    public static final UniqueKey<RobotsRecord> ROBOTS_OWNER_ID_NAME_KEY = Internal.createUniqueKey(Robots.ROBOTS, DSL.name("robots_owner_id_name_key"), new TableField[] { Robots.ROBOTS.OWNER_ID, Robots.ROBOTS.NAME }, true);
     public static final UniqueKey<RobotsRecord> ROBOTS_PKEY = Internal.createUniqueKey(Robots.ROBOTS, DSL.name("robots_pkey"), new TableField[] { Robots.ROBOTS.ROBOT_ID }, true);
     public static final UniqueKey<UserRobotRelationsRecord> USER_ROBOT_RELATIONS_PKEY = Internal.createUniqueKey(UserRobotRelations.USER_ROBOT_RELATIONS, DSL.name("user_robot_relations_pkey"), new TableField[] { UserRobotRelations.USER_ROBOT_RELATIONS.RELATION_ID }, true);
     public static final UniqueKey<UserRobotRelationsRecord> USER_ROBOT_RELATIONS_USER_ID_ROBOT_ID_KEY = Internal.createUniqueKey(UserRobotRelations.USER_ROBOT_RELATIONS, DSL.name("user_robot_relations_user_id_robot_id_key"), new TableField[] { UserRobotRelations.USER_ROBOT_RELATIONS.USER_ID, UserRobotRelations.USER_ROBOT_RELATIONS.ROBOT_ID }, true);

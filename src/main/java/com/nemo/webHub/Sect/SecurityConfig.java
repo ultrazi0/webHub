@@ -3,6 +3,9 @@ package com.nemo.webHub.Sect;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,10 +25,10 @@ public class SecurityConfig {
                 .csrf(Customizer.withDefaults())  // to disable use AbstractHttpConfigurer::disable
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/error", "/api/register", "/api/csrf").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/command/robot", "/api/image/robot").hasRole("ROBOT")
+                        .anyRequest().hasRole("USER"))
                 .formLogin(form -> form
-                        .loginPage("/api/login")
-                        .permitAll()
+                        .loginPage("/api/login").permitAll()
                         .successHandler((request, response, authentication) -> {
                             // do nothing
                         }).failureHandler(((request, response, exception) -> {
@@ -53,6 +56,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.maximumSessions(1));
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserRepositoryUserDetailsService userRepositoryUserDetailsService,
+            RobotRepositoryUserDetailsService robotRepositoryUserDetailsService) {
+        /*
+         * TODO: for some reason Spring Security still issues a warning saying that two UserDetailsService beans
+         *  are initialized, even though a custom AuthenticationManager bean is provided.
+         *  This happens in InitializeUserDetailsManagerConfigurer#configure
+         */
+
+        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
+        userAuthenticationProvider.setUserDetailsService(userRepositoryUserDetailsService);
+
+        DaoAuthenticationProvider robotAuthenticationProvider = new DaoAuthenticationProvider();
+        robotAuthenticationProvider.setUserDetailsService(robotRepositoryUserDetailsService);
+
+        return new ProviderManager(robotAuthenticationProvider, userAuthenticationProvider);
     }
 
     @Bean

@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.jooq.Check;
 import org.jooq.Condition;
@@ -79,6 +80,11 @@ public class Robots extends TableImpl<RobotsRecord> {
      * The column <code>bot.robots.owner_id</code>.
      */
     public final TableField<RobotsRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>bot.robots.password</code>.
+     */
+    public final TableField<RobotsRecord, UUID> PASSWORD = createField(DSL.name("password"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("gen_random_uuid()"), SQLDataType.UUID)), this, "");
 
     private Robots(Name alias, Table<RobotsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -159,7 +165,7 @@ public class Robots extends TableImpl<RobotsRecord> {
 
     @Override
     public List<UniqueKey<RobotsRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.ROBOTS_NAME_KEY);
+        return Arrays.asList(Keys.ROBOTS_OWNER_ID_NAME_KEY);
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.nemo.webHub.Decibel;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.jooq.generated.tables.records.RobotsRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -31,7 +29,7 @@ public class RobotEntity {
     public RobotEntity(int id, String name, String password, OffsetDateTime createdAt, int ownerId) {
         this.id = id;
         this.name = name;
-        this.password = "{noop}" + password;
+        this.password = password;
         this.createdAt = createdAt;
         this.ownerId = ownerId;
     }

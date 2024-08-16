@@ -3,6 +3,7 @@ package com.nemo.webHub.Decibel;
 import org.jooq.DSLContext;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -13,6 +14,8 @@ public class UserRepository {
 
     @Autowired
     private DSLContext db;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserEntity findUserByUsername(String username) {
         UsersRecord user = db
@@ -54,6 +57,15 @@ public class UserRepository {
         UsersRecord newUser = db.update(USERS)
                 .set(USERS.USERNAME, newUsername)
                 .set(USERS.PASSWORD, encodePassword(newPassword))
+                /*
+                 * TODO: this prevents users from changing their password unless its encryption is bcrypt.
+                 *  Unfortunately, I cannot think of any other way to change the password in one go.
+                 *  So, unless I can think of another way, it shall stay like this.
+                 *  Obviously, PasswordEncoder#matches requires an old password, in order to obtain which
+                 *  one has to make another trip to the database, which would result in two separate trips,
+                 *  which I think is not worth it.
+                 *  Be careful: this line is used THRICE in all the three updateUser methods!
+                 */
                 .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
                 .returning()
                 .fetchOne();
@@ -102,7 +114,6 @@ public class UserRepository {
     }
 
     private String encodePassword(String password) {
-        // TODO: this should obviously be replaced with a correct encoder
-        return "{noop}" + password;
+        return passwordEncoder.encode(password);
     }
 }

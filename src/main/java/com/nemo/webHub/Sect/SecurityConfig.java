@@ -9,6 +9,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.*;
 import org.springframework.security.web.savedrequest.NullRequestCache;
@@ -61,20 +63,26 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(
             UserRepositoryUserDetailsService userRepositoryUserDetailsService,
-            RobotRepositoryUserDetailsService robotRepositoryUserDetailsService) {
+            RobotRepositoryUserDetailsService robotRepositoryUserDetailsService,
+            PasswordEncoder passwordEncoder) {
         /*
          * TODO: for some reason Spring Security still issues a warning saying that two UserDetailsService beans
          *  are initialized, even though a custom AuthenticationManager bean is provided.
          *  This happens in InitializeUserDetailsManagerConfigurer#configure
          */
 
-        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         userAuthenticationProvider.setUserDetailsService(userRepositoryUserDetailsService);
 
         DaoAuthenticationProvider robotAuthenticationProvider = new DaoAuthenticationProvider();
         robotAuthenticationProvider.setUserDetailsService(robotRepositoryUserDetailsService);
 
         return new ProviderManager(robotAuthenticationProvider, userAuthenticationProvider);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean

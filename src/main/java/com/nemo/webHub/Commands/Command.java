@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class Command {  // TODO: maybe could be rewritten as a record + JsonCommand could extend it
     private CommandType commandType;
     private Map<String, Double> values = null;

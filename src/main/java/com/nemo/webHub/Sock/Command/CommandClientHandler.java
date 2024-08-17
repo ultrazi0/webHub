@@ -1,16 +1,12 @@
 package com.nemo.webHub.Sock.Command;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nemo.webHub.Commands.Aim.AimLogic;
 import com.nemo.webHub.Commands.JsonCommand;
-import com.nemo.webHub.Config;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sock.Image.ImageSubscribers;
 import com.nemo.webHub.Sock.Image.JsonImage;
 import com.nemo.webHub.Sock.Operators;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,23 +18,19 @@ import java.util.HashMap;
 import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
 
 
+/**
+ * Endpoint: /api/command/client/{robotId}
+ * <p>
+ * This handler manages messages sent from the client, thus primarily commands,
+ * and redirects them to the robot.
+ * <p>
+ * Message must be a parsable JSON, otherwise an exception is thrown.
+ */
 public class CommandClientHandler extends TextWebSocketHandler {
-    /*
-    *
-    * Endpoint: /api/command/client/{robotId}
-    * This handler manages messages sent from the client, thus primarily commands,
-    * and redirects them to the robot.
-    *
-    * Message must be a parsable JSON, otherwise an exception is thrown.
-    *
-    * */
-
     @Autowired
     private RobotService robotService;
     @Autowired
     private Operators operators;
-    @Autowired
-    private Config config;
     @Autowired
     ImageSubscribers imageSubscribers;
 
@@ -73,7 +65,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws RuntimeException, IOException {
+    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws RuntimeException, IOException {
 
         Integer robotId = operators.getRobotId(session.getId());
 
@@ -90,7 +82,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws Exception {
         System.out.println("Transmitting message from client: " + message.getPayload());
 
         JsonCommand command = JsonCommand.createFromJson(message.getPayload());
@@ -131,6 +123,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
                 }
             }
             case SHOOT -> session.sendMessage(createRegularJsonTextMessage(
+                    // TODO: this is obviously a placeholder
                     "I hear you, but you have to use use your imagination for now :("
             ));
         }

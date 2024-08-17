@@ -8,7 +8,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Map;
 
 public class Robot {
@@ -79,9 +78,7 @@ public class Robot {
 
         LinkedList<JsonCommand> updateCommands = new LinkedList<>();
 
-        getState().forEach((command, valuesMap) -> {
-            updateCommands.add(new JsonCommand(command, valuesMap));
-        });
+        getState().forEach((command, valuesMap) -> updateCommands.add(new JsonCommand(command, valuesMap)));
 
         session.sendMessage(new TextMessage(JsonCommand.jsonifyMultipleCommands(updateCommands)));
     }

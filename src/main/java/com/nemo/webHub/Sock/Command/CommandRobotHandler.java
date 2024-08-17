@@ -6,6 +6,7 @@ import com.nemo.webHub.Robot.Robot;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sock.Operators;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -15,17 +16,17 @@ import java.io.IOException;
 
 import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
 
+/**
+ *
+ * Endpoint: /api/command/robot
+ * <p>
+ * This handler manages messages sent from the robot, in other words feedback.
+ * Upon receiving such message, the handler redirects it to all the client-subscribers.
+ * <p>
+ * Message must be a parsable JSON, otherwise an exception is thrown.
+ *
+ */
 public class CommandRobotHandler extends TextWebSocketHandler {
-    /*
-    *
-    * Endpoint: /api/command/robot/{robotId}
-    * This handler manages messages sent from the robot, in other words feedback.
-    * Upon receiving such message, the handler redirects it to all the client-subscribers.
-    *
-    * Message must be a parsable JSON, otherwise an exception is thrown.
-    *
-    * */
-
 
     @Autowired
     private RobotService robotService;
@@ -58,7 +59,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws RuntimeException, IOException {
+    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws RuntimeException, IOException {
 
         // Here "robotId" cannot be anything but an Integer,
         // because otherwise an exception would have been thrown in afterConnectionEstablished
@@ -78,7 +79,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, @NonNull TextMessage message) throws Exception {
         // Upon checking if message is a JSON, redirects it to all subscribers
 
         int robotId = (int) session.getAttributes().get("robotId");

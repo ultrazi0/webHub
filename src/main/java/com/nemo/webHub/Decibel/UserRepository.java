@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import static org.jooq.generated.Tables.*;
+import static org.jooq.generated.Tables.USERS;
 
 @Repository
 public class UserRepository {
@@ -54,23 +54,28 @@ public class UserRepository {
     }
 
     public UserEntity updateUser(int id, String newUsername, String oldPassword, String newPassword) {
+        /*
+        * This results in two trips to the database for every successful update request.
+        * Unfortunately, because I can think of no other way to compare passwords without requesting
+        * the user first, it shall stay like this.
+        * */
+
+        UserEntity user = findUserById(id);
+
+        if (user == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new UserNotFoundException(id);
+        }
+
+        // Allow the users here only after the old password has matched with the existing password
         UsersRecord newUser = db.update(USERS)
                 .set(USERS.USERNAME, newUsername)
-                .set(USERS.PASSWORD, encodePassword(newPassword))
-                /*
-                 * TODO: this prevents users from changing their password unless its encryption is bcrypt.
-                 *  Unfortunately, I cannot think of any other way to change the password in one go.
-                 *  So, unless I can think of another way, it shall stay like this.
-                 *  Obviously, PasswordEncoder#matches requires an old password, in order to obtain which
-                 *  one has to make another trip to the database, which would result in two separate trips,
-                 *  which I think is not worth it.
-                 *  Be careful: this line is used THRICE in all the three updateUser methods!
-                 */
-                .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
+                .set(USERS.PASSWORD, passwordEncoder.encode(newPassword))
+                .where(USERS.USER_ID.equal(id))
                 .returning()
                 .fetchOne();
 
         if (newUser == null) {
+            // Should never happen due to previous checks
             throw new UserNotFoundException(id);
         }
 
@@ -78,27 +83,27 @@ public class UserRepository {
     }
 
     public UserEntity updateUserUsername(int id, String newUsername, String oldPassword) {
-        UsersRecord newUser = db.update(USERS)
-                .set(USERS.USERNAME, newUsername)
-                .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
-                .returning()
-                .fetchOne();
+        /*
+         * This results in two trips to the database for every successful update request.
+         * Unfortunately, because I can think of no other way to compare passwords without requesting
+         * the user first, it shall stay like this.
+         * */
 
-        if (newUser == null) {
+        UserEntity user = findUserById(id);
+
+        if (user == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new UserNotFoundException(id);
         }
 
-        return new UserEntity(newUser);
-    }
-
-    public UserEntity updateUserPassword(int id, String oldPassword, String newPassword) {
+        // Allow the users here only after the old password has matched with the existing password
         UsersRecord newUser = db.update(USERS)
-                .set(USERS.PASSWORD, encodePassword(newPassword))
-                .where(USERS.USER_ID.equal(id).and(USERS.PASSWORD.equal(encodePassword(oldPassword))))
+                .set(USERS.USERNAME, newUsername)
+                .where(USERS.USER_ID.equal(id))
                 .returning()
                 .fetchOne();
 
         if (newUser == null) {
+            // Should never happen due to previous checks
             throw new UserNotFoundException(id);
         }
 
@@ -111,9 +116,5 @@ public class UserRepository {
         if (deleted < 1) {
             throw new UserNotFoundException(id);
         }
-    }
-
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
     }
 }

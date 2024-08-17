@@ -2,15 +2,14 @@ package com.nemo.webHub.Decibel;
 
 import jakarta.annotation.PostConstruct;
 import org.jooq.DSLContext;
-import org.jooq.Result;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static org.jooq.generated.Tables.*;
+import static org.jooq.generated.Tables.ROBOTS;
 
 
 @Component
@@ -20,13 +19,15 @@ public class DBConfig {
     private DSLContext dslContext;
 
     @PostConstruct
-    private void test() {
-        // This method starts JOOQ initialization
-        // It seems that Spring Boot does not initialize JDBC before the first request is made
+    private void init() {
+        /*
+         * This method starts JOOQ initialization
+         * It seems that Spring Boot does not initialize JDBC before the first request is made.
+         * Not like this is mandatory or not starting on startup is a problem - its just messy,
+         * so its better to keep it at the top
+         */
 
-        Result<Record> result = dslContext
-                .select()
-                .from(ROBOTS).fetch();
+        Result<Record> result = dslContext.select().from(ROBOTS).fetch();
 
         for (Record r : result) {
             Integer id = r.getValue(ROBOTS.ROBOT_ID);

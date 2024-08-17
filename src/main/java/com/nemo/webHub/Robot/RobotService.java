@@ -4,7 +4,6 @@ import com.nemo.webHub.Commands.Aim.AimLogic;
 import com.nemo.webHub.Commands.JsonCommand;
 import com.nemo.webHub.Config;
 import com.nemo.webHub.Sock.Image.JsonImage;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
-
 
 
 @Service
@@ -25,14 +23,14 @@ public class RobotService {
 
     public void addConnectedRobot(Robot robot) {
         connectedRobotsHashMap.put(robot.getId(), robot);
-        System.out.println("New robot connected, hashmap: " + connectedRobotsHashMap.toString());
+        System.out.println("New robot connected, hashmap: " + connectedRobotsHashMap);
     }
 
     public void removeConnectedRobot(int id) {
         connectedRobotsHashMap.remove(id);
         JsonImage.removeFromLastImageMap(id);
 
-        System.out.println("Robot disconnected, hashmap: " + connectedRobotsHashMap.toString());
+        System.out.println("Robot disconnected, hashmap: " + connectedRobotsHashMap);
     }
 
     public boolean robotIsConnected(int id) {

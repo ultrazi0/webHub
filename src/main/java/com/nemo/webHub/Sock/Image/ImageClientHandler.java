@@ -1,6 +1,7 @@
 package com.nemo.webHub.Sock.Image;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -8,16 +9,13 @@ import java.io.IOException;
 
 import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
 
+/**
+ * Endpoint: /api/image/client/{robotId}
+ * <p>
+ * This handler manages client image-websocket subscribers.
+ * It is not the idea that it should handle messages.
+ */
 public class ImageClientHandler extends TextWebSocketHandler {
-    /*
-    *
-    * Endpoint: /api/image/client/{robotId}
-    * This handler manages client image-websocket subscribers.
-    * It is not the idea that it should handle messages.
-    *
-    * */
-
-
     @Autowired
     private ImageSubscribers imageSubscribers;
 
@@ -39,22 +37,16 @@ public class ImageClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws Exception {
         int robotId = (int) session.getAttributes().get("robotId");
 
         imageSubscribers.removeSession(robotId, session);
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+    public void handleTextMessage(WebSocketSession session, @NonNull TextMessage message) throws IOException {
 
         System.out.println(">>> Something is going wrong <<<");
-
-        System.out.println("**********************");
-
-        imageSubscribers.printEverythingOut();
-
-        System.out.println("**********************");
 
         session.sendMessage(createRegularJsonTextMessage("Please, don't do that"));
 

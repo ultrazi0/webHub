@@ -18,7 +18,7 @@ public class RobotControllerAdvice {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    ResponseEntity<String> nameAlreadyTaken(DataAccessException e) {
+    ResponseEntity<String> nameAlreadyTaken(DataAccessException ignore) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .header("Content-Type", "application/json")
                 .body("{\"error\": \"Name already taken\"}");

@@ -73,8 +73,10 @@ public class UserApiController {
         }
 
         if (newUsername == null) {
-            newUser = userRepository.updateUserPassword(user.getId(), oldPassword, newPassword);
-        } else if (newPassword == null) {
+            newUsername = user.getUsername();
+        }
+
+        if (newPassword == null) {
             newUser = userRepository.updateUserUsername(user.getId(), newUsername, oldPassword);
         } else {
             newUser = userRepository.updateUser(user.getId(), newUsername, oldPassword, newPassword);

@@ -1,17 +1,22 @@
 package com.nemo.webHub.Decibel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import org.jooq.generated.tables.records.RobotsRecord;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RobotEntity {
     private final int id;  // int cannot be null
     @NotNull
     private String name;
+    @JsonIgnore
     private String password;
     private final OffsetDateTime createdAt;
     @NotNull
@@ -50,8 +55,16 @@ public class RobotEntity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public OffsetDateTime getCreatedAt() {
@@ -66,17 +79,22 @@ public class RobotEntity {
         return ownerName;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public RobotEntity setOwnerName(String ownerName) {
         this.ownerName = ownerName;
         return this;
+    }
+
+    /**
+     * This method is needed to put a password without the encoding in a serialized JSON
+     */
+    @JsonProperty("password")
+    public String getPasswordWithoutEncoding() {
+        Pattern pattern = Pattern.compile("^(?<encryption>\\{[a-z]*})(?<password>\\S*)$");
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.find()) {
+            throw new IllegalArgumentException("Provided password does not match the regular expression");
+        }
+        return matcher.group("password");
     }
 
     @Override

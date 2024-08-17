@@ -1,14 +1,12 @@
 package com.nemo.webHub.Commands;
 
 import com.fasterxml.jackson.core.*;
-import com.nemo.webHub.Sock.Image.JsonImage;
 import jakarta.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +21,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) {
         HashMap<String, Double> commandValues = new HashMap<>();
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-            String fieldName = jsonParser.getCurrentName();
+            String fieldName = jsonParser.currentName();
 
             if ("messageType".equals(fieldName)) {
                 jsonParser.nextToken();
@@ -41,7 +39,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) {
             if ("values".equals(fieldName)) {
                 jsonParser.nextToken();
                 while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-                    String valueName = jsonParser.getCurrentName();
+                    String valueName = jsonParser.currentName();
                     jsonParser.nextToken();
                     Double value = jsonParser.getValueAsDouble(0d);
 

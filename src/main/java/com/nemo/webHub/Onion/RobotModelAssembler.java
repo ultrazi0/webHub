@@ -1,20 +1,24 @@
 package com.nemo.webHub.Onion;
 
 import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Decibel.UserEntity;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class RobotModelAssembler implements RepresentationModelAssembler<RobotEntity, EntityModel<RobotEntity>> {
+    @NonNull
     @Override
-    public EntityModel<RobotEntity> toModel(RobotEntity robot) {
+    public EntityModel<RobotEntity> toModel(@NonNull RobotEntity robot) {
+        /*
+        * Because methodOn() requires only a reference to create a link, it does not matter what
+        * is passed as arguments (except, of course, when an argument is annotated with @PathVariable).
+        * This is why passing null is absolutely safe: the uri does not depend on the current user.
+        */
 
         return EntityModel.of(robot,
                 linkTo(methodOn(RobotAPIController.class).getRobotById(robot.getId(), null)).withSelfRel(),

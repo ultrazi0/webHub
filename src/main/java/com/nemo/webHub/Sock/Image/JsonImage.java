@@ -25,7 +25,7 @@ public record JsonImage(Mat image) {
         String image = null;
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-            String fieldName = jsonParser.getCurrentName();
+            String fieldName = jsonParser.currentName();
 
             if ("messageType".equals(fieldName)) {
                 jsonParser.nextToken();
@@ -76,7 +76,7 @@ public record JsonImage(Mat image) {
         return Imgcodecs.imdecode(mat, Imgcodecs.IMREAD_COLOR);
     }
 
-    private static String encode(Mat image) {  // TODO: Think about whether it should be static or not
+    private static String encode(Mat image) {
         MatOfByte encodedBytes = new MatOfByte();
 
         Imgcodecs.imencode(".JPG", image, encodedBytes);

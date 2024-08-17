@@ -5,7 +5,6 @@ import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
 import jakarta.annotation.Nullable;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

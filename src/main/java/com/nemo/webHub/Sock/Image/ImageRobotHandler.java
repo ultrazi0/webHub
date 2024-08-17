@@ -1,6 +1,7 @@
 package com.nemo.webHub.Sock.Image;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -10,14 +11,14 @@ import java.io.IOException;
 
 import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
 
+/**
+ * Endpoint: /api/image/robot/
+ * <p>
+ * This handler manages images sent from the robot.
+ * Upon saving the last image, it retransmits it to the client.
+ */
 public class ImageRobotHandler extends TextWebSocketHandler {
-    /*
-     *
-     * Endpoint: /api/image/robot/{robotId}
-     * This handler manages images sent from the robot.
-     * Upon saving the last image, it retransmits it to the client.
-     *
-     * */
+
 
     @Autowired
     private ImageSubscribers imageSubscribers;
@@ -40,7 +41,7 @@ public class ImageRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws Exception {
         int robotId = (int) session.getAttributes().get("robotId");
 
         imageSubscribers.removeRobot(robotId);

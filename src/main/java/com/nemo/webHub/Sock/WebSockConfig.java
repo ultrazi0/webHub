@@ -3,7 +3,6 @@ package com.nemo.webHub.Sock;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sect.HandshakeInterceptors.CommandClientHandshakeInterceptor;
@@ -15,20 +14,15 @@ import com.nemo.webHub.Sock.Command.CommandRobotHandler;
 import com.nemo.webHub.Sock.Image.ImageRobotHandler;
 import com.nemo.webHub.Sock.Image.ImageClientHandler;
 import com.nemo.webHub.Sock.Image.ImageSubscribers;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import java.io.ByteArrayOutputStream;
@@ -94,6 +88,7 @@ public class WebSockConfig implements WebSocketConfigurer {
     }
 
     public static TextMessage createRegularJsonTextMessage(@NotNull CharSequence message) throws IOException {
+        // TODO: rewrite this functionality as a separate class with different message types
         // See https://www.baeldung.com/jackson-streaming-api
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -109,26 +104,6 @@ public class WebSockConfig implements WebSocketConfigurer {
         jsonGenerator.close();
 
         return new TextMessage(stream.toString(StandardCharsets.UTF_8));
-    }
-
-    @Deprecated
-    @Nullable
-    private Integer getRobotIdFromRequest(@NotNull ServerHttpRequest request) {
-
-        String path = request.getURI().getPath();
-
-        String robotName = path.substring(path.lastIndexOf('/')+1);
-
-        RobotEntity robot = robotRepository.findRobotByName(robotName);
-        Integer robotId = null;
-
-        if (robot == null) {
-            System.out.println("No robot with robotName \"" + robotName + "\" found - connection refused");
-        } else {
-            robotId = robot.getId();
-        }
-
-        return robotId;
     }
 
     @Deprecated

@@ -1,5 +1,7 @@
 package com.nemo.webHub.Commands.Aim.Math;
 
+import java.util.Arrays;
+
 public class Matrix {
     final int rows, columns;
     private double[][] matrix;
@@ -120,22 +122,11 @@ public class Matrix {
         }
     }
 
-    public static void main(String[] args) {
-        Matrix m = new Matrix(3, 3);
-        m.setMatrix(new double[][] {
-                {800d, 0d, 320d},
-                {-3d, 1d, 240d},
-                {0d, 1d, 1d}
-        });
-
-        Matrix n = new Matrix(new double[][] {
-                {1d},
-                {2d},
-                {-5d},
-        });
-
-        Matrix r = multiply(m, n);
-
-        m.printMatrix();
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Matrix) {
+            return Arrays.deepEquals(this.matrix, ((Matrix) obj).getMatrix());
+        }
+        return false;
     }
 }

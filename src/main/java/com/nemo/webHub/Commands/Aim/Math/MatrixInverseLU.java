@@ -3,27 +3,10 @@ package com.nemo.webHub.Commands.Aim.Math;
 import java.util.Arrays;
 
 class MatrixInverseLU {
-    public  static void main(String[] args) {
-        double[][] matrix = {
-                {5d, 6d, 2.5d, 100d, 15d},
-                {36d, 0d, -1000d, 98d, 72d},
-                {55.5d, 6.25d, 67d, 3d, 67d},
-                {1234d, -12d, -13.5d, 9d, 5d},
-                {4d, 8d, 6d, 33d, 1d},
-        };
 
-        double[][] inverse = inverse(matrix);
-
-        if (inverse != null) {
-            System.out.println("Inverse matrix:");
-            System.out.println(Arrays.deepToString(inverse));
-        } else {
-            System.out.println("Matrix is singular and cannot be inverted.");
-        }
-    }
-
-    // Function to perform LU decomposition
-
+    /**
+     * Function to perform LU decomposition
+     */
     static double[][][] luDecomposition(double[][] matrix) {
         int n = matrix.length;
         double[][] L = new double[n][n];
@@ -54,7 +37,9 @@ class MatrixInverseLU {
         return new double[][][] { L, U };
     }
 
-    // Function to solve lower triangular matrix
+    /**
+     * Function to solve lower triangular matrix
+     */
     static double[] forwardSubstitution(double[][] L, double[] b) {
         int n = L.length;
         double[] y = new double[n];
@@ -70,7 +55,9 @@ class MatrixInverseLU {
         return y;
     }
 
-    // Function to solve upper triangular matrix
+    /**
+     * Function to solve upper triangular matrix
+     */
     static double[] backSubstitution(double[][] U, double[] y) {
         int n = U.length;
         double[] x = new double[n];
@@ -86,7 +73,9 @@ class MatrixInverseLU {
         return x;
     }
 
-    // Function to find the inverse using LU decomposition
+    /**
+     * Function to find the inverse using LU decomposition
+     */
     static double[][] inverse(double[][] matrix) {
         int n = matrix.length;
         double[][][] lu = luDecomposition(matrix);

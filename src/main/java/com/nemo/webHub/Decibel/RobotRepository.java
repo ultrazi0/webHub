@@ -1,5 +1,6 @@
 package com.nemo.webHub.Decibel;
 
+import com.nemo.webHub.Robot.RobotService;
 import jakarta.validation.constraints.NotNull;
 import org.jooq.*;
 import org.jooq.generated.tables.records.RobotsRecord;
@@ -17,6 +18,8 @@ public class RobotRepository {
 
     @Autowired
     private DSLContext db;
+    @Autowired
+    private RobotService robotService;
 
     @NotNull
     public RobotEntity findRobotById(int id) {
@@ -57,9 +60,10 @@ public class RobotRepository {
                 robot.component3(),
                 robot.component4(),
                 robot.component5()
-        ).setOwnerName(robot.component6());
+        ).setOwnerName(robot.component6()).setIsOnline(checkAvailability(robot.component1()));
     }
 
+    @Deprecated
     @NotNull
     public RobotEntity findRobotByName(String name) {;
         RobotsRecord robotsRecord = db
@@ -166,7 +170,7 @@ public class RobotRepository {
                         record.component3(),
                         record.component4(),
                         record.component5()
-                ).setOwnerName(record.component6())
+                ).setOwnerName(record.component6()).setIsOnline(checkAvailability(record.component1()))
                 ).toArray(RobotEntity[]::new);
     }
 
@@ -176,5 +180,9 @@ public class RobotRepository {
                 .map(RobotEntity::new)
                 .toArray(RobotEntity[]::new);
 
+    }
+
+    public boolean checkAvailability(int robotId) {
+        return robotService.robotIsConnected(robotId);
     }
 }

@@ -22,6 +22,7 @@ public class RobotEntity {
     @NotNull
     private final int ownerId;
     private String ownerName = null;
+    private boolean isOnline = false;
 
     public RobotEntity(int id, String name, UUID password, OffsetDateTime createdAt, int ownerId) {
         this.id = id;
@@ -79,8 +80,17 @@ public class RobotEntity {
         return ownerName;
     }
 
+    public boolean isOnline() {
+        return isOnline;
+    }
+
     public RobotEntity setOwnerName(String ownerName) {
         this.ownerName = ownerName;
+        return this;
+    }
+
+    public RobotEntity setIsOnline(boolean isOnline) {
+        this.isOnline = isOnline;
         return this;
     }
 

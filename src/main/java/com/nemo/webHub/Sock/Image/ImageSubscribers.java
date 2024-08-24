@@ -18,7 +18,9 @@ public class ImageSubscribers {
 
     public void sendMessageToAllSessions(int robotId, TextMessage message) throws IOException {
         for (WebSocketSession session : getSessionsByRobotId(robotId)) {
-            session.sendMessage(message);
+            synchronized (session) {
+                session.sendMessage(message);
+            }
         }
     }
 

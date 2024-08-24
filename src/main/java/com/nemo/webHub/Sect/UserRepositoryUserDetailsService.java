@@ -63,5 +63,18 @@ public class UserRepositoryUserDetailsService implements UserDetailsService {
         public void eraseCredentials() {
             setPassword(null);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof User) {
+                return ((User) obj).getId() == this.getId();
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.getUsername().hashCode();
+        }
     }
 }

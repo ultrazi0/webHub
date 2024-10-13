@@ -1,13 +1,12 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
-import com.nemo.testing.Onion.Model.AbstractPage;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.Assertions;
 
 import java.util.function.Supplier;
 
-public abstract class AbstractThenStage<T extends AbstractThenStage<T, P>, P extends AbstractPage> extends AbstractStage<T, P> {
+public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends AbstractStage<T> {
 
     private Supplier<String> addScreenshotToDescription(String description) {
         return () -> {

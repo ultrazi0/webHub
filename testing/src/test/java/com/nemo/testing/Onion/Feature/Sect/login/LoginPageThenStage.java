@@ -5,18 +5,22 @@ import com.nemo.testing.Onion.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.Onion.Model.Sect.LoginPage;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class LoginPageThenStage extends AbstractThenStage<LoginPageThenStage, LoginPage> {
+public class LoginPageThenStage extends AbstractThenStage<LoginPageThenStage> {
+
+    @Autowired
+    private LoginPage loginPage;
 
     @Override
     protected AbstractPage mainPage() {
-        return mainPage;
+        return loginPage;
     }
 
     public LoginPageThenStage I_expect_username_$_in_top_right_corner(@Quoted String username) {
-        String currentUserName = mainPage.getUsernameFromNavbar();
+        String currentUserName = loginPage.getUsernameFromNavbar();
 
         assertThat(currentUserName, "Usernames do not match").isEqualTo(username);
 
@@ -24,7 +28,7 @@ public class LoginPageThenStage extends AbstractThenStage<LoginPageThenStage, Lo
     }
 
     public LoginPageThenStage I_cannot_log_in() {
-        assertThat(mainPage.shouldSeeWrongCredentialsMessage(), "No wrong credentials message").isTrue();
+        assertThat(loginPage.shouldSeeWrongCredentialsMessage(), "No wrong credentials message").isTrue();
 
         return self();
     }

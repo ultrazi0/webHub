@@ -10,20 +10,26 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class LoginPageGivenStage extends AbstractGivenStage<LoginPageGivenStage, LoginPage> {
+public class LoginPageGivenStage extends AbstractGivenStage<LoginPageGivenStage> {
+
+    @Autowired
+    private LoginPage loginPage;
 
     @Override
     protected AbstractPage mainPage() {
-        return mainPage;
+        return loginPage;
     }
 
     public LoginPageGivenStage on_login_page() {
-        openPage();
+
+        loginPage.openPage();
+        assumeOnMainPage();
+
         return self();
     }
 
     public LoginPageGivenStage not_logged_in() {
-        assumeThat(mainPage.isLoggedIn())
+        assumeThat(loginPage.isLoggedIn())
             .as("I am already logged in")
             .isFalse();
 

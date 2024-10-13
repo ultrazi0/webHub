@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Selenide.element;
 @Component
 public class NavbarFragment extends AbstractFragment {
 
-    private final By NAVBAR_LOGO = By.xpath("//nav/div/button");
+    private final By NAVBAR_LOGO = By.xpath("//nav/div/a");
 
     // Not logged in
     private final By NAVBAR_LOGIN_BUTTON = By.xpath("//nav/div/div/div/button[2]");

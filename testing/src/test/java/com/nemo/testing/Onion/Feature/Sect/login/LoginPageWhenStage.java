@@ -9,16 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class LoginPageWhenStage extends AbstractWhenStage<LoginPageWhenStage, LoginPage> {
+public class LoginPageWhenStage extends AbstractWhenStage<LoginPageWhenStage> {
+
+    @Autowired
+    private LoginPage loginPage;
 
     @Override
     protected AbstractPage mainPage() {
-        return mainPage;
+        return loginPage;
     }
 
     public LoginPageWhenStage I_login_with_credentials(@Quoted String username, @Quoted String password) {
-        mainPage.enterCredentials(username, password);
-        mainPage.pressSubmit();
+        loginPage.enterCredentials(username, password);
+        loginPage.pressSubmit();
 
         return self();
     }

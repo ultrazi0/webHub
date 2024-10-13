@@ -22,11 +22,9 @@ public abstract class AbstractPage extends AbstractComponent {
     protected void open(String url) {
         Selenide.open(url);
         // wait for the page to render
-
-    }
-
-    public void waitUntilRendered() throws Exception {
-        navbar.getLogoElement().shouldBe(visible);
+        Assumptions.assumeThatThrownBy(() -> navbar.getLogoElement().shouldBe(visible))
+            .as("Page has not been rendered!")
+            .doesNotThrowAnyException();
     }
 
     public String getUsernameFromNavbar() {

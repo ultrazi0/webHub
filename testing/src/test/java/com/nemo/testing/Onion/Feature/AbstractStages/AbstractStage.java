@@ -14,10 +14,7 @@ import org.openqa.selenium.OutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @JGivenStage
-public abstract class AbstractStage<T extends AbstractStage<T, P>, P extends AbstractPage> extends Stage<T> {
-
-    @Autowired
-    protected P mainPage;
+public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T> {
 
     @Autowired
     protected DriverService driverService;

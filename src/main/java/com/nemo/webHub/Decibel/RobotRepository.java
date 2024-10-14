@@ -65,7 +65,7 @@ public class RobotRepository {
 
     @Deprecated
     @NotNull
-    public RobotEntity findRobotByName(String name) {;
+    public RobotEntity findRobotByName(String name) {
         RobotsRecord robotsRecord = db
                 .selectFrom(ROBOTS)
                 .where(ROBOTS.NAME.equal(name))

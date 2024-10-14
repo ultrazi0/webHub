@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.springframework.stereotype.Component;
 
 /**
- * Represents a logout modal. When writing selectors, they should be relative the {@code MODAL_DIALOG} element,
+ * Represents a logout modal. When writing selectors, they should be relative to the {@code MODAL_DIALOG} element,
  * and then, instead of {@code Selenide.element()}, use the non-static {@code modalElement()}. <br />
  * This results in a cleaner and clearer code.
  *

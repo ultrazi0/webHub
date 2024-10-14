@@ -5,6 +5,12 @@ import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selenide.element;
 
+/**
+ * AbstractModal provides a base class for modal dialog components
+ * within the application, extending the functionalities of AbstractFragment.
+ * It encapsulates the common behavior and elements necessary for interacting
+ * with modal dialogs.
+ */
 public class AbstractModal extends AbstractFragment {
 
     protected By MODAL_DIALOG = By.className("modal-dialog");

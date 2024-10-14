@@ -24,6 +24,7 @@ public class LoginPageGivenStage extends AbstractGivenStage<LoginPageGivenStage>
 
         loginPage.openPage();
         assumeOnMainPage();
+        assumeRendered(loginPage);
 
         return self();
     }

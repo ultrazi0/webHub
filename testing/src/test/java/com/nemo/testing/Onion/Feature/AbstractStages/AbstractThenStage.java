@@ -6,6 +6,12 @@ import org.assertj.core.api.Assertions;
 
 import java.util.function.Supplier;
 
+/**
+ * AbstractThenStage serves as a base class for defining "Then" stages in JGiven testing scenarios.
+ * It extends AbstractStage to provide additional utility methods specifically for assertions.
+ *
+ * @param <T> the type of the concrete stage that extends this abstract class
+ */
 public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends AbstractStage<T> {
 
     private Supplier<String> addScreenshotToDescription(String description) {

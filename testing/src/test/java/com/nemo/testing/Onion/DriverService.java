@@ -7,6 +7,14 @@ import org.springframework.stereotype.Service;
 
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
+/**
+ * Service class responsible for configuring and managing the WebDriver instance for browser-based tests.
+ * This class initializes the browser settings such as base URL, timeout, browser size, and other configurations
+ * required for running the WebDriver.
+ * <p>
+ * This service is utilized by different components and stages to interact with the browser during test execution.
+ * It opens the browser at the specified base URL and sets up the driver configuration as specified.
+ */
 @Service
 public class DriverService {
 

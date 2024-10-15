@@ -4,9 +4,11 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ElementShould;
 import com.nemo.testing.Onion.Model.Basis.LogoutModal;
 import com.nemo.testing.Onion.Model.Basis.NavbarFragment;
+import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.WebDriverRunner.driver;
 
 /**
  * AbstractPage represents an abstract base class for all web pages in the application.
@@ -47,8 +49,9 @@ public abstract class AbstractPage extends AbstractComponent {
 
     public boolean isLoggedIn() {
         // The reason why it duplicates seeLoginButton() is that
-        // the way it is checked whether the user is logged in can change
-        return !navbar.seeLoginButton();
+        // the way it is checked whether the user is logged in can
+        Cookie jSessionIdCookie = driver().getWebDriver().manage().getCookieNamed("JSESSIONID");
+        return jSessionIdCookie != null && !navbar.seeLoginButton();
     }
 
     public void performLogout() {

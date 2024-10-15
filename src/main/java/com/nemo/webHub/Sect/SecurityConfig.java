@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/error", "/api/register", "/api/csrf").permitAll()
                         .requestMatchers("/api/command/robot", "/api/image/robot").hasRole("ROBOT")
+                        .requestMatchers("/", "/swagger-ui/*", "v3/api-docs/*", "v3/api-docs").permitAll()
                         .anyRequest().hasRole("USER"))
                 .formLogin(form -> form
                         .loginPage("/api/login").permitAll()

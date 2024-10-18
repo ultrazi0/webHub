@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.element;
 
 @Component
 public class LoginPage extends AbstractPage {

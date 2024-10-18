@@ -1,6 +1,5 @@
 package com.nemo.testing.Onion.Model;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ElementShould;
 import com.nemo.testing.Onion.Model.Basis.LogoutModal;
 import com.nemo.testing.Onion.Model.Basis.NavbarFragment;
@@ -25,10 +24,6 @@ public abstract class AbstractPage extends AbstractComponent {
     public abstract String uri();
 
     public abstract void openPage();
-
-    protected void open(String url) {
-        Selenide.open(url);
-    }
 
     /**
      * Waits until the logo element in the navbar is visible, indicating the page is rendered.

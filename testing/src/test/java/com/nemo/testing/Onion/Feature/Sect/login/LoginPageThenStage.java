@@ -22,13 +22,17 @@ public class LoginPageThenStage extends AbstractThenStage<LoginPageThenStage> {
     public LoginPageThenStage I_expect_username_$_in_top_right_corner(@Quoted String username) {
         String currentUserName = loginPage.getUsernameFromNavbar();
 
-        assertThat(currentUserName, "Usernames do not match").isEqualTo(username);
+        assertTakingScreenshotThat(currentUserName, "Check logged in username")
+            .withFailMessage("Usernames do not match")
+            .isEqualTo(username);
 
         return self();
     }
 
     public LoginPageThenStage I_cannot_log_in() {
-        assertThat(loginPage.shouldSeeWrongCredentialsMessage(), "No wrong credentials message").isTrue();
+        assertTakingScreenshotThat(loginPage.shouldSeeWrongCredentialsMessage(), "Check wrong credentials message")
+            .withFailMessage("No wrong credentials message")
+            .isTrue();
 
         return self();
     }

@@ -1,10 +1,14 @@
 package com.nemo.testing.Onion.Model.Sect;
 
+import com.codeborne.selenide.SelenideElement;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import org.openqa.selenium.By;
+import org.springframework.stereotype.Component;
 
 import static com.codeborne.selenide.Selenide.element;
+import static com.codeborne.selenide.Selenide.open;
 
+@Component
 public class RegisterPage extends AbstractPage {
     public static final String uri = "register";
 
@@ -36,13 +40,26 @@ public class RegisterPage extends AbstractPage {
     }
 
     public final void enterPassword(String password) {
-        element(password).setValue(password);
+        element(PASSWORD_INPUT).setValue(password);
     }
 
     public final void enterRepeatPassword(String password) {
         element(REPEAT_PASSWORD_INPUT).setValue(password);
     }
 
+    public final void pressSubmit() {
+        element(REGISTER_BUTTON).click();
+    }
 
+    public final SelenideElement getRegisterButton() {
+        return element(REGISTER_BUTTON);
+    }
 
+    public final String getNameHasBeenTakenMessage() {
+        return element(NAME_HAS_BEEN_TAKEN_MESSAGE).getText();
+    }
+
+    public String getPasswordsDoNotMatchMessage() {
+        return element(PASSWORDS_DO_NOT_MATCH_MESSAGE).getText();
+    }
 }

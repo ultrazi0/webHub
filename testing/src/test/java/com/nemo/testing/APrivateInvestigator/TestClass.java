@@ -1,8 +1,8 @@
 package com.nemo.testing.APrivateInvestigator;
 
-import org.springframework.stereotype.Component;
+import com.nemo.testing.core.APrivateInvestigatorTest;
 
-@Component
+@APrivateInvestigatorTest
 public class TestClass {
     public String string = "hello world!!";
 }

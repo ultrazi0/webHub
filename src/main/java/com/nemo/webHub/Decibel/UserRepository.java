@@ -12,10 +12,14 @@ import static org.jooq.generated.Tables.USERS;
 @Repository
 public class UserRepository {
 
+    private final DSLContext db;
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private DSLContext db;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserRepository(DSLContext db, PasswordEncoder passwordEncoder) {
+        this.db = db;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public UserEntity findUserByUsername(String username) {
         UsersRecord user = db
@@ -115,6 +119,14 @@ public class UserRepository {
 
         if (deleted < 1) {
             throw new UserNotFoundException(id);
+        }
+    }
+
+    public void deleteUser(String username) {
+        int deleted = db.deleteFrom(USERS).where(USERS.USERNAME.equal(username)).execute();
+
+        if (deleted < 1) {
+            throw new UserNotFoundException(username);
         }
     }
 }

@@ -15,8 +15,12 @@ import static org.jooq.generated.Tables.ROBOTS;
 @Component
 public class DBConfig {
 
+    private final DSLContext dslContext;
+
     @Autowired
-    private DSLContext dslContext;
+    public DBConfig(DSLContext dslContext) {
+        this.dslContext = dslContext;
+    }
 
     @PostConstruct
     private void init() {
@@ -24,7 +28,7 @@ public class DBConfig {
          * This method starts JOOQ initialization
          * It seems that Spring Boot does not initialize JDBC before the first request is made.
          * Not like this is mandatory or not starting on startup is a problem - its just messy,
-         * so its better to keep it at the top
+         * so it's better to keep it at the top
          */
 
         Result<Record> result = dslContext.select().from(ROBOTS).fetch();

@@ -6,8 +6,6 @@ import com.nemo.testing.Onion.Model.Sect.LoginPage;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
 public class LoginPageGivenStage extends AbstractGivenStage<LoginPageGivenStage> {
@@ -25,14 +23,6 @@ public class LoginPageGivenStage extends AbstractGivenStage<LoginPageGivenStage>
         loginPage.openPage();
         assumeOnMainPage();
         assumeRendered(loginPage);
-
-        return self();
-    }
-
-    public LoginPageGivenStage not_logged_in() {
-        assumeThat(loginPage.isLoggedIn())
-            .as("I am already logged in")
-            .isFalse();
 
         return self();
     }

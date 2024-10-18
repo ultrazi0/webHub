@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 @OnionTest
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenStage, LoginPageThenStage> {
 
     @Test

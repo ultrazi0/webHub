@@ -3,6 +3,7 @@ package com.nemo.testing.Onion;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
@@ -20,13 +21,20 @@ public class DriverService {
 
     public final WebDriver driver;
 
-    public DriverService() {
+    public DriverService(
+        @Value("${selenide.base-url}") String baseUrl,
+        @Value("${selenide.timeout}") long timeout,
+        @Value("${selenide.browser}") String browser,
+        @Value("${selenide.browser-size}") String browserSize,
+        @Value("${selenide.screenshots}") boolean screenshots,
+        @Value("${selenide.headless}") boolean headless) {
 
-        Configuration.baseUrl = "http://localhost:3000/";
-        Configuration.timeout = 2000;
-        Configuration.browserSize = "1366x1024";
-        Configuration.screenshots = false;
-        Configuration.headless = false;
+        Configuration.baseUrl = baseUrl;
+        Configuration.timeout = timeout;
+        Configuration.browser = browser;
+        Configuration.browserSize = browserSize;
+        Configuration.screenshots = screenshots;
+        Configuration.headless = headless;
 
         Selenide.open();
         this.driver = getWebDriver();

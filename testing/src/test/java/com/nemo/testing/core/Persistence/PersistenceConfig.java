@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jooq.ConnectionProvider;
 import org.jooq.impl.DataSourceConnectionProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
     lazyInit = true
 )
 public class PersistenceConfig {
+
+    @Value("${spring.datasource.url}")
+    private String jdbcUrl;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String jdbcDriver;
+
+    @Value("${spring.datasource.username}")
+    private String DBUsername;
+
+    @Value("${spring.datasource.password}")
+    private String DBPassword;
 
     @Bean
     public ConnectionProvider connectionProvider() {
@@ -30,9 +43,10 @@ public class PersistenceConfig {
     @Bean
     public HikariConfig hikariConfig() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/webHubDB");
-        config.setUsername("server");
-        config.setPassword("server");
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(DBUsername);
+        config.setPassword(DBPassword);
+        config.setDriverClassName(jdbcDriver);
         return config;
     }
 

@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "selenide.base-url",
+      "type": "java.lang.String",
+      "description": "Provides the base URL."
+  },
+    {
+      "name": "selenide.timeout",
+      "type": "java.lang.Long",
+      "description": "Timeout in milliseconds to fail a test."
+  },
+    {
+      "name": "selenide.browser",
+      "type": "java.lang.String",
+      "description": "Which browser to use. Supported values: \"chrome\", \"firefox\", \"ie\", \"edge\", \"safari\"."
+  },
+    {
+      "name": "selenide.browser-size",
+      "type": "java.lang.String",
+      "description": "The browser window size."
+  },
+    {
+      "name": "selenide.screenshots",
+      "type": "java.lang.Boolean",
+      "description": "Defines if Selenide automatically takes screenshots on failing tests."
+  },
+    {
+      "name": "selenide.headless",
+      "type": "java.lang.Boolean",
+      "description": "Enables the ability to run the browser in headless mode."
+  }
+] }

@@ -28,12 +28,24 @@ public class RegisterWhenStage extends AbstractWhenStage<RegisterWhenStage> {
         // Add the user to the to-delete list
         RegisterGivenStage.createdUsers.add(username);
 
+        waitUntilRequestProcessed();
+
         return self();
     }
 
     public RegisterWhenStage enter_different_passwords(@Hidden String password, @Hidden String otherPassword) {
         registerPage.enterPassword(password);
         registerPage.enterRepeatPassword(otherPassword);
+
+        return self();
+    }
+
+    @Hidden
+    private RegisterWhenStage waitUntilRequestProcessed() {
+
+        driverService.assertingWaitUntil(driver ->
+            !registerPage.registerButtonIsDisplayed() || registerPage.nameHasBeenTakenMessageIsDisplayed(),
+            "Wait until request register processed");
 
         return self();
     }

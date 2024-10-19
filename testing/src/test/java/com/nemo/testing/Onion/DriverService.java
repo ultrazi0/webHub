@@ -2,9 +2,13 @@ package com.nemo.testing.Onion;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideWait;
+import org.assertj.core.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Function;
 
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
@@ -38,5 +42,16 @@ public class DriverService {
 
         Selenide.open();
         this.driver = getWebDriver();
+    }
+
+    public final <T> void assertingWaitUntil(Function<WebDriver, T> condition, String description, long timeout) {
+        Assertions.assertThatCode(() ->
+            new SelenideWait(driver, timeout, Configuration.pollingInterval).until(condition))
+            .as(description)
+            .doesNotThrowAnyException();
+    }
+
+    public final <T> void assertingWaitUntil(Function<WebDriver, T> condition, String description) {
+        assertingWaitUntil(condition, description, Configuration.timeout);
     }
 }

@@ -10,9 +10,6 @@ import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.codeborne.selenide.Condition.disabled;
-import static com.codeborne.selenide.Condition.disappear;
-
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
 public class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
@@ -42,13 +39,6 @@ public class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
         return self();
     }
 
-    @Hidden
-    public RegisterThenStage waitUntilRequestProcessed() {
-        registerPage.getRegisterButton().should(disappear);
-
-        return self();
-    }
-
     public RegisterThenStage see_a_name_has_been_taken_message() {
         assertTakingScreenshotThat(registerPage.getNameHasBeenTakenMessage(),
             "Name has been taken message check")
@@ -68,10 +58,10 @@ public class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
     }
 
     public RegisterThenStage register_button_is_disabled() {
-        assertThatCode(() -> registerPage.getRegisterButton().shouldBe(disabled))
-            .as(addScreenshotToDescription("Check register button is disabled"))
+        assertTakingScreenshotThat(registerPage.registerButtonIsDisabled(),
+            "Check register button is disabled")
             .withFailMessage("Register button is not disabled")
-            .doesNotThrowAnyException();
+            .isTrue();
 
         return self();
     }

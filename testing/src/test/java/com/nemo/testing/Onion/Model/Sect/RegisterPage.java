@@ -1,10 +1,10 @@
 package com.nemo.testing.Onion.Model.Sect;
 
-import com.codeborne.selenide.SelenideElement;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import org.openqa.selenium.By;
 import org.springframework.stereotype.Component;
 
+import static com.codeborne.selenide.Condition.disabled;
 import static com.codeborne.selenide.Selenide.element;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -51,8 +51,16 @@ public class RegisterPage extends AbstractPage {
         element(REGISTER_BUTTON).click();
     }
 
-    public final SelenideElement getRegisterButton() {
-        return element(REGISTER_BUTTON);
+    public final boolean registerButtonIsDisplayed() {
+        return element(REGISTER_BUTTON).isDisplayed();
+    }
+
+    public final boolean registerButtonIsDisabled() {
+        return element(REGISTER_BUTTON).is(disabled);
+    }
+
+    public final boolean nameHasBeenTakenMessageIsDisplayed() {
+        return element(NAME_HAS_BEEN_TAKEN_MESSAGE).isDisplayed();
     }
 
     public final String getNameHasBeenTakenMessage() {

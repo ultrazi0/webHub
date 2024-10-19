@@ -23,7 +23,6 @@ public class RegisterTests extends SpringScenarioTest<RegisterGivenStage, Regist
             .I().register_with_credentials(DEFAULT_USERNAME, DEFAULT_PASSWORD);
 
         then()
-            .waitUntilRequestProcessed()
             .my_account_is_created(DEFAULT_USERNAME)
             .and().I_am().on_home_page()
             .and().I_am().logged_in();

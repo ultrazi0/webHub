@@ -5,10 +5,7 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.webHub.Decibel.UserNotFoundException;
-import com.tngtech.jgiven.annotation.AfterScenario;
-import com.tngtech.jgiven.annotation.ExtendedDescription;
-import com.tngtech.jgiven.annotation.Hidden;
-import com.tngtech.jgiven.annotation.Quoted;
+import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
@@ -22,7 +19,8 @@ import java.util.Set;
 public class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
 
     // Set of users that should be deleted after the scenario
-    static Set<String> createdUsers = new HashSet<>();
+    @ProvidedScenarioState
+    private final Set<String> createdUsers = new HashSet<>();
 
     @Autowired
     private Logger log;

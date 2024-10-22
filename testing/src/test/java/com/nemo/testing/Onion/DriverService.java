@@ -3,7 +3,7 @@ package com.nemo.testing.Onion;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideWait;
-import org.assertj.core.api.Assertions;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,14 +44,11 @@ public class DriverService {
         this.driver = getWebDriver();
     }
 
-    public final <T> void assertingWaitUntil(Function<WebDriver, T> condition, String description, long timeout) {
-        Assertions.assertThatCode(() ->
-            new SelenideWait(driver, timeout, Configuration.pollingInterval).until(condition))
-            .as(description)
-            .doesNotThrowAnyException();
+    public final <T> void waitUntil(Function<WebDriver, T> condition, long timeout) throws TimeoutException {
+            new SelenideWait(driver, timeout, Configuration.pollingInterval).until(condition);
     }
 
-    public final <T> void assertingWaitUntil(Function<WebDriver, T> condition, String description) {
-        assertingWaitUntil(condition, description, Configuration.timeout);
+    public final <T> void waitUntil(Function<WebDriver, T> condition) throws TimeoutException {
+        waitUntil(condition, Configuration.timeout);
     }
 }

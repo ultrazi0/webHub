@@ -15,14 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogoutModal extends AbstractModal {
 
-    private final By LOGOUT_BUTTON = By.xpath("div/form/div[2]/button[2]");
-    private final By CANCEL_BUTTON = By.xpath("div/form/div[2]/button[1]");
+    private final By LOGOUT_BUTTON = By.xpath("./div/form/div[2]/button[2]");
 
     public final void pressLogoutButton() {
         modalElement(LOGOUT_BUTTON).click();
-    }
-
-    public final void pressCancelButton() {
-        modalElement(CANCEL_BUTTON).click();
     }
 }

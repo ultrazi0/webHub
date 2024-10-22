@@ -13,6 +13,8 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.openqa.selenium.OutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.function.Supplier;
+
 /**
  * AbstractStage serves as a base class for defining stages in JGiven testing scenarios.
  * It provides utility methods and common functionality to be used across different stages.
@@ -28,6 +30,8 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
     @ExpectedScenarioState
     protected CurrentStep currentStep;
 
+    protected abstract AbstractPage mainPage();
+
     protected void addScreenshot(String title) {
         String base64 = Selenide.screenshot(OutputType.BASE64);
 
@@ -37,7 +41,12 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
                 .withTitle(title));
     }
 
-    protected abstract AbstractPage mainPage();
+    protected Supplier<String> addScreenshotToDescription(String description) {
+        return () -> {
+            addScreenshot(description);
+            return description;
+        };
+    }
 
     @FillerWord
     public T I_am() {

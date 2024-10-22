@@ -128,9 +128,11 @@ public class RobotRepository {
         return new RobotEntity(robot);
     }
 
+    /**
+     * Deletes the robot no matter what, <u>NOT SAFE</u> - use {@code deleteRobot(int id, int userId)}
+     * */
     @Deprecated
     public void deleteRobot(int id) {
-        // Deletes the robot no matter what, NOT SAFE - use deleteRobot(int id, int userId)
         int deleted = db.deleteFrom(ROBOTS).where(ROBOTS.ROBOT_ID.equal(id)).execute();
 
         if (deleted < 1) {

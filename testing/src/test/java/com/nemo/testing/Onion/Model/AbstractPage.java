@@ -50,6 +50,11 @@ public abstract class AbstractPage extends AbstractComponent {
     }
 
     public void performLogout() {
+        if (logoutModal.isVisible()) {
+            // If any modal is visible
+            logoutModal.pressCloseButton();
+        }
+
         navbar.pressUserDropdownButton();
         navbar.pressUserDropdownLogoutButton();
         logoutModal.pressLogoutButton();

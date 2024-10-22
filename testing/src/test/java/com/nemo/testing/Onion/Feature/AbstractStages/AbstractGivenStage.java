@@ -2,7 +2,9 @@ package com.nemo.testing.Onion.Feature.AbstractStages;
 
 import com.codeborne.selenide.Selenide;
 import com.nemo.testing.Onion.Model.AbstractPage;
+import com.nemo.testing.Onion.Model.AbstractProtectedPage;
 import com.tngtech.jgiven.annotation.AfterScenario;
+import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.Assumptions;
 import org.assertj.core.api.WithAssumptions;
 
@@ -16,6 +18,9 @@ import static com.codeborne.selenide.WebDriverRunner.url;
  */
 public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extends AbstractStage<T>
     implements WithAssumptions {
+
+    private static final String TEST_USER_USERNAME = "testUser";
+    private static final String TEST_USER_PASSWORD = "testUserPassword";
 
     /**
      * Assumes that the current URL matches the main page URL.
@@ -40,6 +45,20 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
             .as("Check page rendered")
             .withFailMessage("Page has not been rendered!")
             .doesNotThrowAnyException();
+    }
+
+    /**
+     * A wrapper around AssertJ {@code assumeThat()} that adds screenshot to a JGiven report
+     *
+     * @param condition boolean condition to assert
+     * @param description the <b>description</b> of the assertion,
+     *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
+     *                    if you really wish to add one!
+     * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
+     * */
+    protected AbstractBooleanAssert<?> assumeTakingScreenshotThat(boolean condition, String description) {
+        return Assumptions.assumeThat(condition)
+            .as(addScreenshotToDescription(description));
     }
 
     /**
@@ -73,4 +92,16 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         return self();
     }
 
+    public T test_user() {
+        if (mainPage() instanceof AbstractProtectedPage) {
+            AbstractProtectedPage mainPage = (AbstractProtectedPage) this.mainPage();
+            mainPage.performLogin(TEST_USER_USERNAME, TEST_USER_PASSWORD);
+
+            assumeThatCode(() -> driverService.waitUntil(driver -> mainPage.isLoggedIn()))
+                .as(addScreenshotToDescription("Check if logged in"))
+                .doesNotThrowAnyException();
+        }
+
+        return self();
+    }
 }

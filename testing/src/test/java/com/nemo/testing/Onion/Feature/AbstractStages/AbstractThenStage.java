@@ -4,8 +4,6 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.WithAssertions;
 
-import java.util.function.Supplier;
-
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
@@ -41,19 +39,13 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
             .isEqualTo(baseUrl + pageURI);
     }
 
-    protected Supplier<String> addScreenshotToDescription(String description) {
-        return () -> {
-            addScreenshot(description);
-            return description;
-        };
-    }
-
     /**
      * A wrapper around AssertJ {@code assertThat()} for string assertions that adds a screenshot to a JGiven report.
      *
      * @param string the string value to assert
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
+     *                    if you really wish to add one!
      * @return {@code AbstractStringAssert<?>}, allowing chaining of further checks and conditions
      */
     protected AbstractStringAssert<?> assertTakingScreenshotThat(String string, String description) {
@@ -66,6 +58,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      * @param condition boolean condition to assert
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
+     *                    if you really wish to add one!
      * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
      * */
     protected AbstractBooleanAssert<?> assertTakingScreenshotThat(boolean condition, String description) {

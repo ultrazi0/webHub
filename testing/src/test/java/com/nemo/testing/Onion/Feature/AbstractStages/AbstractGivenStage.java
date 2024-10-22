@@ -83,6 +83,12 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         Selenide.refresh();
     }
 
+    /**
+     * An action. Ensures that the user is not currently logged in by checking the login status on the main page.
+     * If the user is already logged in, an assumption failure with a specific message is triggered.
+     *
+     * @return the current instance (self) for method chaining
+     */
     public T not_logged_in() {
         assumeThat(mainPage().isLoggedIn())
             .as("Check if already logged in")
@@ -92,6 +98,13 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         return self();
     }
 
+    /**
+     * Logs in as the test user if the main page is a protected page.
+     * This method ensures that if the main page requires login, the test user will be automatically logged in
+     * before any further interactions.
+     *
+     * @return the current instance (self) for method chaining
+     */
     public T test_user() {
         if (mainPage() instanceof AbstractProtectedPage) {
             AbstractProtectedPage mainPage = (AbstractProtectedPage) this.mainPage();

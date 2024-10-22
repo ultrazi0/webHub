@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import static org.jooq.generated.Tables.ROBOTS;
 
+/**
+ * The {@code RobotService} class provides functionalities to interact with the robot records
+ * in the database. It includes methods to find, create, and delete robot records, ensuring
+ * encapsulation of database operations related to robots.
+ */
 @Service
 public class RobotService {
 
@@ -33,6 +38,15 @@ public class RobotService {
         }
 
         return robotIds[0].value1();
+    }
+
+    public int createNewRobot(String robotName) {
+        return db
+            .insertInto(ROBOTS)
+            .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
+            .values(robotName, 0)
+            .returning(ROBOTS.ROBOT_ID)
+            .execute();
     }
 
     public void deleteRobotById(int id) {

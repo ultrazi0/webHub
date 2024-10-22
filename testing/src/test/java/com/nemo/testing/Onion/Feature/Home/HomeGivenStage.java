@@ -3,9 +3,7 @@ package com.nemo.testing.Onion.Feature.Home;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.core.Persistence.RobotService;
-import com.tngtech.jgiven.annotation.AfterScenario;
-import com.tngtech.jgiven.annotation.ProvidedScenarioState;
-import com.tngtech.jgiven.annotation.Quoted;
+import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +60,7 @@ public class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         return self();
     }
 
+    @ExtendedDescription("Checked in the database")
     public HomeGivenStage robot_with_name_$_does_not_exist(@Quoted String robotName) {
         assumeThatThrownBy(() -> robotService.findRobotIdByName(robotName))
             .as("Check if robot with name \"%s\" does not exist (name should be unique among all users)", robotName)
@@ -69,4 +68,19 @@ public class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
         return self();
     }
+
+    @NestedSteps
+    @ExtendedDescription("Resolved in the database")
+    public HomeGivenStage robot_with_name_$_exists(@Quoted String robotName) {
+        return robot_with_name_$_does_not_exist(robotName)
+            .and().robot_with_name_$_is_created(robotName);
+    }
+
+    private HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
+
+
+        return self();
+    }
+
+
 }

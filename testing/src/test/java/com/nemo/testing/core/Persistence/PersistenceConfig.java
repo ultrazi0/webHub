@@ -11,6 +11,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Configuration class for setting up persistence-related beans and properties.
+ * <p>
+ * This class uses Spring's {@code @Configuration} and {@code @ComponentScan} annotations to mark it as a
+ * source of bean definitions and specifies base packages to scan for Spring components, respectively.
+ * Additionally, it leverages {@code @Value} annotations to inject properties from the application's configuration file.
+ * <p>
+ * The following beans are configured:<br/>
+ * - {@code ConnectionProvider}: Provides a connection from the data source.<br/>
+ * - {@code HikariDataSource}: Configures a HikariCP data source.<br/>
+ * - {@code HikariConfig}: Configures properties for the HikariCP data source.<br/>
+ * - {@code PasswordEncoder}: Creates a password encoder for encoding passwords.
+ */
 @Configuration
 @ComponentScan(
     basePackages = {"com.nemo.webHub.Decibel", "org.springframework.boot.autoconfigure.jooq"},

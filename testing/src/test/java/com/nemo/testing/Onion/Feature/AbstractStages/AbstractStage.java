@@ -30,9 +30,21 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
     @ExpectedScenarioState
     protected CurrentStep currentStep;
 
+    /**
+     * Provides the main page object to be used in the testing scenarios. This method should be
+     * implemented by subclasses to return an instance of the main page of the current page class.
+     *
+     * @return an instance of AbstractPage representing the main page of the page class
+     */
     protected abstract AbstractPage mainPage();
 
-    protected void addScreenshot(String title) {
+    /**
+     * Captures a screenshot and adds it as an attachment to the current step.
+     *
+     * @param title the title to be used for the screenshot attachment
+     * @throws IllegalStateException if the driver does not support screenshots
+     */
+    protected void takeScreenshot(String title) {
         String base64 = Selenide.screenshot(OutputType.BASE64);
 
         if (base64 == null) throw new IllegalStateException("Driver does not support screenshots");
@@ -41,9 +53,16 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
                 .withTitle(title));
     }
 
+    /**
+     * Adds a screenshot to the description and returns a {@code Supplier<String>} that provides the description.
+     * Is intended to be used in asserts and assumes
+     *
+     * @param description the description to be used for the screenshot
+     * @return {@code Supplier<String>} that provides the description after taking a screenshot
+     */
     protected Supplier<String> addScreenshotToDescription(String description) {
         return () -> {
-            addScreenshot(description);
+            takeScreenshot(description);
             return description;
         };
     }

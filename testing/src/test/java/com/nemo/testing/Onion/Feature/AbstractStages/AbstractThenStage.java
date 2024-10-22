@@ -16,6 +16,12 @@ import static com.codeborne.selenide.WebDriverRunner.url;
 public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends AbstractStage<T>
     implements WithAssertions {
 
+    /**
+     * Asserts that the user is logged in by verifying the login status on the main page and captures a screenshot if
+     * the assertion fails. Throws an assertion error with an appropriate message if the user is not logged in.
+     *
+     * @return the current instance of the stage for method chaining
+     */
     @SuppressWarnings("UnusedReturnValue")
     public T logged_in() {
         assertTakingScreenshotThat(mainPage().isLoggedIn(), "Check if logged in")
@@ -24,6 +30,12 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
         return self();
     }
 
+    /**
+     * Asserts that the user is not logged in. If the user is logged in, it fails the assertion
+     * with an appropriate error message and captures a screenshot for the report.
+     *
+     * @return the current instance of the stage for method chaining
+     */
     @SuppressWarnings("UnusedReturnValue")
     public T not_logged_in() {
         assertTakingScreenshotThat(mainPage().isLoggedIn(), "Check if not logged in")
@@ -33,6 +45,11 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
         return self();
     }
 
+    /**
+     * Asserts that the current URL matches the expected page URI and captures a screenshot if the assertion fails.
+     *
+     * @param pageURI the expected relative URI of the page to be asserted
+     */
     protected void assertOnCorrectPage(String pageURI) {
         assertTakingScreenshotThat(url(), "Check page redirect")
             .withFailMessage("I am not redirected to the requested page")

@@ -44,10 +44,25 @@ public class DriverService {
         this.driver = getWebDriver();
     }
 
+    /**
+     * Waits until the given condition is met or the specified timeout is reached.
+     *
+     * @param condition The condition to wait for. This condition is checked repeatedly
+     *                  until it returns successfully or the timeout is reached.
+     * @param timeout The maximum amount of time in milliseconds to wait for the condition to be met.
+     * @throws TimeoutException if the condition is not met within the specified timeout.
+     */
     public final <T> void waitUntil(Function<WebDriver, T> condition, long timeout) throws TimeoutException {
             new SelenideWait(driver, timeout, Configuration.pollingInterval).until(condition);
     }
 
+    /**
+     * Waits until the given condition is met or the <i>default</i> timeout is reached.
+     *
+     * @param condition The condition to wait for. This condition is checked repeatedly
+     *                  until it returns successfully or the timeout is reached.
+     * @throws TimeoutException if the condition is not met within the specified timeout.
+     */
     public final <T> void waitUntil(Function<WebDriver, T> condition) throws TimeoutException {
         waitUntil(condition, Configuration.timeout);
     }

@@ -20,13 +20,14 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     /**
-     * Attempts to find a user by their username. Does <u>NOT</u> return the user
+     * Retrieves the user ID of a user based on their username.
      *
-     * @param username the username of the user to be found
-     * @throws UserNotFoundException if a user with the given username is not found
+     * @param username the username of the user whose ID is to be retrieved
+     * @return the user ID of the user with the given username
+     * @throws UserNotFoundException if no user with the given username is found
      */
-    public void tryToFindUserByUsername(String username) throws UserNotFoundException {
-        userRepository.findUserByUsername(username);
+    public UserEntity getUserIdByUsername(String username) throws UserNotFoundException {
+        return userRepository.findUserByUsername(username);
     }
 
     public UserEntity createNewUser(String username, String password) {

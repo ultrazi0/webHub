@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * and dependencies to be used by derived components within the application.
  */
 @Component
-public class AbstractComponent {
+public abstract class AbstractComponent {
 
     @Autowired
     protected DriverService driverService;

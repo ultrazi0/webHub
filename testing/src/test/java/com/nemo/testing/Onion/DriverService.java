@@ -47,6 +47,8 @@ public class DriverService {
     /**
      * Waits until the given condition is met or the specified timeout is reached.
      *
+     * <p>WARNING: Use <b><u>ONLY</u></b> when there is no other way - this is <b><u>NOT</u></b> recommended</p>
+     *
      * @param condition The condition to wait for. This condition is checked repeatedly
      *                  until it returns successfully or the timeout is reached.
      * @param timeout The maximum amount of time in milliseconds to wait for the condition to be met.
@@ -58,6 +60,8 @@ public class DriverService {
 
     /**
      * Waits until the given condition is met or the <i>default</i> timeout is reached.
+     *
+     * <p>WARNING: Use <b><u>ONLY</u></b> when there is no other way - this is <b><u>NOT</u></b> recommended</p>
      *
      * @param condition The condition to wait for. This condition is checked repeatedly
      *                  until it returns successfully or the timeout is reached.

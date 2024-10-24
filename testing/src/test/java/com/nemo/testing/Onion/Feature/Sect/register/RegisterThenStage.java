@@ -29,7 +29,7 @@ public class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
     public RegisterThenStage my_account_is_created(@Hidden String username) {
         assertThatNoException()
             .as("User with username \"%s\" was not created", username)
-            .isThrownBy(() -> userService.tryToFindUserByUsername(username));
+            .isThrownBy(() -> userService.getUserIdByUsername(username));
 
         return self();
     }

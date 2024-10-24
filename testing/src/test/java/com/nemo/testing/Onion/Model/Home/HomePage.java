@@ -50,14 +50,6 @@ public class HomePage extends AbstractProtectedPage {
         open(uri);
     }
 
-    public final boolean anyModalIsVisible() {
-        // In OR Java does not evaluate the next expression if the previous one is true,
-        // thus, the following does not influence the performance. On the other hand, the
-        // way modal element is found can be changes, so it makes sense to check the visibility
-        // of all modals on this page
-        return robotInfoModal.isVisible() || deleteRobotModal.isVisible() || editRobotModal.isVisible();
-    }
-
     public final String getUsernameGreeting() {
         return element(USERNAME_GREETING).getText();
     }
@@ -128,5 +120,28 @@ public class HomePage extends AbstractProtectedPage {
 
     public final void clickOnEditButton(String robotName) {
         element(ROBOT_CARD_BY(robotName)).find(EDIT_BUTTON).click();
+    }
+
+    // ********** //
+    // Info modal //
+    // ********** //
+
+    /**
+     * Warning: this method does NOT wait!
+     * */
+    public final boolean infoModalIsVisible() {
+        return robotInfoModal.isVisible();
+    }
+
+    public final String getRobotNameFromInfoModal() {
+        return robotInfoModal.getRobotName();
+    }
+
+    public final int getRobotIdFromInfoModal() {
+        return Integer.parseInt(robotInfoModal.getRobotId());
+    }
+
+    public final String getRobotOwnedByFromInfoModal() {
+        return robotInfoModal.getRobotOwnedBy();
     }
 }

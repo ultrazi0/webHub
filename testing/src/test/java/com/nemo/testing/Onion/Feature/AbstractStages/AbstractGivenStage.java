@@ -3,10 +3,15 @@ package com.nemo.testing.Onion.Feature.AbstractStages;
 import com.codeborne.selenide.Selenide;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.AbstractProtectedPage;
+import com.nemo.testing.core.Persistence.UserService;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.AfterScenario;
+import com.tngtech.jgiven.annotation.ProvidedScenarioState;
+import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.Assumptions;
 import org.assertj.core.api.WithAssumptions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.WebDriverRunner.url;
@@ -16,11 +21,18 @@ import static com.codeborne.selenide.WebDriverRunner.url;
  * It extends the AbstractStage class and provides utility methods to ensure the correct
  * page is loaded and rendered within the testing framework.
  */
+@JGivenStage
 public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extends AbstractStage<T>
     implements WithAssumptions {
 
     private static final String TEST_USER_USERNAME = "testUser";
     private static final String TEST_USER_PASSWORD = "testUserPassword";
+
+    @Autowired
+    private UserService userService;
+
+    @ProvidedScenarioState
+    protected UserEntity CURRENT_USER = null;
 
     /**
      * Assumes that the current URL matches the main page URL.
@@ -103,6 +115,8 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
      * This method ensures that if the main page requires login, the test user will be automatically logged in
      * before any further interactions.
      *
+     * <p>Also provides the ID of the currently logged-in user to the stage state</p>
+     *
      * @return the current instance (self) for method chaining
      */
     public T test_user() {
@@ -111,8 +125,9 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
             mainPage.performLogin(TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
             assumeThatCode(() -> driverService.waitUntil(driver -> mainPage.isLoggedIn()))
-                .as(addScreenshotToDescription("Check if logged in"))
+                .as(addScreenshotToDescription("Check if automatic login successful"))
                 .doesNotThrowAnyException();
+            CURRENT_USER = userService.getUserIdByUsername(TEST_USER_USERNAME);
         }
 
         return self();

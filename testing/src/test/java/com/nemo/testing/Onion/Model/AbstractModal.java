@@ -3,6 +3,8 @@ package com.nemo.testing.Onion.Model;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
+import java.util.Objects;
+
 import static com.codeborne.selenide.Selenide.element;
 
 /**
@@ -11,12 +13,14 @@ import static com.codeborne.selenide.Selenide.element;
  * It encapsulates the common behavior and elements necessary for interacting
  * with modal dialogs.
  */
-public class AbstractModal extends AbstractFragment {
+public abstract class AbstractModal extends AbstractFragment {
 
     protected By MODAL_DIALOG = By.className("modal-dialog");
     protected By MODAL_TITLE = By.className("modal-title");
     protected By CLOSE_BUTTON = By.xpath(".//div[@class='modal-header']/button[@class='btn-close']");
     protected By CANCEL_BUTTON = By.xpath(".//div[@class='modal-footer']/button[@class='btn btn-secondary']");
+
+    public abstract String modalTitle();
 
     protected final SelenideElement modalElement(By selector) {
         return element(MODAL_DIALOG).find(selector);
@@ -34,7 +38,17 @@ public class AbstractModal extends AbstractFragment {
         modalElement(CANCEL_BUTTON).click();
     }
 
-    public final boolean isVisible() {
+    /**
+     * Warning: this method does NOT wait!
+     * */
+    public boolean isVisible() {
+        return element(MODAL_DIALOG).exists() && Objects.equals(getModalTitle(), modalTitle());
+    }
+
+    /**
+     * Warning: this method does NOT wait!
+     * */
+    public boolean anyModalIsVisible() {
         return element(MODAL_DIALOG).exists();
     }
 }

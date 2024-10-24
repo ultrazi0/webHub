@@ -10,6 +10,11 @@ public class EditRobotModal extends AbstractModal {
     private final By ROBOT_NAME = By.id("formName");
     private final By EDIT_ROBOT_BUTTON = By.xpath(".//div[@class='modal-footer']/button[@type='submit']");
 
+    @Override
+    public String modalTitle() {
+        return "Edit robot";
+    }
+
     public final String getRobotName() {
         return modalElement(ROBOT_NAME).getText();
     }

@@ -14,7 +14,7 @@ public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage,
     void testAddRobot() {
 
         given()
-            .I_am().test_user()
+            .I_am().a().test_user()
             .and().I_am().on_home_page()
             .and().I().see_add_robot_button()
             .and().robot_with_name_$_does_not_exist(DEFAULT_ROBOT_NAME);
@@ -28,12 +28,21 @@ public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage,
 
     }
 
+    @Test
     void testRobotInfoButton() {
 
         given()
             .I_am().test_user()
             .and().I_am().on_home_page()
             .and().robot_with_name_$_exists(DEFAULT_ROBOT_NAME);
+
+        when()
+            .I().press_the_refresh_robots_button()
+            .and().I().press_on_the_info_button_on_the_robot(DEFAULT_ROBOT_NAME);
+
+        then()
+            .I().see_robots_info_modal()
+            .and().all_the_data_is_correct(DEFAULT_ROBOT_NAME);
 
     }
 

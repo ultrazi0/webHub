@@ -42,6 +42,10 @@ public abstract class AbstractPage extends AbstractComponent {
         return navbar.seeLoginButton();
     }
 
+    public final boolean anyModalIsVisible() {
+        return logoutModal.anyModalIsVisible();
+    }
+
     public boolean isLoggedIn() {
         // The reason why it duplicates seeLoginButton() is that
         // the way it is checked whether the user is logged in can
@@ -50,7 +54,7 @@ public abstract class AbstractPage extends AbstractComponent {
     }
 
     public void performLogout() {
-        if (logoutModal.isVisible()) {
+        if (logoutModal.anyModalIsVisible()) {
             // If any modal is visible
             logoutModal.pressCloseButton();
         }

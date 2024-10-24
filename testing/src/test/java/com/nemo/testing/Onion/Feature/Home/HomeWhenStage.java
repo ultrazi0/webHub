@@ -3,6 +3,7 @@ package com.nemo.testing.Onion.Feature.Home;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractWhenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
+import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
@@ -54,6 +55,19 @@ public class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
         assertThatCode(() -> driverService.waitUntil(driver -> !homePage.anyModalIsVisible()))
             .as(addScreenshotToDescription("Wait until modal is closed"))
             .doesNotThrowAnyException();
+
+        return self();
+    }
+
+    @ExtendedDescription("Needed to make sure that the card is displayed")
+    public HomeWhenStage press_the_refresh_robots_button() {
+        homePage.pressRefreshRobotsButton();
+
+        return self();
+    }
+
+    public HomeWhenStage press_on_the_info_button_on_the_robot(@Quoted String robotName) {
+        homePage.clickOnInfoButton(robotName);
 
         return self();
     }

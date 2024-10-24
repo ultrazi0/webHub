@@ -62,7 +62,7 @@ public class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription("Checked in the database")
     public HomeGivenStage robot_with_name_$_does_not_exist(@Quoted String robotName) {
-        assumeThatThrownBy(() -> robotService.findRobotIdByName(robotName))
+        assumeThatThrownBy(() -> robotService.findRobotIdByName(robotName, CURRENT_USER.getId()))
             .as("Check if robot with name \"%s\" does not exist (name should be unique among all users)", robotName)
             .isInstanceOf(RuntimeException.class);
 
@@ -76,8 +76,11 @@ public class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
             .and().robot_with_name_$_is_created(robotName);
     }
 
-    private HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
-
+    @ExtendedDescription("Resolved in the database")
+    public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
+        assumeThatCode(() -> createdRobots.add(robotService.createNewRobot(robotName, CURRENT_USER.getId())))
+            .as("Create robot with name \"%s\"", robotName)
+            .doesNotThrowAnyException();
 
         return self();
     }

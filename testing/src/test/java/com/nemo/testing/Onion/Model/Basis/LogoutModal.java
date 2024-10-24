@@ -17,6 +17,11 @@ public class LogoutModal extends AbstractModal {
 
     private final By LOGOUT_BUTTON = By.xpath("./div/form/div[2]/button[2]");
 
+    @Override
+    public String modalTitle() {
+        return "Log out";
+    }
+
     public final void pressLogoutButton() {
         modalElement(LOGOUT_BUTTON).click();
     }

@@ -1,5 +1,6 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
+import com.tngtech.jgiven.Stage;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
@@ -79,21 +80,22 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      *                    if you really wish to add one!
      * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
      * */
-    protected AbstractBooleanAssert<?> assertTakingScreenshotThat(boolean condition, String description) {
-        return assertThat(condition).as(addScreenshotToDescription(description));
+    protected AbstractBooleanAssert<?> assertTakingScreenshotThat(boolean condition, String description, Object... args) {
+        return assertThat(condition).as(addScreenshotToDescription(description, args));
     }
 
     /**
      * A wrapper around AssertJ {@code assertThat()} that adds screenshot to a JGiven report
      *
-     * @param condition boolean condition to assert
+     * @param integer boolean condition to assert
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
      *                    if you really wish to add one!
+     * @param args arguments to format the description
      * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
      * */
-    protected AbstractIntegerAssert<?> assertTakingScreenshotThat(Integer integer, String description) {
-        return assertThat(integer).as(addScreenshotToDescription(description));
+    protected AbstractIntegerAssert<?> assertTakingScreenshotThat(Integer integer, String description, Object... args) {
+        return assertThat(integer).as(addScreenshotToDescription(description, args));
     }
 
 }

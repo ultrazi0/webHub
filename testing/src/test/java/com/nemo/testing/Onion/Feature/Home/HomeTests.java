@@ -23,7 +23,8 @@ public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage,
             .I().add_a_new_robot(DEFAULT_ROBOT_NAME);
 
         then()
-            .robot_is_created(DEFAULT_ROBOT_NAME).
+            .robot_is_created(DEFAULT_ROBOT_NAME)
+            .and().I().see_robot_has_been_created_alert().
             and().I().see_robot_$_as_a_card(DEFAULT_ROBOT_NAME);
 
     }
@@ -32,7 +33,7 @@ public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage,
     void testRobotInfoButton() {
 
         given()
-            .I_am().test_user()
+            .I_am().a().test_user()
             .and().I_am().on_home_page()
             .and().robot_with_name_$_exists(DEFAULT_ROBOT_NAME);
 
@@ -43,6 +44,25 @@ public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage,
         then()
             .I().see_robots_info_modal()
             .and().all_the_data_is_correct(DEFAULT_ROBOT_NAME);
+
+    }
+
+    @Test
+    void testRobotDeleteButton() {
+
+        given()
+            .I_am().a().test_user()
+            .and().I_am().on_home_page()
+            .and().robot_with_name_$_exists(DEFAULT_ROBOT_NAME);
+
+        when()
+            .I().press_the_refresh_robots_button()
+            .and().I().delete_the_robot(DEFAULT_ROBOT_NAME);
+
+        then()
+            .I().see_the_deletion_successful_alert()
+            .and().robot_$_does_not_exist(DEFAULT_ROBOT_NAME)
+            .and().I().see_no_robot_named(DEFAULT_ROBOT_NAME);
 
     }
 

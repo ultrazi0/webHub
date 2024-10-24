@@ -5,6 +5,7 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Decibel.UserEntity;
+import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,14 @@ public class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         assertThatCode(() -> createdRobots.add(robotService.findRobotIdByName(robotName, CURRENT_USER.getId())))
             .as("Check in the database if the robot is created")
             .doesNotThrowAnyException();
+
+        return self();
+    }
+
+    public HomeThenStage see_robot_has_been_created_alert() {
+        assertTakingScreenshotThat(homePage.seeSuccessAlert("New robot has been created!"),
+            "Check the creation successful alert")
+            .isTrue();
 
         return self();
     }
@@ -88,6 +97,31 @@ public class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         assertTakingScreenshotThat(homePage.getRobotOwnedByFromInfoModal(),
             "Check if the owner is correct")
             .isEqualTo(CURRENT_USER.getUsername());
+
+        return self();
+    }
+
+    public HomeThenStage see_the_deletion_successful_alert() {
+        assertTakingScreenshotThat(homePage.seeSuccessAlert("Robot has been deleted"),
+            "Check the deletion successful alert")
+            .isTrue();
+
+        return self();
+    }
+
+    @ExtendedDescription("Checked in the database")
+    public HomeThenStage robot_$_does_not_exist(@Quoted String robotName) {
+        assertThatCode(() -> robotService.findRobotIdByName(robotName, CURRENT_USER.getId()))
+            .as("Assert that robot with name \"%s\" does not exist", robotName)
+            .isInstanceOf(RuntimeException.class);
+
+        return self();
+    }
+
+    public HomeThenStage see_no_robot_named(@Quoted String robotName) {
+        assertTakingScreenshotThat(homePage.thereIsARobotCardWithName(robotName),
+            "Assert there is no robot named \"%s\"", robotName)
+            .isFalse();
 
         return self();
     }

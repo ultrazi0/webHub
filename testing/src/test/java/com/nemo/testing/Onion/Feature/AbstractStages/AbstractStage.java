@@ -60,10 +60,10 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
      * @param description the description to be used for the screenshot
      * @return {@code Supplier<String>} that provides the description after taking a screenshot
      */
-    protected Supplier<String> addScreenshotToDescription(String description) {
+    protected Supplier<String> addScreenshotToDescription(String description, Object... args) {
         return () -> {
             takeScreenshot(description);
-            return description;
+            return String.format(description, args);
         };
     }
 

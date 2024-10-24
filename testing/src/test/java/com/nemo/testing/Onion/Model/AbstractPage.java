@@ -3,10 +3,12 @@ package com.nemo.testing.Onion.Model;
 import com.codeborne.selenide.ex.ElementShould;
 import com.nemo.testing.Onion.Model.Basis.LogoutModal;
 import com.nemo.testing.Onion.Model.Basis.NavbarFragment;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.elements;
 import static com.codeborne.selenide.WebDriverRunner.driver;
 
 /**
@@ -20,6 +22,8 @@ public abstract class AbstractPage extends AbstractComponent {
     protected NavbarFragment navbar;
     @Autowired
     private LogoutModal logoutModal;
+
+    private static final By ALERTS = By.xpath("//div[@role='alert']");
 
     public abstract String uri();
 
@@ -36,6 +40,13 @@ public abstract class AbstractPage extends AbstractComponent {
 
     public String getUsernameFromNavbar() {
         return navbar.getCurrentUsername();
+    }
+
+    /**
+     * WARNING: this method does NOT wait!
+     * */
+    public boolean seeSuccessAlert(String message) {
+        return elements(ALERTS).filter(cssClass("alert-success")).findBy(exactText(message)).isDisplayed();
     }
 
     public boolean seeLoginButton() {

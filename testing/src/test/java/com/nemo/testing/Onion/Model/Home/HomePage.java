@@ -144,4 +144,11 @@ public class HomePage extends AbstractProtectedPage {
     public final String getRobotOwnedByFromInfoModal() {
         return robotInfoModal.getRobotOwnedBy();
     }
+
+    // ************ //
+    // Delete modal //
+    // ************ //
+    public final void pressDeleteButtonInDeleteModal() {
+        deleteRobotModal.pressDeleteButton();
+    }
 }

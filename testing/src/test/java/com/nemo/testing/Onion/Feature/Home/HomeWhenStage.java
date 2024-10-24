@@ -71,4 +71,23 @@ public class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
 
         return self();
     }
+
+    @NestedSteps
+    public HomeWhenStage delete_the_robot(@Quoted String defaultRobotName) {
+        return I().press_the_delete_button_on(defaultRobotName)
+            .and().I_confirm_the_deletion_in_the_modal()
+            .and().waitUntilModalIsClosed();
+    }
+
+    public HomeWhenStage press_the_delete_button_on(@Quoted String defaultRobotName) {
+        homePage.clickOnDeleteButton(defaultRobotName);
+
+        return self();
+    }
+
+    private HomeWhenStage I_confirm_the_deletion_in_the_modal() {
+        homePage.pressDeleteButtonInDeleteModal();
+
+        return self();
+    }
 }

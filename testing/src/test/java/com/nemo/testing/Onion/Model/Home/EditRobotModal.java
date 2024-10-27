@@ -23,7 +23,7 @@ public class EditRobotModal extends AbstractModal {
         modalElement(ROBOT_NAME).setValue(name);
     }
 
-    public final void pressEditRobotButton() {
+    public final void pressSaveRobotButton() {
         modalElement(EDIT_ROBOT_BUTTON).click();
     }
 }

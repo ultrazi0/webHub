@@ -5,6 +5,7 @@ import com.nemo.testing.Onion.DriverService;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
+import com.tngtech.jgiven.annotation.BeforeStage;
 import com.tngtech.jgiven.annotation.ExpectedScenarioState;
 import com.tngtech.jgiven.annotation.FillerWord;
 import com.tngtech.jgiven.attachment.Attachment;
@@ -44,7 +45,7 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
      * @param title the title to be used for the screenshot attachment
      * @throws IllegalStateException if the driver does not support screenshots
      */
-    protected void takeScreenshot(String title) {
+    public void takeScreenshot(String title) {
         String base64 = Selenide.screenshot(OutputType.BASE64);
 
         if (base64 == null) throw new IllegalStateException("Driver does not support screenshots");
@@ -65,6 +66,11 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
             takeScreenshot(description);
             return String.format(description, args);
         };
+    }
+
+    @BeforeStage
+    private void propagateCurrentStageToPage() {
+        mainPage().setCurrentStage(self());
     }
 
     @FillerWord

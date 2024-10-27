@@ -68,9 +68,9 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
      *                    if you really wish to add one!
      * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
      * */
-    protected AbstractBooleanAssert<?> assumeTakingScreenshotThat(boolean condition, String description) {
+    protected AbstractBooleanAssert<?> assumeTakingScreenshotThat(boolean condition, String description, Object ...args) {
         return Assumptions.assumeThat(condition)
-            .as(addScreenshotToDescription(description));
+            .as(addScreenshotToDescription(description, args));
     }
 
     /**

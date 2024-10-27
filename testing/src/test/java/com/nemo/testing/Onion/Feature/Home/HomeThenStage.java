@@ -5,7 +5,6 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Decibel.UserEntity;
-import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,9 +118,25 @@ public class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage see_no_robot_named(@Quoted String robotName) {
-        assertTakingScreenshotThat(homePage.thereIsARobotCardWithName(robotName),
+        assertTakingScreenshotThat(homePage.thereIsNoRobotCardWithName(robotName),
             "Assert there is no robot named \"%s\"", robotName)
-            .isFalse();
+            .isTrue();
+
+        return self();
+    }
+
+    public HomeThenStage see_the_edit_successful_alert() {
+        assertTakingScreenshotThat(homePage.seeSuccessAlert("Robot has been updated!"),
+            "Check the update successful alert")
+            .isTrue();
+
+        return self();
+    }
+
+    public HomeThenStage see_the_edit_button_on(@Quoted String robotName) {
+        assertTakingScreenshotThat(homePage.editButtonOnAnExistingCardIsDisplayed(robotName),
+            "Check the edit button is displayed on \"%s\"", robotName)
+            .isTrue();
 
         return self();
     }

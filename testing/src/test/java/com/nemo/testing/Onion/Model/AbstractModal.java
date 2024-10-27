@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 
 import java.util.Objects;
 
+import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Selenide.element;
 
 /**
@@ -50,5 +51,14 @@ public abstract class AbstractModal extends AbstractFragment {
      * */
     public boolean anyModalIsVisible() {
         return element(MODAL_DIALOG).exists();
+    }
+
+    public final void waitUntilModalIsClosed() {
+        try {
+            element(MODAL_DIALOG).should(disappear);
+        } catch (AssertionError e) {
+            currentStage.takeScreenshot("Modal is not closed");
+            throw e;
+        }
     }
 }

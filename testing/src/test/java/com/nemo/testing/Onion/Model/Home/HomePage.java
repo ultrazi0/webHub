@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 @Component
@@ -75,6 +76,7 @@ public class HomePage extends AbstractProtectedPage {
 
     public final void pressAddRobotButtonInTheModal() {
         addRobotModal.pressAddRobotButton();
+        addRobotModal.waitUntilModalIsClosed();
     }
 
     public final void pressRefreshRobotsButton() {
@@ -92,11 +94,15 @@ public class HomePage extends AbstractProtectedPage {
         return elements(ROBOT_CARDS).isEmpty();
     }
 
+    public final boolean thereIsARobotCardWithName(String robotName) {
+        return waitAndSeeIf(ROBOT_CARD_BY(robotName)).becomes(visible);
+    }
+
     /**
      * Warning: this method does NOT wait!
      * */
-    public final boolean thereIsARobotCardWithName(String robotName) {
-        return element(ROBOT_CARD_BY(robotName)).isDisplayed();
+    public final boolean thereIsNoRobotCardWithName(String robotName) {
+        return !element(ROBOT_CARD_BY(robotName)).isDisplayed();
     }
 
     public final void clickOnRobotCard(String robotName) {
@@ -111,11 +117,14 @@ public class HomePage extends AbstractProtectedPage {
         element(ROBOT_CARD_BY(robotName)).find(DELETE_BUTTON).click();
     }
 
-    /**
-     * Warning: this method does NOT wait!
-     * */
-    public final boolean editButtonIsDisplayed(String robotName) {
-        return element(ROBOT_CARD_BY(robotName)).find(EDIT_BUTTON).isDisplayed();
+    public final boolean editButtonOnAnExistingCardIsDisplayed(String robotName) {
+        By robotCard = ROBOT_CARD_BY(robotName);
+        return waitAndSeeIf(robotCard).becomes(visible) && element(robotCard).find(EDIT_BUTTON).isDisplayed();
+    }
+
+    public final boolean editButtonOnAnExistingCardIsNotDisplayed(String robotName) {
+        By robotCard = ROBOT_CARD_BY(robotName);
+        return waitAndSeeIf(robotCard).becomes(visible) && !element(robotCard).find(EDIT_BUTTON).isDisplayed();
     }
 
     public final void clickOnEditButton(String robotName) {
@@ -150,5 +159,23 @@ public class HomePage extends AbstractProtectedPage {
     // ************ //
     public final void pressDeleteButtonInDeleteModal() {
         deleteRobotModal.pressDeleteButton();
+        deleteRobotModal.waitUntilModalIsClosed();
+    }
+
+    // ********** //
+    // Edit modal //
+    // ********** //
+
+    public final String getRobotNameFromEditModal() {
+        return editRobotModal.getRobotName();
+    }
+
+    public final void enterNewRobotNameInEditModal(String robotName) {
+        editRobotModal.enterRobotName(robotName);
+    }
+
+    public final void pressSaveButtonInEditModal() {
+        editRobotModal.pressSaveRobotButton();
+        editRobotModal.waitUntilModalIsClosed();
     }
 }

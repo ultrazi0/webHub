@@ -28,8 +28,7 @@ public class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
     public HomeWhenStage add_a_new_robot(@Quoted String robotName) {
         return I().press_add_robot_button()
             .and().in_the_modal_I_enter_robot_name(robotName)
-            .and().in_the_modal_I_press_add_robot_button()
-            .and().waitUntilModalIsClosed();
+            .and().in_the_modal_I_press_add_robot_button();
     }
 
     public HomeWhenStage press_add_robot_button() {
@@ -75,8 +74,7 @@ public class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
     @NestedSteps
     public HomeWhenStage delete_the_robot(@Quoted String defaultRobotName) {
         return I().press_the_delete_button_on(defaultRobotName)
-            .and().I_confirm_the_deletion_in_the_modal()
-            .and().waitUntilModalIsClosed();
+            .and().I_confirm_the_deletion_in_the_modal();
     }
 
     public HomeWhenStage press_the_delete_button_on(@Quoted String defaultRobotName) {
@@ -87,6 +85,25 @@ public class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
 
     private HomeWhenStage I_confirm_the_deletion_in_the_modal() {
         homePage.pressDeleteButtonInDeleteModal();
+
+        return self();
+    }
+
+    @NestedSteps
+    public HomeWhenStage change_robot_name_from_$_to(@Quoted String oldRobotName, @Quoted String newRobotName) {
+        return I().press_the_edit_button_on(oldRobotName)
+            .and().I().change_robot_name_to(newRobotName);
+    }
+
+    public HomeWhenStage press_the_edit_button_on(@Quoted String oldRobotName) {
+        homePage.clickOnEditButton(oldRobotName);
+
+        return self();
+    }
+
+    public HomeWhenStage change_robot_name_to(@Quoted String newRobotName) {
+        homePage.enterNewRobotNameInEditModal(newRobotName);
+        homePage.pressSaveButtonInEditModal();
 
         return self();
     }

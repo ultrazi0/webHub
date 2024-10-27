@@ -41,6 +41,20 @@ public class RobotService {
         return robotIds[0].value1();
     }
 
+    public int getRobotOwnerIdByRobotId(int robotId) throws RobotNotFoundException {
+        Integer ownerId = db
+            .select(ROBOTS.OWNER_ID)
+            .from(ROBOTS)
+            .where(ROBOTS.ROBOT_ID.eq(robotId))
+            .fetchOne(ROBOTS.OWNER_ID);
+
+        if (ownerId == null) {
+            throw new RobotNotFoundException(robotId);
+        }
+
+        return ownerId;
+    }
+
     public int createNewRobot(String robotName, int ownerId) {
         Integer robotId = db
             .insertInto(ROBOTS)

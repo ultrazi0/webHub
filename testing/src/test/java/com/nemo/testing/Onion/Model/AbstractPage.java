@@ -58,8 +58,6 @@ public abstract class AbstractPage extends AbstractComponent {
     }
 
     public boolean isLoggedIn() {
-        // The reason why it duplicates seeLoginButton() is that
-        // the way it is checked whether the user is logged in can
         Cookie jSessionIdCookie = driver().getWebDriver().manage().getCookieNamed("JSESSIONID");
         return jSessionIdCookie != null && !navbar.seeLoginButton();
     }

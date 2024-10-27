@@ -28,6 +28,7 @@ public class DriverService {
     public DriverService(
         @Value("${selenide.base-url}") String baseUrl,
         @Value("${selenide.timeout}") long timeout,
+        @Value("${selenide.polling-interval}") long pollingInterval,
         @Value("${selenide.browser}") String browser,
         @Value("${selenide.browser-size}") String browserSize,
         @Value("${selenide.screenshots}") boolean screenshots,
@@ -35,6 +36,7 @@ public class DriverService {
 
         Configuration.baseUrl = baseUrl;
         Configuration.timeout = timeout;
+        Configuration.pollingInterval = pollingInterval;
         Configuration.browser = browser;
         Configuration.browserSize = browserSize;
         Configuration.screenshots = screenshots;

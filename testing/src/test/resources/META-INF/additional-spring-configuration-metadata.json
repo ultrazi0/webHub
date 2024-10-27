@@ -11,6 +11,11 @@
       "description": "Timeout in milliseconds to fail a test."
   },
     {
+      "name": "selenide.polling-interval",
+      "type": "java.lang.Long",
+      "description": "Interval in milliseconds, when checking if a single element or collection elements are appeared."
+  },
+    {
       "name": "selenide.browser",
       "type": "java.lang.String",
       "description": "Which browser to use. Supported values: \"chrome\", \"firefox\", \"ie\", \"edge\", \"safari\"."

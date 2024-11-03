@@ -1,9 +1,9 @@
 package com.nemo.testing.core.Persistence;
 
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +15,12 @@ import static org.jooq.generated.Tables.USER_ROBOT_RELATIONS;
  * in the database. It includes methods to find, create, and delete robot records, ensuring
  * encapsulation of database operations related to robots.
  */
+@Slf4j
 @Service
 public class RobotService {
 
     @Autowired
     private DSLContext db;
-    @Autowired
-    private Logger log;
 
     public int findRobotIdByName(String robotName, int ownerId) throws RuntimeException {
         Record1<Integer>[] robotIds = db

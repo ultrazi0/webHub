@@ -7,23 +7,21 @@ import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.webHub.Decibel.UserNotFoundException;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.exception.DataAccessException;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @JGivenStage
+@Slf4j
 @SuppressWarnings("UnusedReturnValue")
 public class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
 
     // Set of users that should be deleted after the scenario
     @ProvidedScenarioState
     private final Set<String> createdUsers = new HashSet<>();
-
-    @Autowired
-    private Logger log;
 
     @Autowired
     private RegisterPage registerPage;

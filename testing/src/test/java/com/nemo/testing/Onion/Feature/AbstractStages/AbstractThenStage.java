@@ -1,6 +1,5 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
-import com.tngtech.jgiven.Stage;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;

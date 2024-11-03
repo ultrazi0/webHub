@@ -1,19 +1,13 @@
 package com.nemo.testing.core;
 
 import com.tngtech.jgiven.integration.spring.EnableJGiven;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @EnableJGiven
 @Configuration
 @ComponentScan({"com.nemo.testing.Onion", "com.nemo.testing.core"})
+@Profile("Onion")
 public class OnionTestConfig {
-
-    @Bean
-    public Logger logger() {
-        return LoggerFactory.getLogger(OnionTestConfig.class);
-    }
 }

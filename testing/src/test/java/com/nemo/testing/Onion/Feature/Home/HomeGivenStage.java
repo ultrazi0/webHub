@@ -6,21 +6,20 @@ import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @JGivenStage
+@Slf4j
 @SuppressWarnings("UnusedReturnValue")
 public class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ProvidedScenarioState
     private final Set<Integer> createdRobots = new HashSet<>();
 
-    @Autowired
-    private Logger log;
     @Autowired
     private HomePage homePage;
     @Autowired

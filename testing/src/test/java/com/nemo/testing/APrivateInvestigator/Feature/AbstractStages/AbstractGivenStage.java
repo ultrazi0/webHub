@@ -6,6 +6,7 @@ import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.BeforeStage;
 import com.tngtech.jgiven.annotation.ProvidedScenarioState;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import org.assertj.core.api.Assumptions;
 
 @JGivenStage
 public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extends AbstractStage<T> {
@@ -23,4 +24,10 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         apiService.reset();
     }
 
+    protected void assumeLoggedIn(String username, String password) {
+        Assumptions.assumeThat(apiService.login(username, password))
+            .as("Log in", username, password)
+            .withFailMessage("Cannot log in as \"%s\" with password \"%s\"", username, password)
+            .isTrue();
+    }
 }

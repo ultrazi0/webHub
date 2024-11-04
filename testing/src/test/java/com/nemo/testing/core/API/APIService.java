@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 public class APIService {
 
     private static SessionFilter sessionFilter = new SessionFilter();
-    private static final CsrfFilter csrfFilter = new CsrfFilter(getCsrfConfig());
+    private static CsrfFilter csrfFilter = new CsrfFilter(getCsrfConfig());
 
     private static final String CSRF_URI = "/csrf";
+    private static final String LOGIN_URI = "/login";
     private static final String LOGOUT_URI = "/logout";
 
     public Response sendGet(Request request) {
@@ -28,9 +29,17 @@ public class APIService {
         return request.filter(csrfFilter).filter(sessionFilter);
     }
 
+    public boolean login(String username, String password) {
+        Request request = Request.createTo(LOGIN_URI);
+        request.formParam("username", username).formParam("password", password);
+
+        return sendPost(request).statusCode() == 200;
+    }
+
     public void reset() {
         logout();
         sessionFilter = new SessionFilter();
+        csrfFilter = new CsrfFilter(getCsrfConfig());
     }
 
     private static CsrfConfig getCsrfConfig() {

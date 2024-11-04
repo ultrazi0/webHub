@@ -30,4 +30,8 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
 
         return self();
     }
+
+    public T get_an_error_that() {
+        return self();
+    }
 }

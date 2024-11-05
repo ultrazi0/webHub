@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class RegisterWhenStage extends AbstractWhenStage<RegisterWhenStage> {
+class RegisterWhenStage extends AbstractWhenStage<RegisterWhenStage> {
 
     @ExpectedScenarioState
     private Set<String> createdUsers;

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
+class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
 
     @Autowired
     private RegisterPage registerPage;

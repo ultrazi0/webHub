@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 @OnionTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenStage, LoginPageThenStage> {
+class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenStage, LoginPageThenStage> {
 
     @Test
     @Story("HUB-1")

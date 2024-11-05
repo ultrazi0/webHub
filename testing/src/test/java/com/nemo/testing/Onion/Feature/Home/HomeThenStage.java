@@ -13,7 +13,7 @@ import java.util.Set;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class HomeThenStage extends AbstractThenStage<HomeThenStage> {
+class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExpectedScenarioState
     private Set<Integer> createdRobots;

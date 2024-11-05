@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 @OnionTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeThenStage> {
+class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeThenStage> {
 
     String DEFAULT_ROBOT_NAME = "myTestRobot";
 

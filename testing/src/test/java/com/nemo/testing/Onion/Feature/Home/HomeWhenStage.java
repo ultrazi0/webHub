@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
+class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
 
     @Autowired
     private HomePage homePage;

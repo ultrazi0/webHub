@@ -15,7 +15,7 @@ import java.util.Set;
 @JGivenStage
 @Slf4j
 @SuppressWarnings("UnusedReturnValue")
-public class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
+class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ProvidedScenarioState
     private final Set<Integer> createdRobots = new HashSet<>();

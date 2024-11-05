@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 @OnionTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage> {
+class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage> {
 
     private static final String DEFAULT_USERNAME = "myTestUsername";
     private static final String DEFAULT_PASSWORD = "myTestPassword";

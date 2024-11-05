@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class LoginPageWhenStage extends AbstractWhenStage<LoginPageWhenStage> {
+class LoginPageWhenStage extends AbstractWhenStage<LoginPageWhenStage> {
 
     @Autowired
     private LoginPage loginPage;

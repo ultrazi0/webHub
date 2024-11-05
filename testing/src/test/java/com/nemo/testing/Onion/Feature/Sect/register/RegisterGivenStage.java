@@ -17,7 +17,7 @@ import java.util.Set;
 @JGivenStage
 @Slf4j
 @SuppressWarnings("UnusedReturnValue")
-public class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
+class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
 
     // Set of users that should be deleted after the scenario
     @ProvidedScenarioState

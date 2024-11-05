@@ -1,4 +1,4 @@
-package com.nemo.testing.APrivateInvestigator.Feature.Sect;
+package com.nemo.testing.APrivateInvestigator.Feature.Sect.login;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.core.Persistence.UserService;
@@ -18,7 +18,7 @@ import java.util.Set;
 @Slf4j
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class LoginGivenStage extends AbstractGivenStage<LoginGivenStage> {
+class LoginGivenStage extends AbstractGivenStage<LoginGivenStage> {
 
     @Autowired
     private UserService userService;

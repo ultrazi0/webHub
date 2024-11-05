@@ -1,11 +1,11 @@
-package com.nemo.testing.APrivateInvestigator.Feature.Sect;
+package com.nemo.testing.APrivateInvestigator.Feature.Sect.login;
 
 import com.nemo.testing.core.APrivateInvestigatorTest;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @APrivateInvestigatorTest
-public class LoginTest extends SpringScenarioTest<LoginGivenStage, LoginWhenStage, LoginThenStage> {
+class LoginTests extends SpringScenarioTest<LoginGivenStage, LoginWhenStage, LoginThenStage> {
 
     @Test
     void given_correct_credentials_should_log_in() {

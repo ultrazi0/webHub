@@ -34,4 +34,10 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
     public T get_an_error_that() {
         return self();
     }
+
+    public T response_is_correct() {
+        validatableResponse.statusCode(200);
+
+        return self();
+    };
 }

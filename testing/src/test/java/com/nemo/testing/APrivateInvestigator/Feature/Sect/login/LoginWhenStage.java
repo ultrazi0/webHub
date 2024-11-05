@@ -1,11 +1,11 @@
-package com.nemo.testing.APrivateInvestigator.Feature.Sect;
+package com.nemo.testing.APrivateInvestigator.Feature.Sect.login;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractWhenStage;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public class LoginWhenStage extends AbstractWhenStage<LoginWhenStage> {
+class LoginWhenStage extends AbstractWhenStage<LoginWhenStage> {
 
     public LoginWhenStage login_endpoint() {
         response = apiService.sendPost(request.to("/login"));

@@ -1,4 +1,4 @@
-package com.nemo.testing.APrivateInvestigator.Feature.Sect;
+package com.nemo.testing.APrivateInvestigator.Feature.Sect.login;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.core.API.Request;
@@ -8,13 +8,7 @@ import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 
 @JGivenStage
-public class LoginThenStage extends AbstractThenStage<LoginThenStage> {
-
-    public LoginThenStage response_is_correct() {
-        validatableResponse.statusCode(200);
-
-        return self();
-    }
+class LoginThenStage extends AbstractThenStage<LoginThenStage> {
 
     @As("response is correct")
     public LoginThenStage logout_response_is_correct() {

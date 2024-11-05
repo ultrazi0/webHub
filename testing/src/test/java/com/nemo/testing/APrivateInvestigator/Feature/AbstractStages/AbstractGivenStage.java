@@ -15,7 +15,7 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     protected Request request = new TestRequest();
 
     @BeforeStage
-    public void beforeStage() {
+    private void beforeStage() {
         ((TestRequest) request).setCurrentStep(currentStep);
     }
 

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.nemo.testing.core.ExtendedDescriptions.CHECKED_IN_DATABASE;
+
 @Slf4j
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
@@ -52,7 +54,7 @@ class LoginGivenStage extends AbstractGivenStage<LoginGivenStage> {
         return self();
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public LoginGivenStage user_$_exists(@Quoted String username, @Hidden String password) {
         try {
             userService.createNewUser(username, password);

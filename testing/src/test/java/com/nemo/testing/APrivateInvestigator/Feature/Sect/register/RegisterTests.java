@@ -11,7 +11,7 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
     private static final String DEFAULT_PASSWORD = "myTestPassword";
 
     @Test
-    void register() {
+    void provided_correct_credentials_should_be_able_to_register() {
 
         given()
             .account_$_does_not_exist(DEFAULT_USERNAME)
@@ -21,7 +21,25 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
             .I().send_request_to().register_endpoint();
 
         then()
-            .response_is_correct(DEFAULT_USERNAME);
+            .response_is_correct(DEFAULT_USERNAME)
+            .and().I_am().logged_in_as(DEFAULT_USERNAME);
+
+    }
+
+    @Test
+    void provided_incorrect_credentials_attempt_to_register_should_fail() {
+
+        given()
+            .user_$_exists(DEFAULT_USERNAME, DEFAULT_PASSWORD)
+            .and().I().supply_incorrect_credentials(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+
+        when()
+            .I().send_request_to().register_endpoint();
+
+        then()
+            .status_code_is(409)
+            .and().I().get_an_error_that().name_is_already_taken();
+
     }
 
 }

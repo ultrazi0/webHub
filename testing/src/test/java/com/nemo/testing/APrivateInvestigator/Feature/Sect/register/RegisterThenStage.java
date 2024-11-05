@@ -36,4 +36,9 @@ class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
         return self();
     }
 
+    public RegisterThenStage name_is_already_taken() {
+        validatableResponse.body("error", Matchers.equalTo("Name already taken"));
+
+        return self();
+    }
 }

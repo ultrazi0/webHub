@@ -8,14 +8,14 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 class LoginWhenStage extends AbstractWhenStage<LoginWhenStage> {
 
     public LoginWhenStage login_endpoint() {
-        response = apiService.sendPost(request.to("/login"));
+        request.to(LOGIN_ENDPOINT);
 
-        return self();
+        return sendAndReturnSelf();
     }
 
     public LoginWhenStage logout_endpoint() {
-        response = apiService.sendPost(request.to("/logout"));
+        request.to(LOGOUT_ENDPOINT);
 
-        return self();
+        return sendAndReturnSelf();
     }
 }

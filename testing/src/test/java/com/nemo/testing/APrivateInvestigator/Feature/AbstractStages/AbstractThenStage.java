@@ -24,7 +24,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
 
     public T logged_in() {
 
-        apiService.sendGet(Request.createTo("/user"))
+        apiService.send(Request.createTo(USER_ENDPOINT))
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
@@ -36,7 +36,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
 
     public T logged_in_as(String user) {
 
-        apiService.sendGet(Request.createTo("/user"))
+        apiService.send(Request.createTo(USER_ENDPOINT))
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)

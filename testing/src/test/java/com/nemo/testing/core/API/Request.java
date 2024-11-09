@@ -24,20 +24,20 @@ public class Request implements RequestSpecification {
     private final RequestSpecification delegate;
 
     @Getter
-    private String uri = null;
+    private Endpoint endpoint = null;
 
-    public Request() {
+    protected Request() {
         this.delegate = RestAssured.with().basePath(BASE_PATH);
         this.config(RestAssuredConfig.config().logConfig(
             LogConfig.logConfig().enableLoggingOfRequestAndResponseIfValidationFails()));
     }
 
-    public static Request createTo(String uri) {
-        return new Request().to(uri);
+    public static Request createTo(Endpoint endpoint) {
+        return new Request().to(endpoint);
     }
 
-    public Request to(String uri) {
-        this.uri = uri;
+    public Request to(Endpoint endpoint) {
+        this.endpoint = endpoint;
 
         return this;
     }

@@ -16,4 +16,11 @@ public abstract class AbstractWhenStage<T extends AbstractWhenStage<T>> extends 
     public T send_request_to() {
         return self();
     }
+
+    @Hidden
+    protected T sendAndReturnSelf() {
+        response = apiService.send(request);
+
+        return self();
+    }
 }

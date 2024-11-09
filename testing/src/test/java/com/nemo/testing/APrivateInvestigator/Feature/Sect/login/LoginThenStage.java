@@ -23,7 +23,7 @@ class LoginThenStage extends AbstractThenStage<LoginThenStage> {
 
     public LoginThenStage not_logged_in() {
 
-        apiService.sendGet(Request.createTo("/user"))
+        apiService.send(Request.createTo(USER_ENDPOINT))
             .then()
             .statusCode(401);
 

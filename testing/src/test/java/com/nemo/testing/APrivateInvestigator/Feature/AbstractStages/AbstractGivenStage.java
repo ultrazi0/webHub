@@ -8,6 +8,13 @@ import com.tngtech.jgiven.annotation.ProvidedScenarioState;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.assertj.core.api.Assumptions;
 
+/**
+ * The {@link AbstractGivenStage} serves as a base stage for JGiven testing scenarios.
+ * It provides a protected {@code request} parameter of type {@link Request} that represents the
+ * request to be tested. The class also automatically resets the {@link com.nemo.testing.core.API.APIService} after each scenario.
+ *
+ * @param <T> the type of the concrete stage that extends this abstract class
+ * */
 @JGivenStage
 public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extends AbstractStage<T> {
 

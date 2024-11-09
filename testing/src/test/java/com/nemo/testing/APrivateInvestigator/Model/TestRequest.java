@@ -17,6 +17,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
+/**
+ * Extension of {@link Request} that provides additional functionality useful for test requests,
+ * i.e. requests that are being tested. This class automatically provides the log as an attachment
+ * to the current step should the validation fail.
+ * */
 public class TestRequest extends Request {
 
     @Setter

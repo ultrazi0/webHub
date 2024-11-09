@@ -9,6 +9,12 @@ import com.tngtech.jgiven.annotation.FillerWord;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * AbstractStage serves as a base class for defining stages in JGiven testing scenarios.
+ * It provides utility methods and common functionality to be used across different stages.
+ *
+ * @param <T> the type of the concrete stage that extends this abstract class
+ */
 @JGivenStage
 public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T> implements WithBaseEndpoints {
 

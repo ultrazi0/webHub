@@ -9,6 +9,11 @@ import io.restassured.response.Response;
  * AbstractWhenStage serves as a base class for defining "When" stages in JGiven testing scenarios.
  * It extends the AbstractStage class, enabling shared functionalities and behaviors specific to "When" actions.
  *
+ * <p>
+ *     <b>IMPORTANT:</b> if you want you request to be sent, return {@link AbstractWhenStage#sendAndReturnSelf()}
+ *     instead of {@link com.tngtech.jgiven.Stage#self()}
+ * </p>
+ *
  * @param <T> the type of the concrete stage that extends this abstract class
  */
 @JGivenStage

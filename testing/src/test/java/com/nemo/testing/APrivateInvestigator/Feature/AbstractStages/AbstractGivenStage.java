@@ -16,7 +16,11 @@ import org.assertj.core.api.Assumptions;
  * @param <T> the type of the concrete stage that extends this abstract class
  * */
 @JGivenStage
+@SuppressWarnings("UnusedReturnValue")
 public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extends AbstractStage<T> {
+
+    private static final String TEST_USER_USERNAME = "testUser";
+    private static final String TEST_USER_PASSWORD = "testUserPassword";
 
     @ProvidedScenarioState
     protected Request request = new TestRequest();
@@ -36,5 +40,11 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
             .as("Log in", username, password)
             .withFailMessage("Cannot log in as \"%s\" with password \"%s\"", username, password)
             .isTrue();
+    }
+
+    public T test_user() {
+        assumeLoggedIn(TEST_USER_USERNAME, TEST_USER_PASSWORD);
+
+        return self();
     }
 }

@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.nemo.testing.core.ExtendedDescriptions.CHECKED_IN_DATABASE;
-
 @Slf4j
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")

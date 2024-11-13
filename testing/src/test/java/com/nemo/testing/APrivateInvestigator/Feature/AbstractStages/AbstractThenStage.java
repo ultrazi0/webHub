@@ -1,6 +1,7 @@
 package com.nemo.testing.APrivateInvestigator.Feature.AbstractStages;
 
 import com.nemo.testing.core.API.Request;
+import com.nemo.testing.core.WithExtendedDescriptions;
 import com.tngtech.jgiven.annotation.BeforeStage;
 import com.tngtech.jgiven.annotation.ExpectedScenarioState;
 import com.tngtech.jgiven.annotation.FillerWord;
@@ -8,6 +9,7 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import org.assertj.core.api.WithAssertions;
 import org.hamcrest.Matchers;
 
 /**
@@ -18,7 +20,8 @@ import org.hamcrest.Matchers;
  */
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
-public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends AbstractStage<T> {
+public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends AbstractStage<T>
+    implements WithAssertions, WithExtendedDescriptions {
 
     /**
      * {@link Response} acquired from the WHEN stage. It is not recommended to use it for validation -

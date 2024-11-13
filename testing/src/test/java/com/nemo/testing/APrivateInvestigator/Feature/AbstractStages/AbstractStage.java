@@ -2,10 +2,13 @@ package com.nemo.testing.APrivateInvestigator.Feature.AbstractStages;
 
 import com.nemo.testing.core.API.APIService;
 import com.nemo.testing.core.API.WithBaseEndpoints;
+import com.nemo.testing.core.TypedClassInstanceMap;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.ExpectedScenarioState;
 import com.tngtech.jgiven.annotation.FillerWord;
+import com.tngtech.jgiven.annotation.ScenarioState;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +23,11 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
 
     @ExpectedScenarioState
     protected CurrentStep currentStep;
+
+    @ScenarioState
+    protected UserEntity CURRENT_USER = null;
+    @ScenarioState
+    protected TypedClassInstanceMap createdEntities;
 
     @Autowired
     protected APIService apiService;

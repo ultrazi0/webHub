@@ -57,7 +57,7 @@ class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
 
     @ExtendedDescription("Checked in the database")
     public RegisterGivenStage my_account_does_not_exist(@Hidden String username) {
-        assumeThatThrownBy(() -> userService.getUserIdByUsername(username))
+        assumeThatThrownBy(() -> userService.getUserByUsername(username))
             .as("User with username \"%s\" already exists", username)
             .isInstanceOf(UserNotFoundException.class);
 

@@ -48,6 +48,10 @@ public class RobotEntity {
         this.ownerId = robotsRecord.getOwnerId();
     }
 
+    public static RobotEntity of(RobotsRecord robotsRecord) {
+        return new RobotEntity(robotsRecord);
+    }
+
     public int getId() {
         return id;
     }

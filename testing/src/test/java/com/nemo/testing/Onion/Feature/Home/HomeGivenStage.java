@@ -17,6 +17,7 @@ import java.util.Set;
 @SuppressWarnings("UnusedReturnValue")
 class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
+    // TODO: refactor using the mapper
     @ProvidedScenarioState
     private final Set<Integer> createdRobots = new HashSet<>();
 
@@ -78,7 +79,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription("Resolved in the database")
     public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
-        assumeThatCode(() -> createdRobots.add(robotService.createNewRobot(robotName, CURRENT_USER.getId())))
+        assumeThatCode(() -> createdRobots.add(robotService.createNewRobot(robotName, CURRENT_USER.getId()).getId()))
             .as("Create robot with name \"%s\"", robotName)
             .doesNotThrowAnyException();
 

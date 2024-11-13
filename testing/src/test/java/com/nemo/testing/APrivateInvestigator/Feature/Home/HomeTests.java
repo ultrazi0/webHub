@@ -8,9 +8,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 @APrivateInvestigatorTest
-public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeThenStage> {
+@SuppressWarnings("ResultOfMethodCallIgnored")
+class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeThenStage> {
 
-    String DEFAULT_ROBOT_NAME = "myTestRobot";
+    static String DEFAULT_ROBOT_NAME = "myTestRobot";
 
     @Test
     void if_logged_in_I_should_be_able_to_view_the_list_of_all_commands() {
@@ -42,5 +43,21 @@ public class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage,
         then()
             .response_is_correct()
             .and().I().get_values_for_command(command);
+    }
+
+    @Test
+    void provided_I_have_a_robot_I_should_be_able_to_get_its_details() {
+
+        given()
+            .I_am().a().test_user()
+            .and().I().have_a_robot(DEFAULT_ROBOT_NAME)
+            .and().I().request_it();
+
+        when()
+            .I().send_request_to().get_robot_endpoint();
+
+        then()
+            .response_is_correct()
+            .and().I().get_the_correct_robot();
     }
 }

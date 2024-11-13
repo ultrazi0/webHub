@@ -5,6 +5,7 @@ import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @APrivateInvestigatorTest
+@SuppressWarnings("ResultOfMethodCallIgnored")
 class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage> {
 
     private static final String DEFAULT_USERNAME = "myTestUsername";
@@ -21,7 +22,8 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
             .I().send_request_to().register_endpoint();
 
         then()
-            .response_is_correct(DEFAULT_USERNAME)
+            .new_user_$_is_created(DEFAULT_USERNAME)
+            .and().response_is_correct(DEFAULT_USERNAME)
             .and().I_am().logged_in_as(DEFAULT_USERNAME);
 
     }

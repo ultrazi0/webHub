@@ -1,11 +1,16 @@
 package com.nemo.testing.core.Persistence;
 
+import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
 
 import static org.jooq.generated.Tables.ROBOTS;
 import static org.jooq.generated.Tables.USER_ROBOT_RELATIONS;
@@ -17,7 +22,7 @@ import static org.jooq.generated.Tables.USER_ROBOT_RELATIONS;
  */
 @Slf4j
 @Service
-public class RobotService {
+public class RobotService implements WithCleanup {
 
     @Autowired
     private DSLContext db;
@@ -54,25 +59,25 @@ public class RobotService {
         return ownerId;
     }
 
-    public int createNewRobot(String robotName, int ownerId) {
-        Integer robotId = db
+    public RobotEntity createNewRobot(String robotName, int ownerId) {
+        RobotsRecord robotsRecord = db
             .insertInto(ROBOTS)
             .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
             .values(robotName, ownerId)
-            .returningResult(ROBOTS.ROBOT_ID)
-            .fetchOne(ROBOTS.ROBOT_ID);
+            .returning()
+            .fetchOne();
 
-        if (robotId == null) {
+        if (robotsRecord == null) {
             throw new RuntimeException("No robots were created");
         }
 
         db
             .insertInto(USER_ROBOT_RELATIONS)
             .columns(USER_ROBOT_RELATIONS.USER_ID, USER_ROBOT_RELATIONS.ROBOT_ID)
-            .values(ownerId, robotId)
+            .values(ownerId, robotsRecord.getRobotId())
             .execute();
 
-        return robotId;
+        return RobotEntity.of(robotsRecord);
     }
 
     public void deleteRobotById(int id) {
@@ -81,5 +86,37 @@ public class RobotService {
         if (deleted < 1) {
             throw new RuntimeException(id + " not found");
         }
+    }
+
+    public void deleteAllByIds(Collection<Integer> ids) {
+        int deleted = db.
+            deleteFrom(ROBOTS)
+            .where(ROBOTS.ROBOT_ID.in(ids))
+            .execute();
+
+        if (deleted < 1) {
+            log.warn("No robots were deleted, for there were none with id in {}", ids);
+        }
+    }
+
+    @Override
+    public void delete(Object entity) {
+        if (entity instanceof RobotEntity robotEntity) {
+            deleteRobotById(robotEntity.getId());
+        }
+        throw new IllegalArgumentException(
+            "entity must be an instance of RobotEntity class, provided: " + entity);
+    }
+
+    @Override
+    public <T> void deleteAll(Collection<T> entities) {
+        List<Integer> ids = entities.stream().map(entity -> {
+            if (entity instanceof RobotEntity robotEntity) {
+                return robotEntity.getId();
+            }
+            throw new IllegalArgumentException("entity must be an instance of RobotEntity class, provided: " + entity);
+        }).toList();
+
+        deleteAllByIds(ids);
     }
 }

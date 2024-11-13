@@ -127,7 +127,7 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
             assumeThatCode(() -> driverService.waitUntil(driver -> mainPage.isLoggedIn()))
                 .as(addScreenshotToDescription("Check if automatic login successful"))
                 .doesNotThrowAnyException();
-            CURRENT_USER = userService.getUserIdByUsername(TEST_USER_USERNAME);
+            CURRENT_USER = userService.getUserByUsername(TEST_USER_USERNAME);
         }
 
         return self();

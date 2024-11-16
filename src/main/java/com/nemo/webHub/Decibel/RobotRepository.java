@@ -89,10 +89,6 @@ public class RobotRepository {
         if (newRobot == null) {
             throw new RuntimeException("Newly inserted robot is null");
         }
-        db.insertInto(USER_ROBOT_RELATIONS)
-                .columns(USER_ROBOT_RELATIONS.USER_ID, USER_ROBOT_RELATIONS.ROBOT_ID)
-                .values(userId, newRobot.getRobotId())
-                .execute();
 
         return new RobotEntity(newRobot);
     }

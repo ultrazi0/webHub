@@ -5,6 +5,7 @@ import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @APrivateInvestigatorTest
+@SuppressWarnings("ResultOfMethodCallIgnored")
 class LoginTests extends SpringScenarioTest<LoginGivenStage, LoginWhenStage, LoginThenStage> {
 
     private static final String DEFAULT_USERNAME = "myTestUsername";

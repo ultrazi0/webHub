@@ -4,12 +4,9 @@ import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGive
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.webHub.Decibel.UserNotFoundException;
 import com.tngtech.jgiven.annotation.AfterScenario;
-import com.tngtech.jgiven.annotation.ExtendedDescription;
-import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
@@ -49,18 +46,6 @@ class LoginGivenStage extends AbstractGivenStage<LoginGivenStage> {
     public LoginGivenStage logged_in_as_$_with_password(String username, String password) {
         assumeLoggedIn(username, password);
 
-        return self();
-    }
-
-    @ExtendedDescription(CHECKED_IN_DATABASE)
-    public LoginGivenStage user_$_exists(@Quoted String username, @Hidden String password) {
-        try {
-            userService.createNewUser(username, password);
-        } catch (DataAccessException ignored) {
-            log.warn("User with username \"{}\" already exists, it will be deleted after this test", username);
-        }
-        // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
-        createdUsers.add(username);
         return self();
     }
 

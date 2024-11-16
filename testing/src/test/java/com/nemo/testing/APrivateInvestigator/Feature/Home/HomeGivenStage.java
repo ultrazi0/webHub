@@ -4,11 +4,13 @@ import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGive
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.tngtech.jgiven.annotation.As;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.Set;
 
 @JGivenStage
@@ -24,6 +26,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         return self();
     }
 
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage have_a_robot(@Quoted String robotName) {
         createdEntities.addInstance(robotService.createNewRobot(robotName, CURRENT_USER.getId()));
 
@@ -32,9 +35,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     public HomeGivenStage request_it() {
         Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
-        assumeThat(createdRobots)
-            .as("Only one robot should be created")
-            .hasSize(1);
+        assumeOnlyOneRobotHasBeenCreated(createdRobots);
 
         request.pathParam("robotId", createdRobots.iterator().next().getId());
 
@@ -50,9 +51,35 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         return self();
     }
 
-    public HomeGivenStage set_its_name_to(@Quoted String robotName) {
+    @As("set new robot's name to")
+    public HomeGivenStage set_new_robots_name_to(@Quoted String robotName) {
         request.formParam("name", robotName);
 
         return self();
+    }
+
+    public HomeGivenStage change_its_name_to(@Quoted String robotName) {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        assumeOnlyOneRobotHasBeenCreated(createdRobots);
+
+        request.pathParam("robotId", createdRobots.iterator().next().getId());
+        request.formParam("name", robotName);
+
+        return self();
+    }
+
+    public HomeGivenStage want_to_delete_it() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        assumeOnlyOneRobotHasBeenCreated(createdRobots);
+
+        request.pathParam("robotId", createdRobots.iterator().next().getId());
+
+        return self();
+    }
+
+    private void assumeOnlyOneRobotHasBeenCreated(Collection<RobotEntity> createdRobots) {
+        assumeThat(createdRobots)
+            .as("Only one robot should be created")
+            .hasSize(1);
     }
 }

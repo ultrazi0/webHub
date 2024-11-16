@@ -1,12 +1,14 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Sect.register;
 
+import com.nemo.testing.core.API.WithErrorMessages;
 import com.nemo.testing.core.APrivateInvestigatorTest;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @APrivateInvestigatorTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage> {
+class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage>
+    implements WithErrorMessages {
 
     private static final String DEFAULT_USERNAME = "myTestUsername";
     private static final String DEFAULT_PASSWORD = "myTestPassword";
@@ -39,8 +41,8 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
             .I().send_request_to().register_endpoint();
 
         then()
-            .status_code_is(409)
-            .and().I().get_an_error_that().name_is_already_taken();
+            .response_is_correct(409)
+            .and().I().get_an_error(NAME_ALREADY_TAKEN);
 
     }
 

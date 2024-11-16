@@ -4,6 +4,7 @@ import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThen
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Commands.CommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
+import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
@@ -107,6 +108,21 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     public HomeThenStage the_name_of_the_returned_robot_is(@Quoted String robotName) {
         validatableResponse.body("name", Matchers.equalTo(robotName));
+
+        return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage its_name_is_changed_from_$_to(@Quoted String originalRobotName, @Quoted String editedRobotName) {
+        return robot_with_name_$_does_not_exit(originalRobotName)
+            .and().robot_$_is_created(editedRobotName);
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage robot_with_name_$_does_not_exit(@Quoted String robotName) {
+        assertThatThrownBy(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
+            .as("Assert cannot find robot with name \"%s\"", robotName)
+            .isInstanceOf(RobotNotFoundException.class);
 
         return self();
     }

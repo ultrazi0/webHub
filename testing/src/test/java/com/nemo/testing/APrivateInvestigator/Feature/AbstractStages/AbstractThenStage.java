@@ -84,6 +84,12 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
         return self();
     }
 
+    public T get_an_error(@Quoted String errorMessage) {
+        validatableResponse.body("error", Matchers.equalTo(errorMessage));
+
+        return self();
+    }
+
     /**
      * Default realization. Asserts that the status code is {@code 200}
      * */

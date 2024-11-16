@@ -2,9 +2,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.AbstractStages;
 
 import com.nemo.testing.core.API.Request;
 import com.nemo.testing.core.WithExtendedDescriptions;
-import com.tngtech.jgiven.annotation.BeforeStage;
-import com.tngtech.jgiven.annotation.ExpectedScenarioState;
-import com.tngtech.jgiven.annotation.FillerWord;
+import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -90,8 +88,22 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      * Default realization. Asserts that the status code is {@code 200}
      * */
     public T response_is_correct() {
-        validatableResponse.statusCode(200);
+        return response_is_correct(200);
+    }
+
+    /**
+     * Asserts that the status code matches the provided code
+     * */
+    public T response_is_correct(@Hidden int statusCode) {
+        currentStep.setComment("Expected status code: " + statusCode);
+
+        return status_code_is(statusCode);
+    }
+
+    public T status_code_is(@Quoted int statusCode) {
+        validatableResponse.statusCode(statusCode);
 
         return self();
+
     }
 }

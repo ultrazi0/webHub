@@ -1,8 +1,10 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThenStage;
+import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Commands.CommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
+import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -16,6 +18,13 @@ import java.util.Set;
 
 @JGivenStage
 class HomeThenStage extends AbstractThenStage<HomeThenStage> {
+
+    private final RobotService robotService;
+
+    public HomeThenStage(RobotService robotService) {
+        super();
+        this.robotService = robotService;
+    }
 
     public HomeThenStage get_all_commands() {
         List<String> expectedList = Arrays.stream(CommandType.values()).map(CommandType::toString).toList();
@@ -83,6 +92,21 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     public HomeThenStage online_status_is(@Quoted boolean isOnline) {
         validatableResponse.body("online", Matchers.equalTo(isOnline));
+
+        return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage robot_$_is_created(String robotName) {
+        assertThatCode(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
+            .as("Robot %s is created", robotName)
+            .doesNotThrowAnyException();
+
+        return self();
+    }
+
+    public HomeThenStage the_name_of_the_returned_robot_is(@Quoted String robotName) {
+        validatableResponse.body("name", Matchers.equalTo(robotName));
 
         return self();
     }

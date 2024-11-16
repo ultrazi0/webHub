@@ -52,7 +52,7 @@ class LoginTests extends SpringScenarioTest<LoginGivenStage, LoginWhenStage, Log
             .I().send_request_to().logout_endpoint();
 
         then()
-            .logout_response_is_correct()
+            .response_is_correct(204)
             .and().I_am().not_logged_in();
 
     }

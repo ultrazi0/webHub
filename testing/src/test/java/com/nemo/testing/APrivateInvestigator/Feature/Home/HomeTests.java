@@ -60,4 +60,22 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .response_is_correct()
             .and().I().get_the_correct_robot();
     }
+
+    @Test
+    void insertTest() {
+
+        given()
+            .I_am().a().test_user()
+            .and().robot_$_does_not_exist(DEFAULT_ROBOT_NAME)
+            .and().I().set_its_name_to(DEFAULT_ROBOT_NAME);
+
+        when()
+            .I().send_request_to().insert_robot_endpoint();
+
+        then()
+            .robot_$_is_created(DEFAULT_ROBOT_NAME)
+            .and().response_is_correct(201)
+            .and().the_name_of_the_returned_robot_is(DEFAULT_ROBOT_NAME);
+
+    }
 }

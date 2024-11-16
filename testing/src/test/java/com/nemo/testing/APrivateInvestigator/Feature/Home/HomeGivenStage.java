@@ -3,6 +3,8 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Decibel.RobotEntity;
+import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,21 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
             .hasSize(1);
 
         request.pathParam("robotId", createdRobots.iterator().next().getId());
+
+        return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeGivenStage robot_$_does_not_exist(@Quoted String robotName) {
+        assumeThatThrownBy(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
+            .as("Check \"%s\" does not exist", robotName)
+            .isInstanceOf(RobotNotFoundException.class);
+
+        return self();
+    }
+
+    public HomeGivenStage set_its_name_to(@Quoted String robotName) {
+        request.formParam("name", robotName);
 
         return self();
     }

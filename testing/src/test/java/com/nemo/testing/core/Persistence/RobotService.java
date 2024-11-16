@@ -27,22 +27,21 @@ public class RobotService implements WithCleanup {
     @Autowired
     private DSLContext db;
 
-    public int findRobotIdByName(String robotName, int ownerId) throws RuntimeException {
-        Record1<Integer>[] robotIds = db
-            .select(ROBOTS.ROBOT_ID)
-            .from(ROBOTS)
+    public RobotEntity findRobotByName(String robotName, int ownerId) throws RuntimeException {
+        RobotsRecord[] robotsRecords = db
+            .selectFrom(ROBOTS)
             .where(ROBOTS.NAME.eq(robotName).and(ROBOTS.OWNER_ID.eq(ownerId)))
             .fetchArray();
 
-        if (robotIds.length == 0) {
+        if (robotsRecords.length == 0) {
             throw new RobotNotFoundException(robotName);
-        } else if (robotIds.length > 1) {
+        } else if (robotsRecords.length > 1) {
             log.error("The query returned more than one robot: returned {} robots with the name \"{}\"",
-                robotIds.length, robotName);
+                robotsRecords.length, robotName);
             throw new RuntimeException("Multiple robots with the name \"" + robotName + "\" returned from the database");
         }
 
-        return robotIds[0].value1();
+        return RobotEntity.of(robotsRecords[0]);
     }
 
     public int getRobotOwnerIdByRobotId(int robotId) throws RobotNotFoundException {

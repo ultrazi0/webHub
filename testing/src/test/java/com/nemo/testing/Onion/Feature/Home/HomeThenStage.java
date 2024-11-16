@@ -40,7 +40,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExtendedDescription("Checked in the database")
     public HomeThenStage robot_is_created(String robotName) {
-        assertThatCode(() -> createdRobots.add(robotService.findRobotIdByName(robotName, CURRENT_USER.getId())))
+        assertThatCode(() -> createdRobots.add(robotService.findRobotByName(robotName, CURRENT_USER.getId()).getId()))
             .as("Check in the database if the robot is created")
             .doesNotThrowAnyException();
 
@@ -110,7 +110,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExtendedDescription("Checked in the database")
     public HomeThenStage robot_$_does_not_exist(@Quoted String robotName) {
-        assertThatCode(() -> robotService.findRobotIdByName(robotName, CURRENT_USER.getId()))
+        assertThatCode(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Assert that robot with name \"%s\" does not exist", robotName)
             .isInstanceOf(RuntimeException.class);
 

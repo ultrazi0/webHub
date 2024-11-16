@@ -24,12 +24,6 @@ class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
             .and().username_is(username);
     }
 
-    public RegisterThenStage status_code_is(int status_code) {
-        validatableResponse.statusCode(status_code);
-
-        return self();
-    }
-
     public RegisterThenStage body_has_user_id() {
         validatableResponse.body("id", Matchers.instanceOf(Integer.class));
 

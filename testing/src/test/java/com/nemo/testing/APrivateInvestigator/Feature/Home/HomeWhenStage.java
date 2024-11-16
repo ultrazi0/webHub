@@ -43,4 +43,10 @@ class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> implements WithHome
 
         return sendAndReturnSelf();
     }
+
+    public HomeWhenStage get_user_robots_endpoint() {
+        request.to(GET_USER_ROBOTS_ENDPOINT);
+
+        return sendAndReturnSelf();
+    }
 }

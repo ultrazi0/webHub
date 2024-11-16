@@ -11,6 +11,7 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @JGivenStage
@@ -28,7 +29,9 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage have_a_robot(@Quoted String robotName) {
-        createdEntities.addInstance(robotService.createNewRobot(robotName, CURRENT_USER.getId()));
+        assumeThatCode(() -> createdEntities.addInstance(robotService.createNewRobot(robotName, CURRENT_USER.getId())))
+            .as("Try to create a new robot \"%s\"", robotName)
+            .doesNotThrowAnyException();
 
         return self();
     }
@@ -73,6 +76,15 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         assumeOnlyOneRobotHasBeenCreated(createdRobots);
 
         request.pathParam("robotId", createdRobots.iterator().next().getId());
+
+        return self();
+    }
+
+    public HomeGivenStage have_robots(List<String> robotNames) {
+        assumeThatCode(() -> createdEntities.addInstances(
+            RobotEntity.class, robotService.createNewRobots(robotNames, CURRENT_USER.getId())))
+            .as("Try to create new robots %s", robotNames)
+            .doesNotThrowAnyException();
 
         return self();
     }

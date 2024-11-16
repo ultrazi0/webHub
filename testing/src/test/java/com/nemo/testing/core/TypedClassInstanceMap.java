@@ -20,6 +20,12 @@ public class TypedClassInstanceMap {
     }
 
     @SuppressWarnings("unchecked")
+    public <T> void addInstances(final Class<T> cls, final Collection<T> instances) {
+        Set<T> instancesInMap = (Set<T>) map.computeIfAbsent(cls, k -> new HashSet<>(instances.size()));
+        instancesInMap.addAll(instances);
+    }
+
+    @SuppressWarnings("unchecked")
     public <T> Set<T> getInstances(final Class<T> cls) {
         return (Set<T>) map.getOrDefault(cls, Collections.emptySet());
     }

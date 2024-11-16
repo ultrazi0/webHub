@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @JGivenStage
+@SuppressWarnings("UnusedReturnValue")
 class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     private final RobotService robotService;
@@ -123,6 +124,23 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         assertThatThrownBy(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
             .as("Assert cannot find robot with name \"%s\"", robotName)
             .isInstanceOf(RobotNotFoundException.class);
+
+        return self();
+    }
+
+    public HomeThenStage get_all_my_robots(List<String> robotNames) {
+        int size = robotNames.size();
+
+        // This is not in violation of the "no ifs" principle, because it checks the *expected* values, and not *actual*
+        if (size == 0) {
+            validatableResponse.body("", Matchers.not(Matchers.hasKey("_embedded.robotEntityList")));
+
+            return self();
+        }
+
+        validatableResponse.rootPath("_embedded");
+        validatableResponse.body("robotEntityList.size()", Matchers.equalTo(size));
+        validatableResponse.body("robotEntityList.with { it.name }", Matchers.containsInAnyOrder(robotNames.toArray()));
 
         return self();
     }

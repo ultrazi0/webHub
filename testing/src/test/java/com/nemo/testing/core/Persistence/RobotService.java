@@ -4,16 +4,17 @@ import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
-import org.jooq.Record1;
+import org.jooq.InsertValuesStep2;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.jooq.generated.Tables.ROBOTS;
-import static org.jooq.generated.Tables.USER_ROBOT_RELATIONS;
 
 /**
  * The {@code RobotService} class provides functionalities to interact with the robot records
@@ -70,13 +71,24 @@ public class RobotService implements WithCleanup {
             throw new RuntimeException("No robots were created");
         }
 
-        db
-            .insertInto(USER_ROBOT_RELATIONS)
-            .columns(USER_ROBOT_RELATIONS.USER_ID, USER_ROBOT_RELATIONS.ROBOT_ID)
-            .values(ownerId, robotsRecord.getRobotId())
-            .execute();
-
         return RobotEntity.of(robotsRecord);
+    }
+
+    public List<RobotEntity> createNewRobots(List<String> robotNames, int ownerId) {
+        if (robotNames == null || robotNames.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        InsertValuesStep2<RobotsRecord, String, Integer> insertQuery = db.insertInto(ROBOTS)
+            .columns(ROBOTS.NAME, ROBOTS.OWNER_ID);
+
+        for (String robotName : robotNames) {
+            insertQuery = insertQuery.values(robotName, ownerId);
+        }
+
+        RobotsRecord[] robotsRecords = insertQuery.returning().fetchArray();
+
+        return Arrays.stream(robotsRecords).map(RobotEntity::of).toList();
     }
 
     public void deleteRobotById(int id) {

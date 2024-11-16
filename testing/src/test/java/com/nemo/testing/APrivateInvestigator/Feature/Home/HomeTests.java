@@ -7,6 +7,10 @@ import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @APrivateInvestigatorTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -133,5 +137,30 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .robot_with_name_$_does_not_exit(DEFAULT_ROBOT_NAME)
             .and().response_is_correct(204);
 
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void provided_I_have_robots_I_am_able_to_get_them(List<String> robotNames) {
+
+        given()
+            .I_am().a().test_user()
+            .and().I().have_robots(robotNames);
+
+        when()
+            .I().send_request_to().get_user_robots_endpoint();
+
+        then()
+            .response_is_correct()
+            .and().I().get_all_my_robots(robotNames);
+
+    }
+
+    private static Stream<List<String>> provided_I_have_robots_I_am_able_to_get_them() {
+        return Stream.of(
+            List.of(),
+            List.of(DEFAULT_ROBOT_NAME),
+            List.of(DEFAULT_ROBOT_NAME+"1", DEFAULT_ROBOT_NAME+"2", DEFAULT_ROBOT_NAME+"3")
+        );
     }
 }

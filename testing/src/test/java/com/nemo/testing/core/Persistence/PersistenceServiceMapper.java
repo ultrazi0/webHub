@@ -12,11 +12,12 @@ public class PersistenceServiceMapper {
     private final RobotService robotService;
     private final UserService userService;
 
-    public WithCleanup getCleanupService(Class<?> entityClass) {
-        if (entityClass.equals(RobotEntity.class)) {
-            return robotService;
-        } else if (entityClass.equals(UserEntity.class)) {
-            return userService;
+    @SuppressWarnings("unchecked")
+    public <T> WithPersistence<T> getPersistenceService(Class<T> entityClass) {
+        if (RobotEntity.class.equals(entityClass)) {
+            return (WithPersistence<T>) robotService;
+        } else if (UserEntity.class.equals(entityClass)) {
+            return (WithPersistence<T>) userService;
         }
         throw new IllegalArgumentException("Unsupported entity class: " + entityClass);
     }

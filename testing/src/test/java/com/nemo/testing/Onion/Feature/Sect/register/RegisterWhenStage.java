@@ -3,6 +3,7 @@ package com.nemo.testing.Onion.Feature.Sect.register;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractWhenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -22,6 +23,11 @@ class RegisterWhenStage extends AbstractWhenStage<RegisterWhenStage> {
     }
 
     public RegisterWhenStage register_with_credentials(@Quoted String username, @Quoted String password) {
+        return I().try_to_register_with_credentials(username, password)
+            .and().I().registerEntity(UserEntity.class, username);
+    }
+
+    public RegisterWhenStage try_to_register_with_credentials(@Quoted String username, @Quoted String password) {
 
         registerPage.enterCredentials(username, password);
         registerPage.pressSubmit();

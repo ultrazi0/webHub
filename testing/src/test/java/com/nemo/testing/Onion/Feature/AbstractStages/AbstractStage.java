@@ -7,6 +7,7 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.core.API.APIService;
 import com.nemo.testing.core.API.Request;
 import com.nemo.testing.core.TypedClassInstanceMap;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.BeforeStage;
@@ -16,7 +17,6 @@ import com.tngtech.jgiven.annotation.ScenarioState;
 import com.tngtech.jgiven.attachment.Attachment;
 import com.tngtech.jgiven.attachment.MediaType;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
-import io.restassured.response.Response;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,8 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
 
     @ExpectedScenarioState
     protected CurrentStep currentStep;
+    @ScenarioState
+    protected UserEntity CURRENT_USER = null;
     @ScenarioState
     protected TypedClassInstanceMap createdEntities;
 

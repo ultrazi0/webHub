@@ -83,7 +83,7 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
 
     private void cleanupCreatedEntities() {
         createdEntities.forEach((type, entitySet) -> {
-            persistenceServiceMapper.getCleanupService(type).deleteAll(entitySet);
+            persistenceServiceMapper.getPersistenceService(type).deleteAll(entitySet);
             entitySet.clear();
         });
     }

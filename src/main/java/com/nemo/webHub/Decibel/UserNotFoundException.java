@@ -8,7 +8,7 @@ public class UserNotFoundException extends UsernameNotFoundException {
         super("Could not find user with ID #" + id);
     }
 
-    UserNotFoundException(String username) {
+    public UserNotFoundException(String username) {
         super("Could not find user \"" + username + "\"");
     }
 }

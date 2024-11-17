@@ -1,5 +1,7 @@
 package com.nemo.testing.core.Persistence;
 
+import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
+import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,26 +25,35 @@ import static org.jooq.generated.Tables.ROBOTS;
  */
 @Slf4j
 @Service
-public class RobotService implements WithCleanup {
+public class RobotService implements WithPersistence<RobotEntity> {
 
     @Autowired
     private DSLContext db;
 
+    @Override
+    public RobotEntity getEntityWith(AbstractUniqueAttributes uniqueAttributes) {
+        if (uniqueAttributes instanceof RobotUniqueAttributes robotUniqueAttribute) {
+            RobotsRecord robotsRecord = db
+                .selectFrom(ROBOTS)
+                .where(robotUniqueAttribute.buildWhereClause())
+                .fetchOne();
+
+            if (robotsRecord == null) throw new RobotNotFoundException(robotUniqueAttribute.toString());
+
+            return RobotEntity.of(robotsRecord);
+        }
+        throw new IllegalStateException("uniqueAttributes is not an instance of RobotUniqueAttribute");
+    }
+
     public RobotEntity findRobotByName(String robotName, int ownerId) throws RuntimeException {
-        RobotsRecord[] robotsRecords = db
+        RobotsRecord robotsRecord = db
             .selectFrom(ROBOTS)
             .where(ROBOTS.NAME.eq(robotName).and(ROBOTS.OWNER_ID.eq(ownerId)))
-            .fetchArray();
+            .fetchOne();
 
-        if (robotsRecords.length == 0) {
-            throw new RobotNotFoundException(robotName);
-        } else if (robotsRecords.length > 1) {
-            log.error("The query returned more than one robot: returned {} robots with the name \"{}\"",
-                robotsRecords.length, robotName);
-            throw new RuntimeException("Multiple robots with the name \"" + robotName + "\" returned from the database");
-        }
+        if (robotsRecord == null) throw new RobotNotFoundException(robotName);
 
-        return RobotEntity.of(robotsRecords[0]);
+        return RobotEntity.of(robotsRecord);
     }
 
     public int getRobotOwnerIdByRobotId(int robotId) throws RobotNotFoundException {
@@ -120,14 +131,7 @@ public class RobotService implements WithCleanup {
     }
 
     @Override
-    public <T> void deleteAll(Collection<T> entities) {
-        List<Integer> ids = entities.stream().map(entity -> {
-            if (entity instanceof RobotEntity robotEntity) {
-                return robotEntity.getId();
-            }
-            throw new IllegalArgumentException("entity must be an instance of RobotEntity class, provided: " + entity);
-        }).toList();
-
-        deleteAllByIds(ids);
+    public void deleteAll(Collection<RobotEntity> entities) {
+        deleteAllByIds(entities.stream().map(RobotEntity::getId).toList());
     }
 }

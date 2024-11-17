@@ -1,28 +1,50 @@
 package com.nemo.testing.core.Persistence;
 
+import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
+import com.nemo.testing.core.Persistence.UniqueAttributes.UserUniqueAttributes;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Decibel.UserNotFoundException;
 import com.nemo.webHub.Decibel.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.DSLContext;
+import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
+
+import static org.jooq.generated.tables.Users.USERS;
 
 /**
  * Service class for managing user-related operations.
  */
 @Slf4j
 @Service
-public class UserService implements WithCleanup {
+public class UserService implements WithPersistence<UserEntity> {
 
+    @Autowired
+    private DSLContext db;
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserEntity getEntityWith(AbstractUniqueAttributes uniqueAttributes) {
+        if (uniqueAttributes instanceof UserUniqueAttributes userUniqueAttributes) {
+            UsersRecord userRecord = db
+                .selectFrom(USERS)
+                .where(uniqueAttributes.buildWhereClause())
+                .fetchOne();
+
+            if (userRecord == null) throw new UserNotFoundException(userUniqueAttributes.toString());
+
+            return UserEntity.of(userRecord);
+        }
+        throw new IllegalStateException("uniqueAttributes is not an instance of UserUniqueAttributes");
+    }
 
     /**
      * Retrieves the UserEntity object of a user based on their username.
@@ -80,14 +102,7 @@ public class UserService implements WithCleanup {
     }
 
     @Override
-    public <T> void deleteAll(Collection<T> entities) {
-        List<Integer> ids = entities.stream().map(entity -> {
-            if (entity instanceof UserEntity userEntity) {
-                return userEntity.getId();
-            }
-            throw new IllegalArgumentException("entity must be an instance of UserEntity class, provided: " + entity);
-        }).toList();
-
-        deleteAllById(ids);
+    public void deleteAll(Collection<UserEntity> entities) {
+        deleteAllById(entities.stream().map(UserEntity::getId).toList());
     }
 }

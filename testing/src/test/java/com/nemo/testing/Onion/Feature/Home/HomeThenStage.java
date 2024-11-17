@@ -5,7 +5,6 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ import java.util.Set;
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
 class HomeThenStage extends AbstractThenStage<HomeThenStage> {
-    @ExpectedScenarioState
-    private UserEntity CURRENT_USER;
 
     @Autowired
     private HomePage homePage;
@@ -38,7 +35,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExtendedDescription("Checked in the database")
     public HomeThenStage robot_is_created(String robotName) {
-        assertThatCode(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
+        assertThatCode(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Check in the database if the robot is created")
             .doesNotThrowAnyException();
 

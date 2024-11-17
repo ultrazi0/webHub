@@ -30,7 +30,21 @@ public class TypedClassInstanceMap {
         return (Set<T>) map.getOrDefault(cls, Collections.emptySet());
     }
 
-    public void forEach(final BiConsumer<? super Class<?>, ? super Set<?>> action) {
-        map.forEach(action);
+    @SuppressWarnings("unchecked")
+    public <T> void forEach(final BiConsumer<Class<T>, Set<T>> action) {
+        Objects.requireNonNull(action);
+
+        for (Map.Entry<Class<?>, Set<?>> entry : map.entrySet()) {
+            Class<T> t;
+            Set<T> setT;
+            try {
+                t = (Class<T>) entry.getKey();
+                setT = (Set<T>) entry.getValue();
+            } catch (IllegalStateException ise) {
+                // this usually means the entry is no longer in the map.
+                throw new ConcurrentModificationException(ise);
+            }
+            action.accept(t, setT);
+        }
     }
 }

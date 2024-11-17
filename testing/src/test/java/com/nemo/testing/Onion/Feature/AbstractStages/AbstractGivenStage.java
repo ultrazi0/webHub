@@ -5,10 +5,8 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.testing.core.TypedClassInstanceMap;
-import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.BeforeScenario;
-import com.tngtech.jgiven.annotation.ProvidedScenarioState;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.Assumptions;
@@ -36,9 +34,6 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     private UserService userService;
     @Autowired
     private PersistenceServiceMapper persistenceServiceMapper;
-
-    @ProvidedScenarioState
-    protected UserEntity CURRENT_USER = null;
 
     @BeforeScenario
     protected void beforeScenario() {
@@ -121,7 +116,7 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
 
     private void cleanupCreatedEntities() {
         createdEntities.forEach((type, entitySet) -> {
-            persistenceServiceMapper.getCleanupService(type).deleteAll(entitySet);
+            persistenceServiceMapper.getPersistenceService(type).deleteAll(entitySet);
             entitySet.clear();
         });
     }

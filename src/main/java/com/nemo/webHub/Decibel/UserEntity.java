@@ -30,6 +30,10 @@ public class UserEntity {
         this.createdAt = usersRecord.getCreatedAt();
     }
 
+    public static UserEntity of(UsersRecord userRecord) {
+        return new UserEntity(userRecord);
+    }
+
     public int getId() {
         return id;
     }

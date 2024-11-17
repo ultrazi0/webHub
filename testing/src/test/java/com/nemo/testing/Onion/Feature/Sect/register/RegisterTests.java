@@ -12,7 +12,7 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
     private static final String DEFAULT_PASSWORD = "myTestPassword";
 
     @Test
-    void register_new_user() {
+    void if_user_does_not_exit_I_should_be_able_to_register() {
 
         given()
             .I_am().on_register_page()
@@ -30,7 +30,7 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
     }
 
     @Test
-    void user_already_exists() {
+    void given_user_already_exits_I_should_not_be_able_to_register() {
 
         given()
             .I_am().on_register_page()
@@ -47,7 +47,7 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
     }
 
     @Test
-    void passwords_do_not_match() {
+    void when_different_passwords_are_entered_then_register_should_be_disabled() {
 
         given()
             .I_am().on_register_page()

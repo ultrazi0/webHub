@@ -2,7 +2,6 @@ package com.nemo.testing.Onion.Feature.AbstractStages;
 
 import com.codeborne.selenide.Selenide;
 import com.nemo.testing.Onion.Model.AbstractPage;
-import com.nemo.testing.Onion.Model.AbstractProtectedPage;
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.AfterScenario;
@@ -11,9 +10,11 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.Assumptions;
 import org.assertj.core.api.WithAssumptions;
+import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.WebDriverRunner.driver;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
 /**
@@ -76,18 +77,21 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     /**
      * Cleans up the browser state after a testing scenario.
      * <p>
-     * This method performs the following actions:<br />
-     * 1. Logs out the user if they are currently logged in.<br />
-     * 2. Clears the browser's session storage.<br />
-     * 3. Clears the browser's local storage.<br />
-     * 4. Clears all cookies from the browser.<br />
-     * 5. Refreshes the browser page.
+     * This method performs the following actions:
+     * <ul>
+     *     <li>Logs out the user</li>
+     *     <li>Clears the browser's session storage</li>
+     *     <li>Clears the browser's local storage</li>
+     *     <li>Clears all cookies from the browser</li>
+     *     <li>Refreshes the browser page</li>
+     * </ul>
      */
     @AfterScenario
     private void cleanup() {
-        if (mainPage().isLoggedIn()) {
-            mainPage().performLogout();
-        }
+        // Most of the time the test will require login, thus sending an additional, third, check request
+        //  for all tests would only increase the total execution time, since the two requests saved in a few
+        //  tests without login would be overly compensated by the third request sent in all other cases
+        logout();
 
         Selenide.sessionStorage().clear();
         Selenide.clearBrowserLocalStorage();
@@ -95,14 +99,24 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         Selenide.refresh();
     }
 
+    private void logout() {
+        String sessionId = null;
+        Cookie sessionIdCookie = driver().getWebDriver().manage().getCookieNamed(apiService.getSessionCookieName());
+        if (sessionIdCookie != null) {
+            sessionId = sessionIdCookie.getValue();
+        }
+        apiService.reset(sessionId);
+    }
+
     /**
-     * An action. Ensures that the user is not currently logged in by checking the login status on the main page.
-     * If the user is already logged in, an assumption failure with a specific message is triggered.
+     * An action. Ensures that the user is not currently logged in by sending a request to the API
+     * to retrieve the currently logged-in user. If the user is already logged in,
+     * an assumption failure with a specific message is triggered.
      *
      * @return the current instance (self) for method chaining
      */
     public T not_logged_in() {
-        assumeThat(mainPage().isLoggedIn())
+        assumeThat(isLoggedIn())
             .as("Check if already logged in")
             .withFailMessage("I am already logged in")
             .isFalse();
@@ -111,24 +125,23 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     }
 
     /**
-     * Logs in as the test user if the main page is a protected page.
-     * This method ensures that if the main page requires login, the test user will be automatically logged in
-     * before any further interactions.
+     * Logs in as the test user by sending an API request and providing session cookie to the driver.
      *
      * <p>Also provides the ID of the currently logged-in user to the stage state</p>
      *
      * @return the current instance (self) for method chaining
      */
     public T test_user() {
-        if (mainPage() instanceof AbstractProtectedPage) {
-            AbstractProtectedPage mainPage = (AbstractProtectedPage) this.mainPage();
-            mainPage.performLogin(TEST_USER_USERNAME, TEST_USER_PASSWORD);
+        mainPage().openPage();
 
-            assumeThatCode(() -> driverService.waitUntil(driver -> mainPage.isLoggedIn()))
-                .as(addScreenshotToDescription("Check if automatic login successful"))
-                .doesNotThrowAnyException();
-            CURRENT_USER = userService.getUserByUsername(TEST_USER_USERNAME);
-        }
+        assumeThat(apiService.login(TEST_USER_USERNAME, TEST_USER_PASSWORD))
+            .as("Check if automatic login successful")
+            .isTrue();
+
+        driver().getWebDriver().manage().addCookie(
+            new Cookie(apiService.getSessionCookieName(), apiService.getSessionId()));
+
+        CURRENT_USER = userService.getUserByUsername(TEST_USER_USERNAME);
 
         return self();
     }

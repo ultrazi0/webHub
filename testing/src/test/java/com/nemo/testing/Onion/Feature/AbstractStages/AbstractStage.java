@@ -1,8 +1,11 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
 import com.codeborne.selenide.Selenide;
+import com.nemo.testing.APrivateInvestigator.Model.Endpoints.WithSecurityEndpoints;
 import com.nemo.testing.Onion.DriverService;
 import com.nemo.testing.Onion.Model.AbstractPage;
+import com.nemo.testing.core.API.APIService;
+import com.nemo.testing.core.API.Request;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.BeforeStage;
@@ -11,10 +14,14 @@ import com.tngtech.jgiven.annotation.FillerWord;
 import com.tngtech.jgiven.attachment.Attachment;
 import com.tngtech.jgiven.attachment.MediaType;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import io.restassured.response.Response;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.function.Supplier;
+
+import static com.codeborne.selenide.WebDriverRunner.driver;
 
 /**
  * AbstractStage serves as a base class for defining stages in JGiven testing scenarios.
@@ -23,10 +30,12 @@ import java.util.function.Supplier;
  * @param <T> the type of the concrete stage that extends this abstract class
  */
 @JGivenStage
-public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T> {
+public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T> implements WithSecurityEndpoints {
 
     @Autowired
     protected DriverService driverService;
+    @Autowired
+    protected APIService apiService;
 
     @ExpectedScenarioState
     protected CurrentStep currentStep;
@@ -66,6 +75,19 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
             takeScreenshot(description);
             return String.format(description, args);
         };
+    }
+
+    /**
+     * Checks if the browser is logged in by sending an API request with the session cookie if present
+     * @return true if logged in
+     * */
+    protected boolean isLoggedIn() {
+        Request request = Request.createTo(USER_ENDPOINT);
+        Cookie sessionIdCookie = driver().getWebDriver().manage().getCookieNamed(apiService.getSessionCookieName());
+        if (sessionIdCookie != null) {
+            request.sessionId(sessionIdCookie.getValue());
+        }
+        return apiService.send(request).getStatusCode() == 200;
     }
 
     @BeforeStage

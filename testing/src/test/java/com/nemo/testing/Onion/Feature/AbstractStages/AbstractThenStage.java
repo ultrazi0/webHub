@@ -1,5 +1,6 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
+import com.tngtech.jgiven.annotation.Quoted;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
@@ -25,7 +26,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      */
     @SuppressWarnings("UnusedReturnValue")
     public T logged_in() {
-        assertTakingScreenshotThat(mainPage().isLoggedIn(), "Check if logged in")
+        assertTakingScreenshotThat(isLoggedIn(), "Check if logged in")
             .withFailMessage("I am not logged in")
             .isTrue();
         return self();
@@ -39,7 +40,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      */
     @SuppressWarnings("UnusedReturnValue")
     public T not_logged_in() {
-        assertTakingScreenshotThat(mainPage().isLoggedIn(), "Check if not logged in")
+        assertTakingScreenshotThat(isLoggedIn(), "Check if not logged in")
             .withFailMessage("I am logged in, when I should not be")
             .isFalse();
 

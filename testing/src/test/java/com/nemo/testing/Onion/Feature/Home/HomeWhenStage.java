@@ -49,15 +49,6 @@ class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
         return self();
     }
 
-    @Hidden
-    public HomeWhenStage waitUntilModalIsClosed() {
-        assertThatCode(() -> driverService.waitUntil(driver -> !homePage.anyModalIsVisible()))
-            .as(addScreenshotToDescription("Wait until modal is closed"))
-            .doesNotThrowAnyException();
-
-        return self();
-    }
-
     @ExtendedDescription("Needed to make sure that the card is displayed")
     public HomeWhenStage press_the_refresh_robots_button() {
         homePage.pressRefreshRobotsButton();

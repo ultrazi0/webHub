@@ -1,6 +1,6 @@
 package com.nemo.testing.Onion.Model.Home;
 
-import com.nemo.testing.Onion.Model.AbstractProtectedPage;
+import com.nemo.testing.Onion.Model.AbstractPage;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 @Component
-public class HomePage extends AbstractProtectedPage {
+public class HomePage extends AbstractPage {
     public static final String uri = "";  // empty string, because baseUrl already contains the slash
 
     // Inject the modals

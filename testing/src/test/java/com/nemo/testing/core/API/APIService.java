@@ -1,5 +1,6 @@
 package com.nemo.testing.core.API;
 
+import io.restassured.config.SessionConfig;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -32,8 +33,20 @@ public class APIService implements WithBaseEndpoints {
         return send(request).statusCode() == 200;
     }
 
+    public String getSessionCookieName() {
+        return SessionConfig.DEFAULT_SESSION_ID_NAME;
+    }
+
+    public String getSessionId() {
+        return sessionFilter.getSessionId();
+    }
+
     public void reset() {
-        logout();
+        reset(null);
+    }
+
+    public void reset(String sessionId) {
+        logout(sessionId);
         sessionFilter = new SessionFilter();
         csrfFilter = new CsrfFilter(getCsrfConfig());
     }
@@ -42,7 +55,9 @@ public class APIService implements WithBaseEndpoints {
         return new CsrfConfig(CSRF_URI, sessionFilter);
     }
 
-    private void logout() {
-        send(Request.createTo(LOGOUT_ENDPOINT));
+    private void logout(String sessionId) {
+        Request request = Request.createTo(LOGOUT_ENDPOINT);
+        if (sessionId != null) request.sessionId(sessionId);
+        send(request);
     }
 }

@@ -11,7 +11,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     String DEFAULT_ROBOT_NAME = "myTestRobot";
 
     @Test
-    void testAddRobot() {
+    void if_robot_does_not_exist_I_should_be_able_to_create_a_new_one() {
 
         given()
             .I_am().a().test_user()
@@ -30,7 +30,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    void testRobotInfoButton() {
+    void given_robot_exits_then_I_should_see_its_data_in_the_info_modal() {
 
         given()
             .I_am().a().test_user()
@@ -48,7 +48,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    void testRobotDeleteButton() {
+    void given_robot_exits_then_I_should_be_able_to_delete_it() {
 
         given()
             .I_am().a().test_user()
@@ -67,7 +67,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    void testRobotEditButton() {
+    void given_robot_exits_then_I_should_be_able_to_edit_it() {
 
         String oldRobotName = "oldRobotName";
         String newRobotName = "newRobotName";
@@ -87,7 +87,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    void robotEditButtonShouldBeVisibleWhenOwnerTest() {
+    void given_I_am_the_robots_owner_then_I_should_see_the_edit_button() {
 
         given()
             .I_am().a().test_user()

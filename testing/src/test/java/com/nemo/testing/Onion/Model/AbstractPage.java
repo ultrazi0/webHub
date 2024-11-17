@@ -1,15 +1,12 @@
 package com.nemo.testing.Onion.Model;
 
 import com.codeborne.selenide.ex.ElementShould;
-import com.nemo.testing.Onion.Model.Basis.LogoutModal;
 import com.nemo.testing.Onion.Model.Basis.NavbarFragment;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.elements;
-import static com.codeborne.selenide.WebDriverRunner.driver;
 
 /**
  * AbstractPage represents an abstract base class for all web pages in the application.
@@ -20,8 +17,6 @@ public abstract class AbstractPage extends AbstractComponent {
 
     @Autowired
     protected NavbarFragment navbar;
-    @Autowired
-    private LogoutModal logoutModal;
 
     private static final By ALERTS = By.xpath("//div[@role='alert']");
 
@@ -51,25 +46,5 @@ public abstract class AbstractPage extends AbstractComponent {
 
     public boolean seeLoginButton() {
         return navbar.seeLoginButton();
-    }
-
-    public final boolean anyModalIsVisible() {
-        return logoutModal.anyModalIsVisible();
-    }
-
-    public boolean isLoggedIn() {
-        Cookie jSessionIdCookie = driver().getWebDriver().manage().getCookieNamed("JSESSIONID");
-        return jSessionIdCookie != null && !navbar.seeLoginButton();
-    }
-
-    public void performLogout() {
-        if (logoutModal.anyModalIsVisible()) {
-            // If any modal is visible
-            logoutModal.pressCloseButton();
-        }
-
-        navbar.pressUserDropdownButton();
-        navbar.pressUserDropdownLogoutButton();
-        logoutModal.pressLogoutButton();
     }
 }

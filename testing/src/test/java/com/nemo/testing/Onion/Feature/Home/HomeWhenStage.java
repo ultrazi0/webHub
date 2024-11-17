@@ -4,13 +4,10 @@ import com.nemo.testing.Onion.Feature.AbstractStages.AbstractWhenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
-import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")

@@ -4,6 +4,7 @@ import com.nemo.testing.Onion.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -14,9 +15,6 @@ import java.util.Set;
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
 class HomeThenStage extends AbstractThenStage<HomeThenStage> {
-
-    @ExpectedScenarioState
-    private Set<Integer> createdRobots;
     @ExpectedScenarioState
     private UserEntity CURRENT_USER;
 
@@ -40,7 +38,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExtendedDescription("Checked in the database")
     public HomeThenStage robot_is_created(String robotName) {
-        assertThatCode(() -> createdRobots.add(robotService.findRobotByName(robotName, CURRENT_USER.getId()).getId()))
+        assertThatCode(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
             .as("Check in the database if the robot is created")
             .doesNotThrowAnyException();
 
@@ -81,13 +79,14 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage the_ids_match() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
         assertThat(createdRobots)
             .as("Assert that only one robot has been created in this test")
             .hasSize(1);
 
         assertTakingScreenshotThat(homePage.getRobotIdFromInfoModal(),
             "Check if the ids match")
-            .isEqualTo(createdRobots.iterator().next());
+            .isEqualTo(createdRobots.iterator().next().getId());
 
         return self();
     }

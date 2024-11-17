@@ -3,6 +3,7 @@ package com.nemo.testing.Onion.Feature.Home;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -17,10 +18,6 @@ import java.util.Set;
 @SuppressWarnings("UnusedReturnValue")
 class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
-    // TODO: refactor using the mapper
-    @ProvidedScenarioState
-    private final Set<Integer> createdRobots = new HashSet<>();
-
     @Autowired
     private HomePage homePage;
     @Autowired
@@ -29,19 +26,6 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
     @Override
     protected HomePage mainPage() {
         return homePage;
-    }
-
-    @AfterScenario
-    private void deleteCreatedRobots() {
-        for (Integer robotId : createdRobots) {
-            try {
-                robotService.deleteRobotById(robotId);
-            } catch (RuntimeException ignored) {
-                log.warn("Could not delete robot  with ID {} because it does not exist, proceeding as is", robotId);
-            } finally {
-                createdRobots.remove(robotId);
-            }
-        }
     }
 
     public HomeGivenStage on_home_page() {
@@ -79,7 +63,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription("Resolved in the database")
     public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
-        assumeThatCode(() -> createdRobots.add(robotService.createNewRobot(robotName, CURRENT_USER.getId()).getId()))
+        assumeThatCode(() -> createdEntities.addInstance(robotService.createNewRobot(robotName, CURRENT_USER.getId())))
             .as("Create robot with name \"%s\"", robotName)
             .doesNotThrowAnyException();
 
@@ -111,11 +95,12 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription("Checked in the database")
     public HomeGivenStage its_owner() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
         assumeThat(createdRobots)
             .as("Assume that only one robot has been created")
             .hasSize(1);
 
-        assumeThat(robotService.getRobotOwnerIdByRobotId(createdRobots.iterator().next()))
+        assumeThat(robotService.getRobotOwnerIdByRobotId(createdRobots.iterator().next().getId()))
             .as("Check if current user is the owner of the robot")
             .isEqualTo(CURRENT_USER.getId());
 

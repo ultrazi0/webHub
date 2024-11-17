@@ -6,11 +6,13 @@ import com.nemo.testing.Onion.DriverService;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.core.API.APIService;
 import com.nemo.testing.core.API.Request;
+import com.nemo.testing.core.TypedClassInstanceMap;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.BeforeStage;
 import com.tngtech.jgiven.annotation.ExpectedScenarioState;
 import com.tngtech.jgiven.annotation.FillerWord;
+import com.tngtech.jgiven.annotation.ScenarioState;
 import com.tngtech.jgiven.attachment.Attachment;
 import com.tngtech.jgiven.attachment.MediaType;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -39,6 +41,8 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
 
     @ExpectedScenarioState
     protected CurrentStep currentStep;
+    @ScenarioState
+    protected TypedClassInstanceMap createdEntities;
 
     /**
      * Provides the main page object to be used in the testing scenarios. This method should be

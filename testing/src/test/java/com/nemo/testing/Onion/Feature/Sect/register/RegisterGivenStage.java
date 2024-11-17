@@ -11,17 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @JGivenStage
 @Slf4j
 @SuppressWarnings("UnusedReturnValue")
 class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
-
-    // Set of users that should be deleted after the scenario
-    @ProvidedScenarioState
-    private final Set<String> createdUsers = new HashSet<>();
 
     @Autowired
     private RegisterPage registerPage;
@@ -32,19 +25,6 @@ class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
     @Override
     protected AbstractPage mainPage() {
         return registerPage;
-    }
-
-    @AfterScenario
-    private void deleteCreatedUsers() {
-        for (String username : createdUsers) {
-            try {
-                userService.delete(username);
-            } catch (UserNotFoundException ignored) {
-                log.warn("Could not delete user \"{}\" because it does not exist, proceeding as is", username);
-            } finally {
-                createdUsers.remove(username);
-            }
-        }
     }
 
     public RegisterGivenStage on_register_page() {
@@ -67,12 +47,12 @@ class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
     @ExtendedDescription("Checked in the database")
     public RegisterGivenStage account_$_already_exists(@Quoted String username, @Hidden String password) {
         try {
-            userService.createNewUser(username, password);
+            createdEntities.addInstance(userService.createNewUser(username, password));
         } catch (DataAccessException ignored) {
+            // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
+            createdEntities.addInstance(userService.getUserByUsername(username));
             log.warn("User with username \"{}\" already exists, it will be deleted after this test", username);
         }
-        // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
-        createdUsers.add(username);
         return self();
     }
 }

@@ -27,9 +27,9 @@ class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
 
     @ExtendedDescription("Checked in the database")
     public RegisterThenStage my_account_is_created(@Hidden String username) {
-        assertThatNoException()
+        assertThatCode(() -> createdEntities.addInstance(userService.getUserByUsername(username)))
             .as("User with username \"%s\" was not created", username)
-            .isThrownBy(() -> userService.getUserByUsername(username));
+            .doesNotThrowAnyException();
 
         return self();
     }

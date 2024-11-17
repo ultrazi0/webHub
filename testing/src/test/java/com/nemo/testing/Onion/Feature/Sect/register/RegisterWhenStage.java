@@ -3,22 +3,15 @@ package com.nemo.testing.Onion.Feature.Sect.register;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractWhenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
-import com.tngtech.jgiven.annotation.ExpectedScenarioState;
 import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
 class RegisterWhenStage extends AbstractWhenStage<RegisterWhenStage> {
-
-    @ExpectedScenarioState
-    private Set<String> createdUsers;
 
     @Autowired
     private RegisterPage registerPage;
@@ -32,9 +25,6 @@ class RegisterWhenStage extends AbstractWhenStage<RegisterWhenStage> {
 
         registerPage.enterCredentials(username, password);
         registerPage.pressSubmit();
-
-        // Add the user to the to-delete list
-        createdUsers.add(username);
 
         waitUntilRequestProcessed();
 

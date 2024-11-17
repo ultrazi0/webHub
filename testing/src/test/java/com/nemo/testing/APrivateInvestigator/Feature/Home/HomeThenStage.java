@@ -100,7 +100,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeThenStage robot_$_is_created(String robotName) {
-        assertThatCode(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
+        assertThatCode(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Robot %s is created", robotName)
             .doesNotThrowAnyException();
 
@@ -121,7 +121,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeThenStage robot_with_name_$_does_not_exit(@Quoted String robotName) {
-        assertThatThrownBy(() -> createdEntities.addInstance(robotService.findRobotByName(robotName, CURRENT_USER.getId())))
+        assertThatThrownBy(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Assert cannot find robot with name \"%s\"", robotName)
             .isInstanceOf(RobotNotFoundException.class);
 

@@ -1,6 +1,7 @@
 package com.nemo.testing.APrivateInvestigator.Model;
 
 import com.nemo.testing.core.API.Request;
+import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.attachment.Attachment;
 import com.tngtech.jgiven.attachment.MediaType;
@@ -11,6 +12,7 @@ import io.restassured.internal.LogRequestAndResponseOnFailListener;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +30,13 @@ public class TestRequest extends Request {
     private CurrentStep currentStep;
     private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
+    @Getter
+    @Setter
+    private Class<?> entityType;
+    @Getter
+    @Setter
+    private AbstractUniqueAttributes uniqueAttributes;
+
     public TestRequest() {
         this.config(RestAssuredConfig.config()
             .logConfig(
@@ -36,6 +45,10 @@ public class TestRequest extends Request {
             .failureConfig(
                 new FailureConfig(List.of(new LogRequestAndResponseToAttachmentsOnFailListener())))
         );
+    }
+
+    public boolean needsEntityRegister() {
+        return entityType != null && uniqueAttributes != null;
     }
 
     private class LogRequestAndResponseToAttachmentsOnFailListener extends LogRequestAndResponseOnFailListener {

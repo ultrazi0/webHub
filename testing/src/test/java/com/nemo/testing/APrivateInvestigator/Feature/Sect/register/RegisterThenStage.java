@@ -38,7 +38,7 @@ class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public RegisterThenStage new_user_$_is_created(String username) {
-        assertThatCode(() -> createdEntities.addInstance(userService.getUserByUsername(username)))
+        assertThatCode(() -> userService.getUserByUsername(username))
             .as("Check if new user is created")
             .doesNotThrowAnyException();
 

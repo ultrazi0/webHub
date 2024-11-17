@@ -1,7 +1,9 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Sect.register;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGivenStage;
+import com.nemo.testing.core.Persistence.UniqueAttributes.UserUniqueAttributes;
 import com.nemo.testing.core.Persistence.UserService;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Decibel.UserNotFoundException;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Quoted;
@@ -39,11 +41,14 @@ class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
     }
 
     public RegisterGivenStage supply_correct_credentials(@Quoted String username, @Quoted String password) {
-        return username(username)
-            .and().password(password);
+        setEntityToRegisterType(UserEntity.class);
+        setEntityToRegisterUniqueAttributes(UserUniqueAttributes.byUsername(username));
+
+        return supply_incorrect_credentials(username, password);
     }
 
     public RegisterGivenStage supply_incorrect_credentials(String username, String password) {
-        return supply_correct_credentials(username, password);
+        return username(username)
+            .and().password(password);
     }
 }

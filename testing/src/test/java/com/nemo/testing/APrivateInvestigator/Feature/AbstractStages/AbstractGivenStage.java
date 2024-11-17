@@ -3,6 +3,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.AbstractStages;
 import com.nemo.testing.APrivateInvestigator.Model.TestRequest;
 import com.nemo.testing.core.API.Request;
 import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
+import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.testing.core.TypedClassInstanceMap;
 import com.nemo.testing.core.WithExtendedDescriptions;
@@ -79,6 +80,22 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         }
 
         return self();
+    }
+
+    protected void setEntityToRegisterType(Class<?> type) {
+        if (request instanceof TestRequest testRequest) {
+            testRequest.setEntityType(type);
+        } else {
+            throw new IllegalStateException("Request must be of type TestRequest, provided: " + request.getClass());
+        }
+    }
+
+    protected void setEntityToRegisterUniqueAttributes(AbstractUniqueAttributes uniqueAttributes) {
+        if (request instanceof TestRequest testRequest) {
+            testRequest.setUniqueAttributes(uniqueAttributes);
+        } else {
+            throw new IllegalStateException("Request must be of type TestRequest, provided: " + request.getClass());
+        }
     }
 
     private void cleanupCreatedEntities() {

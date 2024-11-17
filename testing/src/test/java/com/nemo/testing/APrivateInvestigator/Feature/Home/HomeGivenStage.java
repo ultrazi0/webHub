@@ -2,6 +2,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.As;
@@ -57,6 +58,9 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
     @As("set new robot's name to")
     public HomeGivenStage set_new_robots_name_to(@Quoted String robotName) {
         request.formParam("name", robotName);
+
+        setEntityToRegisterType(RobotEntity.class);
+        setEntityToRegisterUniqueAttributes(RobotUniqueAttributes.byRobotNameAndOwnerId(robotName, CURRENT_USER.getId()));
 
         return self();
     }

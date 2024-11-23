@@ -28,9 +28,7 @@ class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
     }
 
     public RegisterGivenStage on_register_page() {
-        registerPage.openPage();
-        assumeOnMainPage();
-        assumeRendered(registerPage);
+        open(registerPage);
 
         return self();
     }

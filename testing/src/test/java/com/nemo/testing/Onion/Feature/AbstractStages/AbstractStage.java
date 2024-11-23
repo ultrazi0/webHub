@@ -17,12 +17,14 @@ import com.tngtech.jgiven.annotation.ScenarioState;
 import com.tngtech.jgiven.attachment.Attachment;
 import com.tngtech.jgiven.attachment.MediaType;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import lombok.Getter;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.function.Supplier;
 
+import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.WebDriverRunner.driver;
 
 /**
@@ -41,6 +43,7 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
 
     @ExpectedScenarioState
     protected CurrentStep currentStep;
+    @Getter
     @ScenarioState
     protected UserEntity CURRENT_USER = null;
     @ScenarioState
@@ -94,6 +97,10 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
             request.sessionId(sessionIdCookie.getValue());
         }
         return apiService.send(request).getStatusCode() == 200;
+    }
+
+    protected static String fullUrlOf(String path) {
+        return baseUrl + path;
     }
 
     @BeforeStage

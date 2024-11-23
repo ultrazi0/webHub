@@ -10,7 +10,6 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @JGivenStage
@@ -29,9 +28,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
     }
 
     public HomeGivenStage on_home_page() {
-        homePage.openPage();
-        assumeOnMainPage();
-        assumeRendered(homePage);
+        open(homePage);
 
         return self();
     }

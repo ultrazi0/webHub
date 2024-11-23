@@ -7,6 +7,7 @@ import com.nemo.webHub.Decibel.UserNotFoundException;
 import com.nemo.webHub.Decibel.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +45,36 @@ public class UserService implements WithPersistence<UserEntity> {
             return UserEntity.of(userRecord);
         }
         throw new IllegalStateException("uniqueAttributes is not an instance of UserUniqueAttributes");
+    }
+
+    @Override
+    public UserEntity createEntityFrom(Record record) {
+        if (record instanceof UsersRecord r) {
+            if (r.getRoles() == null) r.setRoles(new String[]{"USER"});
+
+            UsersRecord usersRecord = db.insertInto(USERS)
+                .set(record)
+                .returning()
+                .fetchOne();
+
+            if (usersRecord == null) throw new RuntimeException("Newly created user is somehow null");
+
+            return UserEntity.of(usersRecord);
+        }
+        throw new IllegalStateException("uniqueAttributes is not an instance of UserUniqueAttributes");
+    }
+
+    @Override
+    public UserEntity getFrom(Record record) {
+        if (record instanceof UsersRecord usersRecord) {
+            if (usersRecord.getUserId() != null) {
+                return getUserById(usersRecord.getUserId());
+            } else if (usersRecord.getUsername() != null) {
+                return getUserByUsername(usersRecord.getUsername());
+            }
+            throw new IllegalStateException("not enough unique parameters");
+        }
+        throw new IllegalStateException("record is not an instance of UsersRecord");
     }
 
     /**

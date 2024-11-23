@@ -20,9 +20,7 @@ class LoginPageGivenStage extends AbstractGivenStage<LoginPageGivenStage> {
 
     public LoginPageGivenStage on_login_page() {
 
-        loginPage.openPage();
-        assumeOnMainPage();
-        assumeRendered(loginPage);
+        open(loginPage);
 
         return self();
     }

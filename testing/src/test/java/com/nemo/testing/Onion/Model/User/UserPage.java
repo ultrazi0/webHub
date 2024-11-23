@@ -1,0 +1,68 @@
+package com.nemo.testing.Onion.Model.User;
+
+import com.nemo.testing.Onion.Model.AbstractPage;
+import org.openqa.selenium.By;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Selenide.element;
+import static com.codeborne.selenide.Selenide.open;
+
+@Component
+public class UserPage extends AbstractPage {
+
+    public static final String uri = "user/{userId}";
+
+    @Autowired
+    private DeleteUserModal deleteUserModal;
+
+    private final By USER_GREETING = By.xpath("//*[@id=\"root\"]/div/div/div[2]/h1");
+    private final By EDIT_BUTTON = By.xpath("//*[@id=\"root\"]/div/div/div[2]/span/button[1]");
+    private final By DELETE_BUTTON = By.xpath("//*[@id=\"root\"]/div/div/div[2]/span/button[2]");
+
+    private Integer currentUserId = null;
+
+    @Override
+    public String uri() {
+        return uri.replace("{userId}", currentUserId.toString());
+    }
+
+    @Override
+    public void openPage() {
+        openPage(currentStage.getCURRENT_USER().getId());
+    }
+
+    public void openPage(int id) {
+        open(uri.replace("{userId}", String.valueOf(id)));
+        currentUserId = id;
+    }
+
+    public final String getUserGreeting() {
+        return element(USER_GREETING).getText();
+    }
+
+    /**
+     * WARNING: this method does not wait
+     * */
+    public final boolean editButtonIsDisplayed() {
+        return element(EDIT_BUTTON).isDisplayed();
+    }
+
+    public final void pressEditButton() {
+        element(EDIT_BUTTON).click();
+        element(EDIT_BUTTON).should(disappear);
+    }
+
+    public final String pressDeleteButton() {
+        return element(DELETE_BUTTON).getText();
+    }
+
+    public final void pressCancelButtonInModal() {
+        deleteUserModal.pressCancelButton();
+    }
+
+    public final void pressDeleteButtonInModal() {
+        deleteUserModal.pressDeleteButton();
+    }
+}

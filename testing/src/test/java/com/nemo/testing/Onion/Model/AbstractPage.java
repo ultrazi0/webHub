@@ -2,11 +2,13 @@ package com.nemo.testing.Onion.Model;
 
 import com.codeborne.selenide.ex.ElementShould;
 import com.nemo.testing.Onion.Model.Basis.NavbarFragment;
+import com.nemo.testing.Onion.Model.Home.HomePage;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.elements;
+import static com.codeborne.selenide.Selenide.open;
 
 /**
  * AbstractPage represents an abstract base class for all web pages in the application.
@@ -23,6 +25,10 @@ public abstract class AbstractPage extends AbstractComponent {
     public abstract String uri();
 
     public abstract void openPage();
+
+    public void openHomePage() {
+        open(HomePage.uri);
+    }
 
     /**
      * Waits until the logo element in the navbar is visible, indicating the page is rendered.

@@ -4,17 +4,20 @@ import com.codeborne.selenide.Selenide;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UserService;
+import com.nemo.testing.core.Persistence.WithPersistence;
 import com.nemo.testing.core.TypedClassInstanceMap;
 import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.BeforeScenario;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.Assumptions;
 import org.assertj.core.api.WithAssumptions;
+import org.jooq.Record;
+import org.jooq.exception.DataAccessException;
 import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.WebDriverRunner.driver;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
@@ -23,6 +26,7 @@ import static com.codeborne.selenide.WebDriverRunner.url;
  * It extends the AbstractStage class and provides utility methods to ensure the correct
  * page is loaded and rendered within the testing framework.
  */
+@Slf4j
 @JGivenStage
 public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extends AbstractStage<T>
     implements WithAssumptions {
@@ -40,16 +44,22 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         createdEntities = new TypedClassInstanceMap();
     }
 
+    protected void open(AbstractPage page) {
+        page.openPage();
+        assumeOnPage(page);
+        assumeRendered(page);
+    }
+
     /**
-     * Assumes that the current URL matches the main page URL.
-     * This method verifies that the browser is currently on the main page by comparing the current URL
-     * with the expected URL constructed from the base URL and the main page's URI.
+     * Assumes that the current URL matches the URL of the given page.
+     * This method verifies that the browser is currently on the page by comparing the current URL
+     * with the expected URL constructed from the base URL and the page's URI.
      * If the URLs do not match, an assumption failure is triggered.
      */
-    protected void assumeOnMainPage() {
+    protected void assumeOnPage(AbstractPage page) {
         assumeThat(url())
             .as("Oops... wrong page :(")
-            .isEqualTo(baseUrl + mainPage().uri());
+            .isEqualTo(fullUrlOf(page.uri()));
     }
 
     /**
@@ -121,6 +131,25 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         });
     }
 
+    protected <E> E createEntity(Class<E> cls, Record record) {
+        E createdEntity = null;
+        WithPersistence<E> persistenceService = persistenceServiceMapper.getPersistenceService(cls);
+
+        try {
+            createdEntity = persistenceService.createEntityFrom(record);
+            createdEntities.addInstance(cls, createdEntity);
+        } catch (DataAccessException ignored) {
+            // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
+            createdEntities.addInstance(persistenceService.getFrom(record));
+            log.warn("Record {} already exists, it will be deleted after this test", record);
+        }
+
+        assumeThat(createdEntity)
+            .as("Assume entity is created")
+            .isNotNull();
+        return createdEntity;
+    }
+
     /**
      * An action. Ensures that the user is not currently logged in by sending a request to the API
      * to retrieve the currently logged-in user. If the user is already logged in,
@@ -145,7 +174,7 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
      * @return the current instance (self) for method chaining
      */
     public T test_user() {
-        mainPage().openPage();
+        mainPage().openHomePage();
 
         assumeThat(apiService.login(TEST_USER_USERNAME, TEST_USER_PASSWORD))
             .as("Check if automatic login successful")

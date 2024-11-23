@@ -7,6 +7,7 @@ import com.nemo.webHub.Decibel.RobotNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,33 @@ public class RobotService implements WithPersistence<RobotEntity> {
             return RobotEntity.of(robotsRecord);
         }
         throw new IllegalStateException("uniqueAttributes is not an instance of RobotUniqueAttribute");
+    }
+
+    @Override
+    public RobotEntity createEntityFrom(Record record) {
+        if (record instanceof RobotsRecord) {
+            RobotsRecord robotsRecord = db.insertInto(ROBOTS)
+                .set(record)
+                .returning()
+                .fetchOne();
+
+            if (robotsRecord == null) throw new RuntimeException("No robots were created");
+
+            return RobotEntity.of(robotsRecord);
+        }
+        throw new IllegalStateException("record is not an instance of RobotsRecord");
+    }
+
+
+    @Override
+    public RobotEntity getFrom(Record record) throws RuntimeException {
+        if (record instanceof RobotsRecord robotsRecord) {
+            if (robotsRecord.getName() != null && robotsRecord.getOwnerId() != null) {
+                return findRobotByName(robotsRecord.getName(), robotsRecord.getOwnerId());
+            }
+            throw new IllegalStateException("not enough unique parameters");
+        }
+        throw new IllegalStateException("record is not an instance of RobotsRecord");
     }
 
     public RobotEntity findRobotByName(String robotName, int ownerId) throws RuntimeException {

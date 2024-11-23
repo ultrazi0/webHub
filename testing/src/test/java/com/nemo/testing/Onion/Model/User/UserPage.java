@@ -58,15 +58,17 @@ public class UserPage extends AbstractPage {
         element(EDIT_BUTTON).should(disappear);
     }
 
-    public final String pressDeleteButton() {
-        return element(DELETE_BUTTON).getText();
+    public final void pressDeleteButton() {
+        element(DELETE_BUTTON).click();
     }
 
     public final void pressCancelButtonInModal() {
         deleteUserModal.pressCancelButton();
+        deleteUserModal.waitUntilModalIsClosed();
     }
 
     public final void pressDeleteButtonInModal() {
         deleteUserModal.pressDeleteButton();
+        deleteUserModal.waitUntilModalIsClosed();
     }
 }

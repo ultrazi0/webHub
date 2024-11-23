@@ -49,4 +49,20 @@ class UserTests extends SpringScenarioTest<UserGivenStage, UserWhenStage, UserTh
             .and().I().see_no_edit_button();
     }
 
+    @Test
+    void I_can_delete_my_user() {
+
+        given()
+            .I_am().logged_in_as_a_new_user(DEFAULT_USERNAME, DEFAULT_PASSWORD)
+            .and().I_am().on_my_user_page();
+
+        when()
+            .I().delete_my_user();
+
+        then()
+            .I_am().not_logged_in()
+            .and().my_user_is_deleted();
+
+    }
+
 }

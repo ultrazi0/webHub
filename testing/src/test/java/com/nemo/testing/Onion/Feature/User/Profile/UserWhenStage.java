@@ -23,4 +23,11 @@ class UserWhenStage extends AbstractWhenStage<UserWhenStage> {
 
         return self();
     }
+
+    public UserWhenStage delete_my_user() {
+        userPage.pressDeleteButton();
+        userPage.pressDeleteButtonInModal();
+
+        return self();
+    }
 }

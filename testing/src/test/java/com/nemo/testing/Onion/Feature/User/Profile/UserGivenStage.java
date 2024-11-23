@@ -5,6 +5,7 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.User.UserPage;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.As;
+import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,18 @@ class UserGivenStage extends AbstractGivenStage<UserGivenStage> {
         userPage.openPage(otherUser.getId());
         assumeOnPage(userPage);
         assumeRendered(userPage);
+
+        return self();
+    }
+
+    public UserGivenStage logged_in_as_a_new_user(@Quoted String username, @Quoted String password) {
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(username);
+        usersRecord.setPassword(password);
+
+        createEntity(UserEntity.class, usersRecord);
+
+        logInAs(username, password);
 
         return self();
     }

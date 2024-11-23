@@ -1,0 +1,3046 @@
+.jfk-bubble.gtx-bubble, .captcheck_answer_label > input + img, span#closed_text > img[src^="https://www.gstatic.com/images/branding/googlelogo"], span[data-href^="https://www.hcaptcha.com/"] > #icon, img.Wirisformula, div[role="dialog"] div[role="document"], div[role="dialog"] div[role="document"] {
+    filter: invert(100%) hue-rotate(180deg) contrast(90%) !important;
+}
+
+:root {
+    --darkreader-neutral-background: #181a1b;
+    --darkreader-neutral-text: #e8e6e3;
+    --darkreader-selection-background: #004daa;
+    --darkreader-selection-text: #e8e6e3;
+}
+
+:root {
+}
+
+@layer {
+    html {
+        background-color: rgb(24, 26, 27) !important;
+    }
+
+    html {
+        color-scheme: dark !important;
+    }
+
+    iframe {
+        color-scheme: dark !important;
+    }
+
+    html, body {
+        background-color: rgb(24, 26, 27);
+    }
+
+    html, body {
+        border-color: rgb(115, 107, 94);
+        color: rgb(232, 230, 227);
+    }
+
+     a {
+        color: rgb(51, 145, 255);
+    }
+
+     table {
+        border-color: rgb(84, 91, 94);
+    }
+
+     mark {
+        color: rgb(232, 230, 227);
+    }
+
+     ::placeholder {
+        color: rgb(178, 171, 161);
+    }
+
+     input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+        background-color: rgb(64, 68, 0) !important;
+        color: rgb(232, 230, 227) !important;
+    }
+
+     ::selection {
+        background-color: rgb(0, 77, 170) !important;
+        color: rgb(232, 230, 227) !important;
+    }
+
+
+}
+
+.fa-border {
+    border-color: rgb(53, 57, 59);
+}
+
+.fa-inverse {
+    color: rgb(232, 230, 227);
+}
+
+.sr-only {
+    border-width: 0;
+    border-style: initial;
+    border-color: initial;
+}
+
+body {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    color: rgb(211, 207, 201);
+}
+
+.accordion .accordion-navigation.active > a, .accordion dd.active > a {
+    background-image: initial;
+    background-color: rgb(37, 40, 42);
+    color: rgb(211, 207, 201);
+}
+
+.accordion .accordion-navigation > a, .accordion dd > a {
+    background-image: initial;
+    background-color: rgb(33, 36, 37);
+    color: rgb(211, 207, 201);
+}
+
+.accordion .accordion-navigation > a:hover, .accordion dd > a:hover {
+    background-image: initial;
+    background-color: rgb(40, 43, 45);
+}
+
+.accordion .accordion-navigation > .content.active, .accordion dd > .content.active {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+}
+
+.alert-box {
+    background-color: rgb(0, 112, 149);
+    border-color: rgb(0, 155, 207);
+    color: rgb(232, 230, 227);
+}
+
+.alert-box .close {
+    background-image: inherit;
+    background-color: inherit;
+    color: rgb(200, 195, 188);
+}
+
+.alert-box.success {
+    background-color: rgb(54, 138, 85);
+    border-color: rgb(54, 139, 85);
+    color: rgb(232, 230, 227);
+}
+
+.alert-box.alert {
+    background-color: rgb(179, 36, 12);
+    border-color: rgb(172, 35, 12);
+    color: rgb(232, 230, 227);
+}
+
+.alert-box.secondary {
+    background-color: rgb(38, 41, 42);
+    border-color: rgb(64, 69, 72);
+    color: rgb(182, 176, 166);
+}
+
+.alert-box.warning {
+    background-color: rgb(179, 96, 12);
+    border-color: rgb(172, 92, 12);
+    color: rgb(232, 230, 227);
+}
+
+.alert-box.info {
+    background-color: rgb(24, 76, 98);
+    border-color: rgb(30, 97, 124);
+    color: rgb(182, 176, 166);
+}
+
+@media only screen {
+     .small-block-grid-1 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-2 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-3 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-4 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-5 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-6 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-7 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-8 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-9 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-10 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-11 > li {
+        list-style-image: initial;
+    }
+
+     .small-block-grid-12 > li {
+        list-style-image: initial;
+    }
+
+
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .medium-block-grid-1 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-2 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-3 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-4 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-5 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-6 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-7 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-8 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-9 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-10 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-11 > li {
+        list-style-image: initial;
+    }
+
+     .medium-block-grid-12 > li {
+        list-style-image: initial;
+    }
+
+
+}
+
+@media only screen and (min-width: 64.0625em) {
+     .large-block-grid-1 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-2 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-3 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-4 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-5 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-6 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-7 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-8 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-9 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-10 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-11 > li {
+        list-style-image: initial;
+    }
+
+     .large-block-grid-12 > li {
+        list-style-image: initial;
+    }
+
+
+}
+
+.breadcrumbs {
+    list-style-image: initial;
+    background-color: rgb(30, 33, 34);
+    border-color: rgb(58, 63, 65);
+}
+
+.breadcrumbs > * {
+    color: rgb(74, 210, 255);
+}
+
+.breadcrumbs > :hover a, .breadcrumbs > :focus a {
+    text-decoration-color: initial;
+}
+
+.breadcrumbs > * a {
+    color: rgb(74, 210, 255);
+}
+
+.breadcrumbs > .current {
+    color: rgb(200, 195, 188);
+}
+
+.breadcrumbs > .current a {
+    color: rgb(200, 195, 188);
+}
+
+.breadcrumbs > .current:hover, .breadcrumbs > .current:hover a, .breadcrumbs > .current:focus, .breadcrumbs > .current:focus a {
+    text-decoration-color: initial;
+}
+
+.breadcrumbs > .unavailable {
+    color: rgb(168, 160, 149);
+}
+
+.breadcrumbs > .unavailable a {
+    color: rgb(168, 160, 149);
+}
+
+.breadcrumbs > .unavailable:hover, .breadcrumbs > .unavailable:hover a, .breadcrumbs > .unavailable:focus, .breadcrumbs > .unavailable a:focus {
+    color: rgb(168, 160, 149);
+    text-decoration-color: initial;
+}
+
+.breadcrumbs > ::before {
+    color: rgb(178, 172, 162);
+}
+
+button, .button {
+    text-decoration-color: initial;
+    background-color: rgb(0, 112, 149);
+    border-color: rgb(0, 158, 210);
+    color: rgb(232, 230, 227);
+}
+
+button:hover, button:focus, .button:hover, .button:focus {
+    background-color: rgb(0, 90, 119);
+}
+
+button:hover, button:focus, .button:hover, .button:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.secondary, .button.secondary {
+    background-color: rgb(38, 41, 42);
+    border-color: rgb(68, 73, 76);
+    color: rgb(200, 195, 188);
+}
+
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+    background-color: rgb(64, 69, 71);
+}
+
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+    color: rgb(200, 195, 188);
+}
+
+button.success, .button.success {
+    background-color: rgb(54, 138, 85);
+    border-color: rgb(56, 142, 87);
+    color: rgb(232, 230, 227);
+}
+
+button.success:hover, button.success:focus, .button.success:hover, .button.success:focus {
+    background-color: rgb(43, 110, 68);
+}
+
+button.success:hover, button.success:focus, .button.success:hover, .button.success:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.alert, .button.alert {
+    background-color: rgb(179, 36, 12);
+    border-color: rgb(177, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+button.alert:hover, button.alert:focus, .button.alert:hover, .button.alert:focus {
+    background-color: rgb(166, 34, 11);
+}
+
+button.alert:hover, button.alert:focus, .button.alert:hover, .button.alert:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.warning, .button.warning {
+    background-color: rgb(179, 96, 12);
+    border-color: rgb(177, 94, 12);
+    color: rgb(232, 230, 227);
+}
+
+button.warning:hover, button.warning:focus, .button.warning:hover, .button.warning:focus {
+    background-color: rgb(166, 88, 11);
+}
+
+button.warning:hover, button.warning:focus, .button.warning:hover, .button.warning:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.info, .button.info {
+    background-color: rgb(24, 76, 98);
+    border-color: rgb(31, 101, 130);
+    color: rgb(200, 195, 188);
+}
+
+button.info:hover, button.info:focus, .button.info:hover, .button.info:focus {
+    background-color: rgb(33, 106, 136);
+}
+
+button.info:hover, button.info:focus, .button.info:hover, .button.info:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.disabled, button[disabled], .button.disabled, .button[disabled] {
+    background-color: rgb(0, 112, 149);
+    border-color: rgb(0, 158, 210);
+    color: rgb(232, 230, 227);
+    box-shadow: none;
+}
+
+button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
+    background-color: rgb(0, 90, 119);
+}
+
+button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
+    background-color: rgb(0, 112, 149);
+}
+
+button.disabled.secondary, button[disabled].secondary, .button.disabled.secondary, .button[disabled].secondary {
+    background-color: rgb(38, 41, 42);
+    border-color: rgb(68, 73, 76);
+    color: rgb(200, 195, 188);
+    box-shadow: none;
+}
+
+button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
+    background-color: rgb(64, 69, 71);
+}
+
+button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
+    color: rgb(200, 195, 188);
+}
+
+button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
+    background-color: rgb(38, 41, 42);
+}
+
+button.disabled.success, button[disabled].success, .button.disabled.success, .button[disabled].success {
+    background-color: rgb(54, 138, 85);
+    border-color: rgb(56, 142, 87);
+    color: rgb(232, 230, 227);
+    box-shadow: none;
+}
+
+button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
+    background-color: rgb(43, 110, 68);
+}
+
+button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
+    background-color: rgb(54, 138, 85);
+}
+
+button.disabled.alert, button[disabled].alert, .button.disabled.alert, .button[disabled].alert {
+    background-color: rgb(179, 36, 12);
+    border-color: rgb(177, 36, 12);
+    color: rgb(232, 230, 227);
+    box-shadow: none;
+}
+
+button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus {
+    background-color: rgb(166, 34, 11);
+}
+
+button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus {
+    background-color: rgb(179, 36, 12);
+}
+
+button.disabled.warning, button[disabled].warning, .button.disabled.warning, .button[disabled].warning {
+    background-color: rgb(179, 96, 12);
+    border-color: rgb(177, 94, 12);
+    color: rgb(232, 230, 227);
+    box-shadow: none;
+}
+
+button.disabled.warning:hover, button.disabled.warning:focus, button[disabled].warning:hover, button[disabled].warning:focus, .button.disabled.warning:hover, .button.disabled.warning:focus, .button[disabled].warning:hover, .button[disabled].warning:focus {
+    background-color: rgb(166, 88, 11);
+}
+
+button.disabled.warning:hover, button.disabled.warning:focus, button[disabled].warning:hover, button[disabled].warning:focus, .button.disabled.warning:hover, .button.disabled.warning:focus, .button[disabled].warning:hover, .button[disabled].warning:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.disabled.warning:hover, button.disabled.warning:focus, button[disabled].warning:hover, button[disabled].warning:focus, .button.disabled.warning:hover, .button.disabled.warning:focus, .button[disabled].warning:hover, .button[disabled].warning:focus {
+    background-color: rgb(179, 96, 12);
+}
+
+button.disabled.info, button[disabled].info, .button.disabled.info, .button[disabled].info {
+    background-color: rgb(24, 76, 98);
+    border-color: rgb(31, 101, 130);
+    color: rgb(200, 195, 188);
+    box-shadow: none;
+}
+
+button.disabled.info:hover, button.disabled.info:focus, button[disabled].info:hover, button[disabled].info:focus, .button.disabled.info:hover, .button.disabled.info:focus, .button[disabled].info:hover, .button[disabled].info:focus {
+    background-color: rgb(33, 106, 136);
+}
+
+button.disabled.info:hover, button.disabled.info:focus, button[disabled].info:hover, button[disabled].info:focus, .button.disabled.info:hover, .button.disabled.info:focus, .button[disabled].info:hover, .button[disabled].info:focus {
+    color: rgb(232, 230, 227);
+}
+
+button.disabled.info:hover, button.disabled.info:focus, button[disabled].info:hover, button[disabled].info:focus, .button.disabled.info:hover, .button.disabled.info:focus, .button[disabled].info:hover, .button[disabled].info:focus {
+    background-color: rgb(24, 76, 98);
+}
+
+.button-group {
+    list-style-image: initial;
+}
+
+.button-group.even-2 li > button, .button-group.even-2 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-2 li:first-child button, .button-group.even-2 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.even-3 li > button, .button-group.even-3 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-3 li:first-child button, .button-group.even-3 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.even-4 li > button, .button-group.even-4 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-4 li:first-child button, .button-group.even-4 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.even-5 li > button, .button-group.even-5 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-5 li:first-child button, .button-group.even-5 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.even-6 li > button, .button-group.even-6 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-6 li:first-child button, .button-group.even-6 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.even-7 li > button, .button-group.even-7 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-7 li:first-child button, .button-group.even-7 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.even-8 li > button, .button-group.even-8 li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.even-8 li:first-child button, .button-group.even-8 li:first-child .button {
+    border-left: 0;
+}
+
+.button-group > li > button, .button-group > li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group > li:first-child button, .button-group > li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.stack > li > button, .button-group.stack > li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.stack > li:first-child button, .button-group.stack > li:first-child .button {
+    border-left: 0;
+}
+
+.button-group.stack > li > button, .button-group.stack > li .button {
+    border-right-color: rgba(48, 52, 54, 0.5);
+    border-bottom-color: rgba(48, 52, 54, 0.5);
+    border-left-color: rgba(48, 52, 54, 0.5);
+    border-top-color: initial;
+}
+
+.button-group.stack > li:first-child button, .button-group.stack > li:first-child .button {
+    border-top: 0;
+}
+
+.button-group.stack-for-small > li > button, .button-group.stack-for-small > li .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.stack-for-small > li:first-child button, .button-group.stack-for-small > li:first-child .button {
+    border-left: 0;
+}
+
+@media only screen and (max-width: 40em) {
+     .button-group.stack-for-small > li > button, .button-group.stack-for-small > li .button {
+        border-color: rgba(48, 52, 54, 0.5);
+    }
+
+     .button-group.stack-for-small > li:first-child button, .button-group.stack-for-small > li:first-child .button {
+        border-left: 0;
+    }
+
+     .button-group.stack-for-small > li > button, .button-group.stack-for-small > li .button {
+        border-right-color: rgba(48, 52, 54, 0.5);
+        border-bottom-color: rgba(48, 52, 54, 0.5);
+        border-left-color: rgba(48, 52, 54, 0.5);
+        border-top-color: initial;
+    }
+
+     .button-group.stack-for-small > li:first-child button, .button-group.stack-for-small > li:first-child .button {
+        border-top: 0;
+    }
+
+
+}
+
+.button-group.radius > * > button, .button-group.radius > * .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.radius > :first-child button, .button-group.radius > :first-child .button {
+    border-left: 0;
+}
+
+.button-group.radius.stack > * > button, .button-group.radius.stack > * .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.radius.stack > :first-child button, .button-group.radius.stack > :first-child .button {
+    border-left: 0;
+}
+
+.button-group.radius.stack > * > button, .button-group.radius.stack > * .button {
+    border-right-color: rgba(48, 52, 54, 0.5);
+    border-bottom-color: rgba(48, 52, 54, 0.5);
+    border-left-color: rgba(48, 52, 54, 0.5);
+    border-top-color: initial;
+}
+
+.button-group.radius.stack > :first-child button, .button-group.radius.stack > :first-child .button {
+    border-top: 0;
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .button-group.radius.stack-for-small > * > button, .button-group.radius.stack-for-small > * .button {
+        border-color: rgba(48, 52, 54, 0.5);
+    }
+
+     .button-group.radius.stack-for-small > :first-child button, .button-group.radius.stack-for-small > :first-child .button {
+        border-left: 0;
+    }
+
+
+}
+
+@media only screen and (max-width: 40em) {
+     .button-group.radius.stack-for-small > * > button, .button-group.radius.stack-for-small > * .button {
+        border-color: rgba(48, 52, 54, 0.5);
+    }
+
+     .button-group.radius.stack-for-small > :first-child button, .button-group.radius.stack-for-small > :first-child .button {
+        border-left: 0;
+    }
+
+     .button-group.radius.stack-for-small > * > button, .button-group.radius.stack-for-small > * .button {
+        border-right-color: rgba(48, 52, 54, 0.5);
+        border-bottom-color: rgba(48, 52, 54, 0.5);
+        border-left-color: rgba(48, 52, 54, 0.5);
+        border-top-color: initial;
+    }
+
+     .button-group.radius.stack-for-small > :first-child button, .button-group.radius.stack-for-small > :first-child .button {
+        border-top: 0;
+    }
+
+
+}
+
+.button-group.round > * > button, .button-group.round > * .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.round > :first-child button, .button-group.round > :first-child .button {
+    border-left: 0;
+}
+
+.button-group.round.stack > * > button, .button-group.round.stack > * .button {
+    border-color: rgba(48, 52, 54, 0.5);
+}
+
+.button-group.round.stack > :first-child button, .button-group.round.stack > :first-child .button {
+    border-left: 0;
+}
+
+.button-group.round.stack > * > button, .button-group.round.stack > * .button {
+    border-right-color: rgba(48, 52, 54, 0.5);
+    border-bottom-color: rgba(48, 52, 54, 0.5);
+    border-left-color: rgba(48, 52, 54, 0.5);
+    border-top-color: initial;
+}
+
+.button-group.round.stack > :first-child button, .button-group.round.stack > :first-child .button {
+    border-top: 0;
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .button-group.round.stack-for-small > * > button, .button-group.round.stack-for-small > * .button {
+        border-color: rgba(48, 52, 54, 0.5);
+    }
+
+     .button-group.round.stack-for-small > :first-child button, .button-group.round.stack-for-small > :first-child .button {
+        border-left: 0;
+    }
+
+
+}
+
+@media only screen and (max-width: 40em) {
+     .button-group.round.stack-for-small > * > button, .button-group.round.stack-for-small > * .button {
+        border-color: rgba(48, 52, 54, 0.5);
+    }
+
+     .button-group.round.stack-for-small > :first-child button, .button-group.round.stack-for-small > :first-child .button {
+        border-left: 0;
+    }
+
+     .button-group.round.stack-for-small > * > button, .button-group.round.stack-for-small > * .button {
+        border-right-color: rgba(48, 52, 54, 0.5);
+        border-bottom-color: rgba(48, 52, 54, 0.5);
+        border-left-color: rgba(48, 52, 54, 0.5);
+        border-top-color: initial;
+    }
+
+     .button-group.round.stack-for-small > :first-child button, .button-group.round.stack-for-small > :first-child .button {
+        border-top: 0;
+    }
+
+
+}
+
+.clearing-thumbs, [data-clearing] {
+    list-style-image: initial;
+}
+
+.clearing-blackout {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.clearing-touch-label {
+    color: rgb(178, 172, 162);
+}
+
+.clearing-caption {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+    color: rgb(200, 195, 188);
+}
+
+.clearing-close {
+    color: rgb(200, 195, 188);
+}
+
+.clearing-close:hover, .clearing-close:focus {
+    color: rgb(200, 195, 188);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .clearing-main-prev > span, .clearing-main-next > span {
+        border-color: initial;
+    }
+
+     .clearing-main-prev > span {
+        border-color: transparent rgb(62, 68, 70) transparent transparent;
+    }
+
+     .clearing-main-next > span {
+        border-color: transparent transparent transparent rgb(62, 68, 70);
+    }
+
+     .clearing-assembled .clearing-container .carousel {
+        background-image: initial;
+        background-color: rgba(38, 42, 43, 0.8);
+    }
+
+     .clearing-assembled .clearing-container .carousel > ul li a.th {
+        border-width: initial;
+        border-style: none;
+        border-color: initial;
+        box-shadow: none;
+    }
+
+     .clearing-assembled .clearing-container .visible-img {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+    }
+
+
+}
+
+.f-dropdown {
+    list-style-image: initial;
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(62, 68, 70);
+}
+
+.f-dropdown::before {
+    border-color: transparent transparent rgb(48, 52, 54);
+}
+
+.f-dropdown::after {
+    border-color: transparent transparent rgb(62, 68, 70);
+}
+
+.f-dropdown.drop-right {
+    list-style-image: initial;
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(62, 68, 70);
+}
+
+.f-dropdown.drop-right::before {
+    border-color: transparent rgb(48, 52, 54) transparent transparent;
+}
+
+.f-dropdown.drop-right::after {
+    border-color: transparent rgb(62, 68, 70) transparent transparent;
+}
+
+.f-dropdown.drop-left {
+    list-style-image: initial;
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(62, 68, 70);
+}
+
+.f-dropdown.drop-left::before {
+    border-color: transparent transparent transparent rgb(48, 52, 54);
+}
+
+.f-dropdown.drop-left::after {
+    border-color: transparent transparent transparent rgb(62, 68, 70);
+}
+
+.f-dropdown.drop-top {
+    list-style-image: initial;
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(62, 68, 70);
+}
+
+.f-dropdown.drop-top::before {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.f-dropdown.drop-top::after {
+    border-color: rgb(62, 68, 70) transparent transparent;
+}
+
+.f-dropdown li:hover, .f-dropdown li:focus {
+    background-image: initial;
+    background-color: rgb(34, 36, 38);
+}
+
+.f-dropdown li a {
+    color: rgb(178, 172, 162);
+}
+
+.f-dropdown.content {
+    list-style-image: initial;
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(62, 68, 70);
+}
+
+.dropdown.button::after, button.dropdown::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.dropdown.button::after, button.dropdown::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.dropdown.button.tiny::after, button.dropdown.tiny::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.dropdown.button.small::after, button.dropdown.small::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.dropdown.button.large::after, button.dropdown.large::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.dropdown.button.secondary::after, button.dropdown.secondary::after {
+    border-color: rgb(123, 114, 101) transparent transparent;
+}
+
+label {
+    color: rgb(183, 177, 168);
+}
+
+label small {
+    color: rgb(167, 159, 148);
+}
+
+.postfix.button {
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+}
+
+.prefix.button {
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+}
+
+span.prefix, label.prefix {
+    background-image: initial;
+    background-color: rgb(31, 34, 35);
+    color: rgb(200, 195, 188);
+    border-color: rgb(62, 68, 70);
+}
+
+span.postfix, label.postfix {
+    background-image: initial;
+    background-color: rgb(31, 34, 35);
+    color: rgb(200, 195, 188);
+    border-color: rgb(62, 68, 70);
+}
+
+input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea {
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(62, 68, 70);
+    box-shadow: rgba(0, 0, 0, 0.1) 0 1px 2px inset;
+    color: rgba(232, 230, 227, 0.75);
+}
+
+input:not([type]):focus, input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="color"]:focus, textarea:focus {
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+    border-color: rgb(77, 83, 86);
+    outline-color: initial;
+}
+
+input:not([type]):disabled, input[type="text"]:disabled, input[type="password"]:disabled, input[type="date"]:disabled, input[type="datetime"]:disabled, input[type="datetime-local"]:disabled, input[type="month"]:disabled, input[type="week"]:disabled, input[type="email"]:disabled, input[type="number"]:disabled, input[type="search"]:disabled, input[type="tel"]:disabled, input[type="time"]:disabled, input[type="url"]:disabled, input[type="color"]:disabled, textarea:disabled {
+    background-color: rgb(43, 47, 49);
+}
+
+input:not([type])[disabled], input:not([type])[readonly], fieldset[disabled] input:not([type]), input[type="text"][disabled], input[type="text"][readonly], fieldset[disabled] input[type="text"], input[type="password"][disabled], input[type="password"][readonly], fieldset[disabled] input[type="password"], input[type="date"][disabled], input[type="date"][readonly], fieldset[disabled] input[type="date"], input[type="datetime"][disabled], input[type="datetime"][readonly], fieldset[disabled] input[type="datetime"], input[type="datetime-local"][disabled], input[type="datetime-local"][readonly], fieldset[disabled] input[type="datetime-local"], input[type="month"][disabled], input[type="month"][readonly], fieldset[disabled] input[type="month"], input[type="week"][disabled], input[type="week"][readonly], fieldset[disabled] input[type="week"], input[type="email"][disabled], input[type="email"][readonly], fieldset[disabled] input[type="email"], input[type="number"][disabled], input[type="number"][readonly], fieldset[disabled] input[type="number"], input[type="search"][disabled], input[type="search"][readonly], fieldset[disabled] input[type="search"], input[type="tel"][disabled], input[type="tel"][readonly], fieldset[disabled] input[type="tel"], input[type="time"][disabled], input[type="time"][readonly], fieldset[disabled] input[type="time"], input[type="url"][disabled], input[type="url"][readonly], fieldset[disabled] input[type="url"], input[type="color"][disabled], input[type="color"][readonly], fieldset[disabled] input[type="color"], textarea[disabled], textarea[readonly], fieldset[disabled] textarea {
+    background-color: rgb(43, 47, 49);
+}
+
+::-webkit-input-placeholder {
+    color: rgb(168, 160, 149);
+}
+
+select {
+    background-color: rgb(27, 29, 30);
+    border-color: rgb(62, 68, 70);
+    color: rgba(232, 230, 227, 0.75);
+}
+
+select:focus {
+    background-color: rgb(31, 33, 35);
+    border-color: rgb(77, 83, 86);
+}
+
+select:disabled {
+    background-color: rgb(43, 47, 49);
+}
+
+fieldset {
+    border-color: rgb(58, 62, 65);
+}
+
+[data-abide] .error small.error, [data-abide] .error span.error, [data-abide] span.error, [data-abide] small.error {
+    background-image: initial;
+    background-color: rgb(179, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+span.error, small.error {
+    background-image: initial;
+    background-color: rgb(179, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+.error label, .error label.error {
+    color: rgb(241, 81, 54);
+}
+
+.error small.error {
+    background-image: initial;
+    background-color: rgb(179, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+.error > label > small {
+    background-image: initial;
+    background-color: transparent;
+    color: rgb(167, 159, 148);
+}
+
+label.error {
+    color: rgb(241, 81, 54);
+}
+
+.icon-bar {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.icon-bar > * label {
+    color: rgb(232, 230, 227);
+}
+
+.icon-bar > * i {
+    color: rgb(232, 230, 227);
+}
+
+.icon-bar > a:hover {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.icon-bar > a:hover label {
+    color: rgb(232, 230, 227);
+}
+
+.icon-bar > a:hover i {
+    color: rgb(232, 230, 227);
+}
+
+.icon-bar > a.active {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.icon-bar > a.active label {
+    color: rgb(232, 230, 227);
+}
+
+.icon-bar > a.active i {
+    color: rgb(232, 230, 227);
+}
+
+.inline-list {
+    list-style-image: initial;
+}
+
+.inline-list > li {
+    list-style-image: initial;
+}
+
+.joyride-tip-guide {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+    color: rgb(232, 230, 227);
+}
+
+.joyride-tip-guide .joyride-nub {
+    border-color: rgb(123, 114, 101);
+}
+
+.joyride-tip-guide .joyride-nub.top {
+    border-bottom-color: rgb(123, 114, 101);
+    border-top-color: transparent !important;
+    border-left-color: transparent !important;
+    border-right-color: transparent !important;
+}
+
+.joyride-tip-guide .joyride-nub.bottom {
+    border-color: rgb(123, 114, 101) transparent transparent !important;
+}
+
+.joyride-tip-guide h1, .joyride-tip-guide h2, .joyride-tip-guide h3, .joyride-tip-guide h4, .joyride-tip-guide h5, .joyride-tip-guide h6 {
+    color: rgb(232, 230, 227);
+}
+
+.joyride-timer-indicator-wrap {
+    border-color: rgb(112, 104, 92);
+}
+
+.joyride-timer-indicator {
+    background-image: initial;
+    background-color: rgb(77, 83, 86);
+}
+
+.joyride-close-tip {
+    text-decoration-color: initial;
+    color: rgb(157, 148, 136) !important;
+}
+
+.joyride-close-tip:hover, .joyride-close-tip:focus {
+    color: rgb(221, 218, 214) !important;
+}
+
+.joyride-modal-bg {
+    background-image: initial;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.joyride-expose-wrapper {
+    background-color: rgb(24, 26, 27);
+    box-shadow: rgb(24, 26, 27) 0 0 15px;
+}
+
+.joyride-expose-cover {
+    background-image: initial;
+    background-color: transparent;
+}
+
+@media only screen {
+     .joyride-tip-guide .joyride-nub.bottom {
+        border-color: rgb(123, 114, 101) transparent transparent !important;
+    }
+
+     .joyride-tip-guide .joyride-nub.right {
+        border-color: transparent transparent transparent rgb(123, 114, 101) !important;
+    }
+
+     .joyride-tip-guide .joyride-nub.left {
+        border-color: transparent rgb(123, 114, 101) transparent transparent !important;
+    }
+
+
+}
+
+.keystroke, kbd {
+    background-color: rgb(34, 37, 38);
+    border-color: rgb(58, 62, 65);
+    color: rgb(211, 207, 201);
+}
+
+.label {
+    text-decoration-color: initial;
+    background-color: rgb(0, 112, 149);
+    color: rgb(232, 230, 227);
+}
+
+.label.alert {
+    background-color: rgb(179, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+.label.warning {
+    background-color: rgb(179, 96, 12);
+    color: rgb(232, 230, 227);
+}
+
+.label.success {
+    background-color: rgb(54, 138, 85);
+    color: rgb(232, 230, 227);
+}
+
+.label.secondary {
+    background-color: rgb(38, 41, 42);
+    color: rgb(200, 195, 188);
+}
+
+.label.info {
+    background-color: rgb(24, 76, 98);
+    color: rgb(200, 195, 188);
+}
+
+[data-magellan-expedition], [data-magellan-expedition-clone] {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+}
+
+.slideshow-wrapper .orbit-container {
+    background-color: transparent;
+}
+
+.slideshow-wrapper .preloader {
+    border-color: initial;
+}
+
+.orbit-container {
+    background-image: none;
+    background-color: initial;
+}
+
+.orbit-container .orbit-slides-container {
+    list-style-image: initial;
+}
+
+.orbit-container .orbit-slides-container > * .orbit-caption {
+    background-color: rgba(38, 42, 43, 0.8);
+    color: rgb(232, 230, 227);
+}
+
+.orbit-container .orbit-slide-number {
+    background-image: initial;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(232, 230, 227);
+}
+
+.orbit-container .orbit-timer .orbit-progress {
+    background-color: rgba(24, 26, 27, 0.3);
+}
+
+.orbit-container .orbit-timer > span {
+    border-right-color: rgb(48, 52, 54);
+    border-left-color: rgb(48, 52, 54);
+    border-bottom: none;
+    border-top: none;
+}
+
+.orbit-container .orbit-timer.paused > span {
+    border-color: transparent transparent transparent rgb(48, 52, 54);
+}
+
+.orbit-container .orbit-timer.paused > span.dark {
+    border-left-color: rgb(123, 114, 101);
+}
+
+.orbit-container .orbit-prev, .orbit-container .orbit-next {
+    background-color: transparent;
+    color: rgb(232, 230, 227);
+}
+
+.orbit-container .orbit-prev:hover, .orbit-container .orbit-next:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.orbit-container .orbit-prev > span, .orbit-container .orbit-next > span {
+    border-color: initial;
+}
+
+.orbit-container .orbit-prev > span {
+    border-color: transparent rgb(48, 52, 54) transparent transparent;
+}
+
+.orbit-container .orbit-prev:hover > span {
+    border-right-color: rgb(48, 52, 54);
+}
+
+.orbit-container .orbit-next > span {
+    border-color: transparent transparent transparent rgb(48, 52, 54);
+}
+
+.orbit-container .orbit-next:hover > span {
+    border-left-color: rgb(48, 52, 54);
+}
+
+.orbit-bullets li {
+    background-image: initial;
+    background-color: rgb(53, 57, 59);
+}
+
+.orbit-bullets li.active {
+    background-image: initial;
+    background-color: rgb(82, 88, 92);
+}
+
+ul.pagination li {
+    color: rgb(211, 207, 201);
+}
+
+ul.pagination li a, ul.pagination li button {
+    background-image: none;
+    background-color: initial;
+    color: rgb(168, 160, 149);
+}
+
+ul.pagination li:hover a, ul.pagination li a:focus, ul.pagination li:hover button, ul.pagination li button:focus {
+    background-image: initial;
+    background-color: rgb(38, 41, 43);
+}
+
+ul.pagination li.unavailable a, ul.pagination li.unavailable button {
+    color: rgb(168, 160, 149);
+}
+
+ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus, ul.pagination li.unavailable:hover button, ul.pagination li.unavailable button:focus {
+    background-image: initial;
+    background-color: transparent;
+}
+
+ul.pagination li.current a, ul.pagination li.current button {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+    color: rgb(232, 230, 227);
+}
+
+ul.pagination li.current a:hover, ul.pagination li.current a:focus, ul.pagination li.current button:hover, ul.pagination li.current button:focus {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.panel {
+    border-color: rgb(59, 64, 66);
+    background-image: initial;
+    background-color: rgb(31, 34, 35);
+    color: rgb(200, 195, 188);
+}
+
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p, .panel li, .panel dl {
+    color: rgb(200, 195, 188);
+}
+
+.panel.callout {
+    border-color: rgb(59, 64, 66);
+    background-image: initial;
+    background-color: rgb(0, 46, 62);
+    color: rgb(200, 195, 188);
+}
+
+.panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6, .panel.callout p, .panel.callout li, .panel.callout dl {
+    color: rgb(200, 195, 188);
+}
+
+.panel.callout a:not(.button) {
+    color: rgb(74, 210, 255);
+}
+
+.panel.callout a:not(.button):hover, .panel.callout a:not(.button):focus {
+    color: rgb(92, 214, 255);
+}
+
+.pricing-table {
+    border-color: rgb(58, 62, 65);
+}
+
+.pricing-table * {
+    list-style-image: initial;
+}
+
+.pricing-table .title {
+    background-color: rgb(38, 42, 43);
+    color: rgb(221, 218, 214);
+}
+
+.pricing-table .price {
+    background-color: rgb(29, 32, 33);
+    color: rgb(200, 195, 188);
+}
+
+.pricing-table .description {
+    background-color: rgb(24, 26, 27);
+    border-bottom-color: rgb(58, 62, 65);
+    color: rgb(157, 148, 136);
+}
+
+.pricing-table .bullet-item {
+    background-color: rgb(24, 26, 27);
+    border-bottom-color: rgb(58, 62, 65);
+    color: rgb(200, 195, 188);
+}
+
+.pricing-table .cta-button {
+    background-color: rgb(24, 26, 27);
+}
+
+.progress {
+    background-color: rgb(29, 32, 33);
+    border-color: rgb(48, 52, 54);
+}
+
+.progress .meter {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.progress .meter.secondary {
+    background-image: initial;
+    background-color: rgb(38, 41, 42);
+}
+
+.progress .meter.success {
+    background-image: initial;
+    background-color: rgb(54, 138, 85);
+}
+
+.progress .meter.alert {
+    background-image: initial;
+    background-color: rgb(179, 36, 12);
+}
+
+.progress.secondary .meter {
+    background-image: initial;
+    background-color: rgb(38, 41, 42);
+}
+
+.progress.success .meter {
+    background-image: initial;
+    background-color: rgb(54, 138, 85);
+}
+
+.progress.alert .meter {
+    background-image: initial;
+    background-color: rgb(179, 36, 12);
+}
+
+.range-slider {
+    border-color: rgb(58, 62, 65);
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+}
+
+.range-slider.vertical-range {
+    border-color: rgb(58, 62, 65);
+}
+
+.range-slider.radius {
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+}
+
+.range-slider.radius .range-slider-handle {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.range-slider.radius .range-slider-handle:hover {
+    background-image: initial;
+    background-color: rgb(0, 98, 131);
+}
+
+.range-slider.round {
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+}
+
+.range-slider.round .range-slider-handle {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.range-slider.round .range-slider-handle:hover {
+    background-image: initial;
+    background-color: rgb(0, 98, 131);
+}
+
+.range-slider.disabled, .range-slider[disabled] {
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+}
+
+.range-slider.disabled .range-slider-handle, .range-slider[disabled] .range-slider-handle {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.range-slider.disabled .range-slider-handle:hover, .range-slider[disabled] .range-slider-handle:hover {
+    background-image: initial;
+    background-color: rgb(0, 98, 131);
+}
+
+.range-slider-active-segment {
+    background-image: initial;
+    background-color: rgb(39, 42, 44);
+}
+
+.range-slider-handle {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.range-slider-handle:hover {
+    background-image: initial;
+    background-color: rgb(0, 98, 131);
+}
+
+.reveal-modal-bg {
+    background-image: initial;
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+.reveal-modal {
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(106, 99, 87);
+    box-shadow: rgba(0, 0, 0, 0.4) 0 0 10px;
+}
+
+.reveal-modal.radius {
+    box-shadow: none;
+}
+
+.reveal-modal.round {
+    box-shadow: none;
+}
+
+.reveal-modal.collapse {
+    box-shadow: none;
+}
+
+.reveal-modal .close-reveal-modal {
+    color: rgb(178, 172, 162);
+}
+
+.side-nav li a:not(.button) {
+    color: rgb(74, 210, 255);
+}
+
+.side-nav li a:not(.button):hover, .side-nav li a:not(.button):focus {
+    background-image: initial;
+    background-color: rgba(0, 0, 0, 0.02);
+    color: rgb(45, 203, 255);
+}
+
+.side-nav li a:not(.button):active {
+    color: rgb(45, 203, 255);
+}
+
+.side-nav li.active > a:first-child:not(.button) {
+    color: rgb(45, 203, 255);
+}
+
+.side-nav li.divider {
+    list-style-image: initial;
+    border-top-color: rgb(55, 60, 62);
+}
+
+.side-nav li.heading {
+    color: rgb(74, 210, 255);
+}
+
+.split.button span {
+    border-left-color: initial;
+}
+
+.split.button span:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.split.button span {
+    border-left-color: rgba(48, 52, 54, 0.5);
+}
+
+.split.button span::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.split.button.secondary span {
+    border-left-color: rgba(48, 52, 54, 0.5);
+}
+
+.split.button.secondary span::after {
+    border-color: rgb(48, 52, 54) transparent transparent;
+}
+
+.split.button.alert span {
+    border-left-color: rgba(48, 52, 54, 0.5);
+}
+
+.split.button.success span {
+    border-left-color: rgba(48, 52, 54, 0.5);
+}
+
+.split.button.secondary span::after {
+    border-color: rgb(123, 114, 101) transparent transparent;
+}
+
+.sub-nav dt, .sub-nav dd, .sub-nav li {
+    color: rgb(168, 160, 149);
+}
+
+.sub-nav dt a, .sub-nav dd a, .sub-nav li a {
+    color: rgb(168, 160, 149);
+    text-decoration-color: initial;
+}
+
+.sub-nav dt a:hover, .sub-nav dd a:hover, .sub-nav li a:hover {
+    color: rgb(159, 151, 139);
+}
+
+.sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+    color: rgb(232, 230, 227);
+}
+
+.sub-nav dt.active a:hover, .sub-nav dd.active a:hover, .sub-nav li.active a:hover {
+    background-image: initial;
+    background-color: rgb(0, 96, 128);
+}
+
+.switch {
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    outline-color: initial;
+}
+
+.switch label {
+    background-image: initial;
+    background-color: rgb(43, 47, 49);
+    color: transparent;
+}
+
+.switch label::after {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+}
+
+.switch input:checked + label {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+.switch label {
+    color: transparent;
+    background-image: initial;
+    background-color: rgb(43, 47, 49);
+}
+
+.switch label::after {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+}
+
+.switch input:checked + label {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+}
+
+table {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(58, 62, 65);
+}
+
+table caption {
+    background-image: initial;
+    background-color: transparent;
+    color: rgb(211, 207, 201);
+}
+
+table thead {
+    background-image: initial;
+    background-color: rgb(30, 32, 33);
+}
+
+table thead tr th, table thead tr td {
+    color: rgb(211, 207, 201);
+}
+
+table tfoot {
+    background-image: initial;
+    background-color: rgb(30, 32, 33);
+}
+
+table tfoot tr th, table tfoot tr td {
+    color: rgb(211, 207, 201);
+}
+
+table tr th, table tr td {
+    color: rgb(211, 207, 201);
+}
+
+table tr.even, table tr.alt, table tr:nth-of-type(2n) {
+    background-image: initial;
+    background-color: rgb(27, 30, 31);
+}
+
+.tabs dd, .tabs .tab-title {
+    list-style-image: initial;
+}
+
+.tabs dd > a, .tabs .tab-title > a {
+    background-color: rgb(33, 36, 37);
+    color: rgb(211, 207, 201);
+}
+
+.tabs dd > a:hover, .tabs .tab-title > a:hover {
+    background-color: rgb(41, 44, 46);
+}
+
+.tabs dd.active > a, .tabs .tab-title.active > a {
+    background-color: rgb(24, 26, 27);
+    color: rgb(211, 207, 201);
+}
+
+.th {
+    border-color: rgb(48, 52, 54);
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px;
+}
+
+.th:hover, .th:focus {
+    box-shadow: rgba(0, 112, 149, 0.5) 0 0 6px 1px;
+}
+
+.has-tip {
+    border-bottom-color: rgb(62, 68, 70);
+    color: rgb(200, 195, 188);
+}
+
+.has-tip:hover, .has-tip:focus {
+    border-bottom-color: rgb(126, 117, 104);
+    color: rgb(74, 210, 255);
+}
+
+.tooltip {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+    color: rgb(232, 230, 227);
+}
+
+.tooltip > .nub {
+    border-color: transparent transparent rgb(123, 114, 101);
+}
+
+.tooltip.opened {
+    border-bottom-color: rgb(126, 117, 104) !important;
+    color: rgb(74, 210, 255) !important;
+}
+
+.tap-to-close {
+    color: rgb(157, 148, 136);
+}
+
+@media only screen {
+     .tooltip > .nub {
+        border-color: transparent transparent rgb(123, 114, 101);
+    }
+
+     .tooltip.tip-top > .nub {
+        border-color: rgb(123, 114, 101) transparent transparent;
+    }
+
+     .tooltip.tip-left > .nub {
+        border-color: transparent transparent transparent rgb(123, 114, 101);
+    }
+
+     .tooltip.tip-right > .nub {
+        border-color: transparent rgb(123, 114, 101) transparent transparent;
+    }
+
+
+}
+
+.contain-to-grid {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.top-bar {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.top-bar ul {
+    list-style-image: initial;
+}
+
+.top-bar .name h1 a, .top-bar .name h2 a, .top-bar .name h3 a, .top-bar .name h4 a, .top-bar .name p a, .top-bar .name span a {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar .toggle-topbar a {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar .toggle-topbar.menu-icon a {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar .toggle-topbar.menu-icon a span::after {
+    box-shadow: rgb(24, 26, 27) 0 0 0 1px, rgb(24, 26, 27) 0 7px 0 1px, rgb(24, 26, 27) 0 14px 0 1px;
+}
+
+.top-bar.expanded {
+    background-image: initial;
+    background-color: transparent;
+}
+
+.top-bar.expanded .title-area {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.top-bar.expanded .toggle-topbar a {
+    color: rgb(157, 148, 136);
+}
+
+.top-bar.expanded .toggle-topbar a span::after {
+    box-shadow: rgb(91, 99, 103) 0 0 0 1px, rgb(91, 99, 103) 0 7px 0 1px, rgb(91, 99, 103) 0 14px 0 1px;
+}
+
+.top-bar-section .divider, .top-bar-section [role="separator"] {
+    border-top-color: rgb(131, 122, 108);
+}
+
+.top-bar-section ul li {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.top-bar-section ul li > a {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button {
+    background-color: rgb(0, 112, 149);
+    border-color: rgb(0, 158, 210);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button:hover, .top-bar-section ul li > a.button:focus {
+    background-color: rgb(0, 90, 119);
+}
+
+.top-bar-section ul li > a.button:hover, .top-bar-section ul li > a.button:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.secondary {
+    background-color: rgb(38, 41, 42);
+    border-color: rgb(68, 73, 76);
+    color: rgb(200, 195, 188);
+}
+
+.top-bar-section ul li > a.button.secondary:hover, .top-bar-section ul li > a.button.secondary:focus {
+    background-color: rgb(64, 69, 71);
+}
+
+.top-bar-section ul li > a.button.secondary:hover, .top-bar-section ul li > a.button.secondary:focus {
+    color: rgb(200, 195, 188);
+}
+
+.top-bar-section ul li > a.button.success {
+    background-color: rgb(54, 138, 85);
+    border-color: rgb(56, 142, 87);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.success:hover, .top-bar-section ul li > a.button.success:focus {
+    background-color: rgb(43, 110, 68);
+}
+
+.top-bar-section ul li > a.button.success:hover, .top-bar-section ul li > a.button.success:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.alert {
+    background-color: rgb(179, 36, 12);
+    border-color: rgb(177, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.alert:hover, .top-bar-section ul li > a.button.alert:focus {
+    background-color: rgb(166, 34, 11);
+}
+
+.top-bar-section ul li > a.button.alert:hover, .top-bar-section ul li > a.button.alert:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.warning {
+    background-color: rgb(179, 96, 12);
+    border-color: rgb(177, 94, 12);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.warning:hover, .top-bar-section ul li > a.button.warning:focus {
+    background-color: rgb(166, 88, 11);
+}
+
+.top-bar-section ul li > a.button.warning:hover, .top-bar-section ul li > a.button.warning:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > a.button.info {
+    background-color: rgb(24, 76, 98);
+    border-color: rgb(31, 101, 130);
+    color: rgb(200, 195, 188);
+}
+
+.top-bar-section ul li > a.button.info:hover, .top-bar-section ul li > a.button.info:focus {
+    background-color: rgb(33, 106, 136);
+}
+
+.top-bar-section ul li > a.button.info:hover, .top-bar-section ul li > a.button.info:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button {
+    background-color: rgb(0, 112, 149);
+    border-color: rgb(0, 158, 210);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button:hover, .top-bar-section ul li > button:focus {
+    background-color: rgb(0, 90, 119);
+}
+
+.top-bar-section ul li > button:hover, .top-bar-section ul li > button:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.secondary {
+    background-color: rgb(38, 41, 42);
+    border-color: rgb(68, 73, 76);
+    color: rgb(200, 195, 188);
+}
+
+.top-bar-section ul li > button.secondary:hover, .top-bar-section ul li > button.secondary:focus {
+    background-color: rgb(64, 69, 71);
+}
+
+.top-bar-section ul li > button.secondary:hover, .top-bar-section ul li > button.secondary:focus {
+    color: rgb(200, 195, 188);
+}
+
+.top-bar-section ul li > button.success {
+    background-color: rgb(54, 138, 85);
+    border-color: rgb(56, 142, 87);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.success:hover, .top-bar-section ul li > button.success:focus {
+    background-color: rgb(43, 110, 68);
+}
+
+.top-bar-section ul li > button.success:hover, .top-bar-section ul li > button.success:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.alert {
+    background-color: rgb(179, 36, 12);
+    border-color: rgb(177, 36, 12);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.alert:hover, .top-bar-section ul li > button.alert:focus {
+    background-color: rgb(166, 34, 11);
+}
+
+.top-bar-section ul li > button.alert:hover, .top-bar-section ul li > button.alert:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.warning {
+    background-color: rgb(179, 96, 12);
+    border-color: rgb(177, 94, 12);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.warning:hover, .top-bar-section ul li > button.warning:focus {
+    background-color: rgb(166, 88, 11);
+}
+
+.top-bar-section ul li > button.warning:hover, .top-bar-section ul li > button.warning:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li > button.info {
+    background-color: rgb(24, 76, 98);
+    border-color: rgb(31, 101, 130);
+    color: rgb(200, 195, 188);
+}
+
+.top-bar-section ul li > button.info:hover, .top-bar-section ul li > button.info:focus {
+    background-color: rgb(33, 106, 136);
+}
+
+.top-bar-section ul li > button.info:hover, .top-bar-section ul li > button.info:focus {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li:hover:not(.has-form) > a {
+    color: rgb(232, 230, 227);
+    background-image: initial;
+    background-color: rgb(26, 28, 29);
+}
+
+.top-bar-section ul li.active > a {
+    background-image: initial;
+    background-color: rgb(0, 112, 149);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section ul li.active > a:hover {
+    background-image: initial;
+    background-color: rgb(0, 96, 128);
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section .has-dropdown > a::after {
+    border-color: transparent transparent transparent rgba(48, 52, 54, 0.4);
+}
+
+.top-bar-section .dropdown li.title h5 a, .top-bar-section .dropdown li.parent-link a {
+    color: rgb(232, 230, 227);
+}
+
+.top-bar-section .dropdown li.title h5 a:hover, .top-bar-section .dropdown li.parent-link a:hover {
+    background-image: none;
+    background-color: initial;
+}
+
+.top-bar-section .dropdown label {
+    color: rgb(157, 148, 136);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .top-bar {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+    }
+
+     .top-bar.expanded {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+    }
+
+     .top-bar-section li.hover > a:not(.button) {
+        background-image: initial;
+        background-color: rgb(26, 28, 29);
+        color: rgb(232, 230, 227);
+    }
+
+     .top-bar-section li:not(.has-form) a:not(.button) {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+    }
+
+     .top-bar-section li:not(.has-form) a:not(.button):hover {
+        background-image: initial;
+        background-color: rgb(26, 28, 29);
+    }
+
+     .top-bar-section li.active:not(.has-form) a:not(.button) {
+        background-image: initial;
+        background-color: rgb(0, 112, 149);
+        color: rgb(232, 230, 227);
+    }
+
+     .top-bar-section li.active:not(.has-form) a:not(.button):hover {
+        background-image: initial;
+        background-color: rgb(0, 96, 128);
+        color: rgb(232, 230, 227);
+    }
+
+     .top-bar-section .has-dropdown > a::after {
+        border-color: rgba(48, 52, 54, 0.4) transparent transparent;
+    }
+
+     .top-bar-section .has-dropdown .dropdown li.has-dropdown > a::after {
+        border-width: initial;
+        border-style: none;
+        border-color: initial;
+    }
+
+     .top-bar-section .dropdown {
+        background-image: initial;
+        background-color: transparent;
+    }
+
+     .top-bar-section .dropdown li a {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+        color: rgb(232, 230, 227);
+    }
+
+     .top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+        color: rgb(232, 230, 227);
+    }
+
+     .top-bar-section .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+        color: rgb(232, 230, 227);
+        background-image: initial;
+        background-color: rgb(26, 28, 29);
+    }
+
+     .top-bar-section .dropdown li label {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+    }
+
+     .top-bar-section > ul > .divider, .top-bar-section > ul > [role="separator"] {
+        border-right-color: rgb(114, 106, 94);
+        border-bottom: none;
+        border-top: none;
+    }
+
+     .top-bar-section .has-form {
+        background-image: initial;
+        background-color: rgb(38, 42, 43);
+    }
+
+     .no-js .top-bar-section ul li:hover > a {
+        background-image: initial;
+        background-color: rgb(26, 28, 29);
+        color: rgb(232, 230, 227);
+    }
+
+     .no-js .top-bar-section ul li:active > a {
+        background-image: initial;
+        background-color: rgb(0, 112, 149);
+        color: rgb(232, 230, 227);
+    }
+
+
+}
+
+a {
+    color: rgb(74, 210, 255);
+    text-decoration-color: initial;
+}
+
+a:hover, a:focus {
+    color: rgb(92, 214, 255);
+}
+
+a img {
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: rgb(211, 207, 201);
+}
+
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+    color: rgb(162, 154, 142);
+}
+
+.subheader {
+    color: rgb(162, 154, 142);
+}
+
+hr {
+    border-color: rgb(58, 62, 65);
+}
+
+code {
+    background-color: rgb(28, 30, 31);
+    border-color: rgb(57, 62, 64);
+    color: rgb(200, 195, 188);
+}
+
+ul.square li ul, ul.circle li ul, ul.disc li ul {
+    list-style-image: inherit;
+}
+
+.no-bullet li ul, .no-bullet li ol {
+    list-style-image: initial;
+}
+
+abbr, acronym {
+    color: rgb(211, 207, 201);
+}
+
+abbr[title] {
+    border-bottom-color: rgb(58, 62, 65);
+}
+
+blockquote {
+    border-left-color: rgb(58, 62, 65);
+}
+
+blockquote cite {
+    color: rgb(178, 172, 162);
+}
+
+blockquote cite a, blockquote cite a:visited {
+    color: rgb(178, 172, 162);
+}
+
+blockquote, blockquote p {
+    color: rgb(162, 154, 142);
+}
+
+.vcard {
+    border-color: rgb(58, 62, 65);
+}
+
+.vevent abbr {
+    text-decoration-color: initial;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+}
+
+.tab-bar {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+    color: rgb(232, 230, 227);
+}
+
+.tab-bar h1, .tab-bar h2, .tab-bar h3, .tab-bar h4, .tab-bar h5, .tab-bar h6 {
+    color: rgb(232, 230, 227);
+}
+
+.left-small {
+    border-right-color: rgb(131, 122, 108);
+}
+
+.right-small {
+    border-left-color: rgb(131, 122, 108);
+}
+
+.tab-bar .menu-icon {
+    color: rgb(232, 230, 227);
+}
+
+.tab-bar .menu-icon span::after {
+    box-shadow: rgb(24, 26, 27) 0 0 0 1px, rgb(24, 26, 27) 0 7px 0 1px, rgb(24, 26, 27) 0 14px 0 1px;
+}
+
+.tab-bar .menu-icon span:hover::after {
+    box-shadow: rgb(67, 72, 75) 0 0 0 1px, rgb(67, 72, 75) 0 7px 0 1px, rgb(67, 72, 75) 0 14px 0 1px;
+}
+
+.left-off-canvas-menu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.right-off-canvas-menu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.top-off-canvas-menu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.bottom-off-canvas-menu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+ul.off-canvas-list li label {
+    background-image: initial;
+    background-color: rgb(51, 55, 58);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+    color: rgb(168, 160, 149);
+}
+
+ul.off-canvas-list li a {
+    border-bottom-color: rgb(127, 118, 105);
+    color: rgba(232, 230, 227, 0.7);
+}
+
+ul.off-canvas-list li a:hover {
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+}
+
+ul.off-canvas-list li a:active {
+    background-image: initial;
+    background-color: rgb(27, 29, 30);
+}
+
+.move-right .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .move-right .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.move-left .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .move-left .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.move-top .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .move-top .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.move-bottom .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .move-bottom .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.offcanvas-overlap .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .offcanvas-overlap .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.offcanvas-overlap-left .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .offcanvas-overlap-left .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.offcanvas-overlap-right .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .offcanvas-overlap-right .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.offcanvas-overlap-top .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .offcanvas-overlap-top .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.offcanvas-overlap-bottom .exit-off-canvas {
+    box-shadow: rgba(0, 0, 0, 0.5) -4px 0 4px, rgba(0, 0, 0, 0.5) 4px 0 4px;
+    -webkit-tap-highlight-color: rgba(232, 230, 227, 0);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.2);
+}
+
+@media only screen and (min-width: 40.0625em) {
+     .offcanvas-overlap-bottom .exit-off-canvas:hover {
+        background-image: initial;
+        background-color: rgba(24, 26, 27, 0.05);
+    }
+
+
+}
+
+.left-submenu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.left-submenu .back > a {
+    background-image: initial;
+    background-color: rgb(51, 55, 58);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+    color: rgb(168, 160, 149);
+}
+
+.left-submenu .back > a:hover {
+    background-image: initial;
+    background-color: rgb(36, 39, 41);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+}
+
+.right-submenu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.right-submenu .back > a {
+    background-image: initial;
+    background-color: rgb(51, 55, 58);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+    color: rgb(168, 160, 149);
+}
+
+.right-submenu .back > a:hover {
+    background-image: initial;
+    background-color: rgb(36, 39, 41);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+}
+
+.top-submenu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.top-submenu .back > a {
+    background-image: initial;
+    background-color: rgb(51, 55, 58);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+    color: rgb(168, 160, 149);
+}
+
+.top-submenu .back > a:hover {
+    background-image: initial;
+    background-color: rgb(36, 39, 41);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+}
+
+.bottom-submenu {
+    background-image: initial;
+    background-color: rgb(38, 42, 43);
+}
+
+.bottom-submenu .back > a {
+    background-image: initial;
+    background-color: rgb(51, 55, 58);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+    color: rgb(168, 160, 149);
+}
+
+.bottom-submenu .back > a:hover {
+    background-image: initial;
+    background-color: rgb(36, 39, 41);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+}
+
+h2.subtitle {
+    color: rgb(162, 154, 142);
+}
+
+h3 {
+    color: rgb(182, 176, 166);
+}
+
+a, a:visited {
+    color: rgb(175, 168, 158);
+}
+
+.title {
+    border-bottom-color: rgb(58, 62, 65);
+}
+
+.top-bar, .top-bar-section ul li {
+    background-color: rgb(0, 102, 0);
+}
+
+.expand-icon, .collapse-icon, .print-icon, .remove-bookmark-icon, .add-bookmark-icon {
+    color: rgb(162, 154, 142);
+}
+
+.expand-icon:hover, .collapse-icon:hover, .print-icon:hover, .scenario:hover .scenario-link-icon:hover, .remove-bookmark-icon:hover, .add-bookmark-icon:hover {
+    color: rgb(114, 255, 114);
+}
+
+.remove-bookmark-icon {
+    color: rgb(178, 172, 162);
+}
+
+.bookmarked {
+    color: rgb(255, 107, 107);
+    text-shadow: rgb(72, 78, 81) 2px 2px 3px;
+}
+
+.scenario-list-button-bar .button {
+    background-color: rgb(24, 26, 27);
+}
+
+.scenario-group-header {
+    border-top-color: rgb(72, 78, 81);
+}
+
+h3.scenario-group-header {
+    color: rgb(200, 195, 188);
+}
+
+span.scenario-group-header-name {
+    background-color: rgb(24, 26, 27);
+    color: rgb(189, 183, 175);
+}
+
+span.scenario-group-header-name.failed {
+    color: rgb(255, 26, 26);
+}
+
+.scenario-list-button-bar .red {
+    color: rgb(255, 26, 26);
+}
+
+.scenario-list-button-bar .gray {
+    color: rgb(152, 143, 129);
+}
+
+.scenario-list-button-bar .bold {
+    color: rgb(232, 230, 227);
+}
+
+.scenario-list-button-bar .fa.fa-check {
+    color: rgba(178, 172, 162, 0.48);
+}
+
+.fa.fa-check.unselected {
+    color: rgba(178, 172, 162, 0.48);
+}
+
+.cases-group-header {
+    background-color: rgb(37, 40, 42);
+    border-bottom-color: rgb(58, 62, 65);
+}
+
+.button.group-by {
+    background-color: rgb(24, 26, 27);
+}
+
+.button.icon-button {
+    background-color: rgb(24, 26, 27);
+}
+
+.scenario-list-button-bar .fa.selected {
+    color: rgb(232, 230, 227);
+}
+
+.scenario-expand-icon, .case-expand-icon {
+    color: rgb(152, 143, 129);
+}
+
+.scenario-extended-description-icon {
+    color: rgb(189, 183, 175);
+    border-bottom: none !important;
+}
+
+.scenario-extended-description {
+    color: rgb(185, 179, 169);
+    border-bottom-color: rgb(52, 57, 59);
+}
+
+.scenario-extended-description a {
+    color: rgb(137, 196, 137);
+}
+
+.scenario-group-name {
+    color: rgb(178, 172, 162);
+}
+
+.scenario-title.failed {
+    color: rgb(255, 26, 26);
+}
+
+.scenario-case-title.failed {
+    color: rgb(255, 26, 26);
+}
+
+.scenario-title.pending {
+    color: rgb(152, 143, 129);
+}
+
+.scenario-link-icon {
+    color: rgb(204, 200, 193);
+}
+
+.nested-step {
+    border-left-color: rgb(53, 57, 59);
+}
+
+.total.group-count.label.secondary {
+    background-color: rgb(34, 36, 38);
+    color: rgb(232, 230, 227);
+}
+
+.pending.group-count.label.secondary {
+    background-color: rgb(64, 69, 72);
+    color: rgb(232, 230, 227);
+}
+
+.nav-count.failed {
+    background-color: rgb(204, 0, 0);
+    color: rgb(232, 230, 227);
+}
+
+table.steps {
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+}
+
+td.steps.section-title {
+    color: rgb(178, 172, 162);
+    border-bottom-color: rgb(53, 57, 59);
+}
+
+.step-expand-icon {
+    color: rgb(157, 148, 136);
+}
+
+.nested-step .step-expand-icon {
+    background-color: rgb(24, 26, 27);
+}
+
+table.steps tr.steps {
+    background-color: rgb(24, 26, 27);
+}
+
+table.steps tr.steps:hover {
+    background-color: rgb(34, 36, 38);
+}
+
+table.steps tr.steps:hover .nested-step {
+    border-left-color: rgb(72, 78, 81);
+}
+
+table.steps tr.steps:hover .nested-step .step-expand-icon {
+    background-color: rgb(34, 36, 38);
+}
+
+.multiline {
+    border-color: rgb(60, 65, 68);
+    background-color: rgb(24, 26, 27);
+}
+
+.class-name {
+    color: rgb(162, 154, 142);
+}
+
+.check {
+    color: rgb(114, 255, 114);
+}
+
+.small-check {
+    color: rgb(114, 255, 114);
+}
+
+.duration {
+    color: rgb(168, 160, 149);
+}
+
+.label.failed {
+    color: rgb(232, 230, 227);
+}
+
+.failed-icon {
+    color: rgb(255, 26, 26);
+}
+
+.FAILED {
+    color: rgb(255, 26, 26);
+}
+
+.SKIPPED, .PENDING {
+    color: rgb(178, 172, 162) !important;
+}
+
+.label.pending {
+    background-color: rgb(64, 69, 72);
+    color: rgb(232, 230, 227);
+}
+
+.skipped {
+    color: rgb(178, 172, 162);
+}
+
+.word {
+    color: rgb(200, 195, 188);
+}
+
+.word.FAILED {
+    color: rgb(255, 26, 26);
+}
+
+.word.SKIPPED {
+    color: rgb(152, 143, 129) !important;
+}
+
+.argument {
+    color: rgb(232, 230, 227);
+}
+
+.sort-icon {
+    color: rgb(178, 172, 162);
+}
+
+.nav-hide-icon, .nav-show-icon {
+    color: rgb(178, 172, 162);
+}
+
+.nav-hide-icon:hover {
+    color: rgb(232, 230, 227);
+    background-image: initial;
+    background-color: rgb(34, 36, 38);
+}
+
+.nav-show-icon:hover {
+    color: rgb(200, 195, 188);
+    background-image: initial;
+    background-color: rgb(33, 36, 37);
+}
+
+.nav-show-icon {
+    color: rgb(200, 195, 188);
+}
+
+#nav-move-icon {
+    color: rgb(212, 209, 203);
+}
+
+.search-icon {
+    color: rgb(200, 195, 188);
+}
+
+ul.off-canvas-list li.off-canvas-label > a {
+    background-image: initial;
+    background-color: rgb(51, 55, 58);
+    border-bottom: none;
+    border-top-color: rgb(109, 101, 90);
+    color: rgb(168, 160, 149);
+}
+
+ul.off-canvas-list li.off-canvas-label > a:hover {
+    background-image: initial;
+    background-color: rgb(26, 28, 29);
+}
+
+.content {
+    background-image: initial;
+    background-color: rgb(24, 26, 27);
+}
+
+.scenario {
+    border-bottom-color: rgb(58, 62, 65);
+}
+
+.scenario.last {
+    border-bottom: none;
+}
+
+.scenario-content {
+    background-color: rgb(24, 26, 27);
+}
+
+#scenario-container {
+    background-color: rgb(24, 26, 27);
+    border-left-color: rgb(58, 62, 65);
+}
+
+#scenario-container.embed {
+    border-left: none;
+}
+
+body, .footer-bottom {
+    background-image: none;
+    background-color: rgb(24, 26, 27);
+}
+
+#sidebar {
+    background-image: none;
+    background-color: rgb(27, 29, 30);
+}
+
+ul.tags {
+    list-style-image: initial;
+}
+
+ul.pagination li.current a {
+    background-color: rgb(0, 102, 0);
+}
+
+.side-nav li a:not(.button) {
+    color: rgb(178, 172, 162);
+}
+
+a:hover, a:focus, .side-nav li.heading a:hover, .side-nav li.heading a:focus, .side-nav li.heading li a:hover, .side-nav li.heading li a:focus {
+    color: rgb(114, 255, 114);
+}
+
+.side-nav li li a:not(.button) {
+    color: rgb(175, 168, 158);
+}
+
+.side-nav ul {
+    list-style-image: initial;
+}
+
+li.subheading {
+    color: rgb(74, 210, 255);
+}
+
+i.transparent {
+    color: transparent;
+}
+
+.open-tree-node-icon {
+    color: rgb(221, 218, 214);
+}
+
+div.tree-node:hover {
+    background-color: rgb(34, 36, 38);
+}
+
+div.tree-node:hover .open-tree-node-icon {
+    color: inherit;
+}
+
+div.tree-node:hover a {
+    background-image: none !important;
+    background-color: initial !important;
+}
+
+a.show-tree-link:hover {
+    background-image: none !important;
+    background-color: initial !important;
+}
+
+.footer-bottom {
+    color: rgb(178, 172, 162);
+}
+
+.footer-bottom a {
+    color: rgb(118, 220, 255);
+}
+
+#loading-modal {
+    background-color: rgba(24, 26, 27, 0.8);
+}
+
+#loading-modal > h1 {
+    color: rgb(152, 143, 129);
+}
+
+.page-statistics {
+    color: rgb(152, 143, 129);
+}
+
+@media only screen and (max-width: 64em) {
+     #scenario-container {
+        border-left: none;
+    }
+
+
+}
+
+.jgiven-html-thumbnail {
+    border-color: rgb(60, 65, 68);
+}
+
+.vimvixen-hint {
+    background-color: rgb(104, 75, 0) !important;
+    border-color: rgb(158, 126, 0) !important;
+    color: rgb(215, 212, 207) !important;
+}
+
+#vimvixen-console-frame {
+    color-scheme: light !important;
+}
+
+::placeholder {
+    opacity: 0.5 !important;
+}
+
+#edge-translate-panel-body, .MuiTypography-body1, .nfe-quote-text {
+    color: var(--darkreader-neutral-text) !important;
+}
+
+gr-main-header {
+    background-color: rgb(27, 73, 88) !important;
+}
+
+.tou-z65h9k, .tou-mignzq, .tou-1b6i2ox, .tou-lnqlqk {
+    background-color: var(--darkreader-neutral-background) !important;
+}
+
+.tou-75mvi {
+    background-color: rgb(15, 58, 71) !important;
+}
+
+.tou-ta9e87, .tou-1w3fhi0, .tou-1b8t2us, .tou-py7lfi, .tou-1lpmd9d, .tou-1frrtv8, .tou-17ezmgn {
+    background-color: rgb(30, 32, 33) !important;
+}
+
+.tou-uknfeu {
+    background-color: rgb(67, 44, 9) !important;
+}
+
+.tou-6i3zyv {
+    background-color: rgb(36, 93, 112) !important;
+}
+
+div.mermaid-viewer-control-panel .btn {
+    background-color: var(--darkreader-neutral-background);
+    fill: var(--darkreader-neutral-text);
+}
+
+svg g rect.er {
+    fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.er.entityBox {
+    fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.er.attributeBoxOdd {
+    fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.er.attributeBoxEven {
+    fill: var(--darkreader-selection-background);
+    fill-opacity: 0.8 !important;
+}
+
+svg rect.er.relationshipLabelBox {
+    fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g g.nodes rect, svg g g.nodes polygon {
+    fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.task {
+    fill: var(--darkreader-selection-background) !important;
+}
+
+svg line.messageLine0, svg line.messageLine1 {
+    stroke: var(--darkreader-neutral-text) !important;
+}
+
+div.mermaid .actor {
+    fill: var(--darkreader-neutral-background) !important;
+}
+
+mitid-authenticators-code-app > .code-app-container {
+    background-color: white !important;
+    padding-top: 1rem;
+}
+
+iframe#unpaywall[src$="unpaywall.html"] {
+    color-scheme: light !important;
+}
+
+embed[type="application/pdf"][src="about:blank"] {
+    filter: invert(100%) contrast(90%);
+}

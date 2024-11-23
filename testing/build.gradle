@@ -37,6 +37,7 @@ test {
 jgivenTestReport {
     reports {
         html.customJsFile = file('src/test/resources/jgiven/custom.js')
+        html.customCssFile = file('src/test/resources/jgiven/custom.css')
     }
 
     doLast {

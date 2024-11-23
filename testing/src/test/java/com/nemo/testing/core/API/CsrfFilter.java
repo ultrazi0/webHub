@@ -12,6 +12,12 @@ import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
+/**
+ * Handles the CSRF tokens.
+ * This is an adaptation of {@link io.restassured.internal.filter.CsrfFilter} for this application
+ *
+ * @see CsrfConfig
+ * */
 public class CsrfFilter implements OrderedFilter {
 
     private final CsrfConfig csrfConfig;

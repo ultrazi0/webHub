@@ -49,6 +49,10 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
     @Getter
     @ScenarioState
     protected UserEntity CURRENT_USER = null;
+
+    /**
+     * Map of the entities created in a test
+     * */
     @ScenarioState
     protected TypedClassInstanceMap createdEntities;
 
@@ -102,6 +106,9 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
         return apiService.send(request).getStatusCode() == 200;
     }
 
+    /**
+     * Prepends {@link com.codeborne.selenide.Configuration#baseUrl} to the provided path
+     * */
     protected static String fullUrlOf(String path) {
         return baseUrl + path;
     }

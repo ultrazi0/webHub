@@ -4,4 +4,5 @@ public interface WithDefaultCredentials {
 
     String DEFAULT_USERNAME = "myTestUsername";
     String DEFAULT_PASSWORD = "myTestPassword";
+
 }

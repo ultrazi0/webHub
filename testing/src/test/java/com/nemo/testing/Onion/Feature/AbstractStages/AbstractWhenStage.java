@@ -1,5 +1,6 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
+import com.nemo.testing.APrivateInvestigator.Model.TestRequest;
 import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
@@ -27,6 +28,9 @@ public abstract class AbstractWhenStage<T extends AbstractWhenStage<T>> extends 
     @Autowired
     private PersistenceServiceMapper persistenceServiceMapper;
 
+    /**
+     * Registers an entity created by the UI directly (for example, when a test registers a user)
+     * */
     @Hidden
     protected <E> T registerEntity(Class<E> cls, String name) {
         WithPersistence<E> persistenceService = persistenceServiceMapper.getPersistenceService(cls);

@@ -44,6 +44,11 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         createdEntities = new TypedClassInstanceMap();
     }
 
+    /**
+     * Opens the page. Implicitly waits for the page to render
+     *
+     * @param page page to open
+     * */
     protected void open(AbstractPage page) {
         page.openPage();
         assumeOnPage(page);
@@ -131,6 +136,12 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         });
     }
 
+    /**
+     * Automatically creates and registers for deletion an entity of the given type from the given record
+     *
+     * @param cls type of the entity
+     * @param record database record to create DB entry from
+     * */
     protected <E> E createEntity(Class<E> cls, Record record) {
         E createdEntity;
         WithPersistence<E> persistenceService = persistenceServiceMapper.getPersistenceService(cls);

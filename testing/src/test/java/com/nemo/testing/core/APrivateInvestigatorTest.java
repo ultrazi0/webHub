@@ -6,6 +6,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.annotation.*;
 
+/**
+ * Annotation to indicate classes with API tests
+ * */
 @IsTag(name = "API", description = "API tests", style = "background-color: green; color: white")
 @SpringBootTest(classes = PrivateInvestigatorConfig.class)
 @ActiveProfiles("PrivateInvestigator")

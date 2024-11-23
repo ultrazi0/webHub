@@ -67,6 +67,12 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         CURRENT_USER = userService.getUserByUsername(username);
     }
 
+    /**
+     * Automatically creates and registers for deletion an entity of the given type from the given record
+     *
+     * @param cls type of the entity
+     * @param record database record to create DB entry from
+     * */
     protected <E> void createEntity(Class<E> cls, Record record) {
         E createdEntity;
         WithPersistence<E> persistenceService = persistenceServiceMapper.getPersistenceService(cls);
@@ -103,6 +109,10 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         return self();
     }
 
+    /**
+     * Provides type of the entity to be registered when request is sent.
+     * Use this to auto-delete entities created manually in the test (such as when you register a user using API)
+     * */
     protected void setEntityToRegisterType(Class<?> type) {
         if (request instanceof TestRequest testRequest) {
             testRequest.setEntityType(type);
@@ -111,6 +121,10 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         }
     }
 
+    /**
+     * Provides unique attributes (by which it can be deleted) of the to-be-created entity
+     * Use this to auto-delete entities created manually in the test (such as when you register a user using API)
+     * */
     protected void setEntityToRegisterUniqueAttributes(AbstractUniqueAttributes uniqueAttributes) {
         if (request instanceof TestRequest testRequest) {
             testRequest.setUniqueAttributes(uniqueAttributes);

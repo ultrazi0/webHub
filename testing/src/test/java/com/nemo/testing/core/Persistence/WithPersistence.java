@@ -5,6 +5,11 @@ import org.jooq.Record;
 
 import java.util.Collection;
 
+/**
+ * Common interface for interactions with the database
+ *
+ * @param <T> entity type which repository/service handles
+ * */
 public interface WithPersistence<T> {
 
     T getEntityWith(AbstractUniqueAttributes uniqueAttributes);

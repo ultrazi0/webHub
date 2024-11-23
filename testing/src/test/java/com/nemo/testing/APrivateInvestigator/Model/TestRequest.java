@@ -47,6 +47,9 @@ public class TestRequest extends Request {
         );
     }
 
+    /**
+     * Whether an entity created is created as a result of this request. This is needed for automatic cleanup
+     * */
     public boolean needsEntityRegister() {
         return entityType != null && uniqueAttributes != null;
     }

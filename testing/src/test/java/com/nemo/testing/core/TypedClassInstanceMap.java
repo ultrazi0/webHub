@@ -3,6 +3,10 @@ package com.nemo.testing.core;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+/**
+ * Map that ensures safe typing within one entry.
+ * {@code value} is a {@code Set} of entries of type specified by the {@code key}
+ * */
 public class TypedClassInstanceMap {
 
     private final Map<Class<?>, Set<?>> map = new HashMap<>();

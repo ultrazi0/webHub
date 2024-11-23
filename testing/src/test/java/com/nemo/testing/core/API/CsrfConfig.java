@@ -9,6 +9,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Configures the CSRF filter. This is an adaptation of {@link io.restassured.config.CsrfConfig}
+ *
+ * @see CsrfFilter
+ * */
 @Getter
 public class CsrfConfig implements Config {
 

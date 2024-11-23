@@ -6,7 +6,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.annotation.*;
 
-@IsTag(name = "Onion", description = "UI tests", style = "background-color: darkviolet; color: white")
+/**
+ * Annotation to indicate classes with UI tests
+ * */
+@IsTag(name = "Onion", description = "UI tests", style = "background-color: #1f0bcb; color: white")
 @SpringBootTest(classes = OnionTestConfig.class)
 @ActiveProfiles("Onion")
 @Retention(RetentionPolicy.RUNTIME)

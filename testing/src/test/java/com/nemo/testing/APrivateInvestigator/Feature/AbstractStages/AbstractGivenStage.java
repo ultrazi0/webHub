@@ -5,13 +5,17 @@ import com.nemo.testing.core.API.Request;
 import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UserService;
+import com.nemo.testing.core.Persistence.WithPersistence;
 import com.nemo.testing.core.TypedClassInstanceMap;
 import com.nemo.testing.core.WithExtendedDescriptions;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.WithAssumptions;
+import org.jooq.Record;
 import org.jooq.exception.DataAccessException;
+import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -63,6 +67,25 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         CURRENT_USER = userService.getUserByUsername(username);
     }
 
+    protected <E> void createEntity(Class<E> cls, Record record) {
+        E createdEntity;
+        WithPersistence<E> persistenceService = persistenceServiceMapper.getPersistenceService(cls);
+
+        try {
+            createdEntity = persistenceService.createEntityFrom(record);
+            createdEntities.addInstance(cls, createdEntity);
+        } catch (DataAccessException ignored) {
+            // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
+            createdEntity = persistenceService.getFrom(record);
+            createdEntities.addInstance(cls, createdEntity);
+            log.warn("Record {} already exists, it will be deleted after this test", record);
+        }
+
+        assumeThat(createdEntity)
+            .as("Assume entity is created")
+            .isNotNull();
+    }
+
     public T test_user() {
         assumeLoggedIn(TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
@@ -71,13 +94,11 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public T user_$_exists(@Quoted String username, @Hidden String password) {
-        try {
-            createdEntities.addInstance(userService.createNewUser(username, password));
-        } catch (DataAccessException ignored) {
-            log.warn("User with username \"{}\" already exists, it will be deleted after this test", username);
-            // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
-            createdEntities.addInstance(userService.getUserByUsername(username));
-        }
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(username);
+        usersRecord.setPassword(password);
+
+        createEntity(UserEntity.class, usersRecord);
 
         return self();
     }

@@ -40,7 +40,6 @@ class UserGivenStage extends AbstractGivenStage<UserGivenStage> {
     public UserGivenStage visit_$s_profile(String username) {
         UsersRecord usersRecord = new UsersRecord();
         usersRecord.setUsername(username);
-        usersRecord.setPassword(username);
 
         UserEntity otherUser = createEntity(UserEntity.class, usersRecord);
 

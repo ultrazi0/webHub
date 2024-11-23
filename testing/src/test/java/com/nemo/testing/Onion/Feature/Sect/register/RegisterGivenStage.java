@@ -4,11 +4,12 @@ import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
 import com.nemo.testing.core.Persistence.UserService;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Decibel.UserNotFoundException;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.exception.DataAccessException;
+import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @JGivenStage
@@ -44,13 +45,12 @@ class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
 
     @ExtendedDescription("Checked in the database")
     public RegisterGivenStage account_$_already_exists(@Quoted String username, @Hidden String password) {
-        try {
-            createdEntities.addInstance(userService.createNewUser(username, password));
-        } catch (DataAccessException ignored) {
-            // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
-            createdEntities.addInstance(userService.getUserByUsername(username));
-            log.warn("User with username \"{}\" already exists, it will be deleted after this test", username);
-        }
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(username);
+        usersRecord.setPassword(password);
+
+        createEntity(UserEntity.class, usersRecord);
+
         return self();
     }
 }

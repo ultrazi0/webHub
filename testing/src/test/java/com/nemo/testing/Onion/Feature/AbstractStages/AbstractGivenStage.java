@@ -132,7 +132,7 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     }
 
     protected <E> E createEntity(Class<E> cls, Record record) {
-        E createdEntity = null;
+        E createdEntity;
         WithPersistence<E> persistenceService = persistenceServiceMapper.getPersistenceService(cls);
 
         try {
@@ -140,7 +140,8 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
             createdEntities.addInstance(cls, createdEntity);
         } catch (DataAccessException ignored) {
             // Even if the user was not created in this test, it still uses a test username, and therefore should be deleted
-            createdEntities.addInstance(persistenceService.getFrom(record));
+            createdEntity = persistenceService.getFrom(record);
+            createdEntities.addInstance(cls, createdEntity);
             log.warn("Record {} already exists, it will be deleted after this test", record);
         }
 

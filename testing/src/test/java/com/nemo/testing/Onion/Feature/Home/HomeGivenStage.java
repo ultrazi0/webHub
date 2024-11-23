@@ -8,6 +8,7 @@ import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
@@ -60,7 +61,11 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription("Resolved in the database")
     public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
-        assumeThatCode(() -> createdEntities.addInstance(robotService.createNewRobot(robotName, CURRENT_USER.getId())))
+        RobotsRecord robotsRecord = new RobotsRecord();
+        robotsRecord.setName(robotName);
+        robotsRecord.setOwnerId(CURRENT_USER.getId());
+
+        assumeThatCode(() -> createEntity(RobotEntity.class, robotsRecord))
             .as("Create robot with name \"%s\"", robotName)
             .doesNotThrowAnyException();
 

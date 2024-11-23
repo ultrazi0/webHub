@@ -9,6 +9,7 @@ import com.tngtech.jgiven.annotation.As;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -30,7 +31,11 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage have_a_robot(@Quoted String robotName) {
-        assumeThatCode(() -> createdEntities.addInstance(robotService.createNewRobot(robotName, CURRENT_USER.getId())))
+        RobotsRecord robotsRecord = new RobotsRecord();
+        robotsRecord.setName(robotName);
+        robotsRecord.setOwnerId(CURRENT_USER.getId());
+
+        assumeThatCode(() -> createEntity(RobotEntity.class, robotsRecord))
             .as("Try to create a new robot \"%s\"", robotName)
             .doesNotThrowAnyException();
 

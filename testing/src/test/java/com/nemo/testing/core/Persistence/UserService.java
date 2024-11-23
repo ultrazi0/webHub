@@ -51,6 +51,8 @@ public class UserService implements WithPersistence<UserEntity> {
     public UserEntity createEntityFrom(Record record) {
         if (record instanceof UsersRecord r) {
             if (r.getRoles() == null) r.setRoles(new String[]{"USER"});
+            if (r.getPassword() == null) r.setPassword(r.getUsername());
+            r.setPassword(passwordEncoder.encode(r.getPassword()));
 
             UsersRecord usersRecord = db.insertInto(USERS)
                 .set(record)

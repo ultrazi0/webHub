@@ -1,14 +1,14 @@
-package com.nemo.testing.Onion.Feature.User;
+package com.nemo.testing.Onion.Feature.User.Profile;
 
 import com.nemo.testing.core.OnionTest;
+import com.nemo.testing.core.WithDefaultCredentials;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @OnionTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-class UserTests extends SpringScenarioTest<UserGivenStage, UserWhenStage, UserThenStage> {
-
-    private static final String DEFAULT_USERNAME = "myTestUsername";
+class UserTests extends SpringScenarioTest<UserGivenStage, UserWhenStage, UserThenStage>
+    implements WithDefaultCredentials {
 
     @Test
     void given_logged_in_I_see_my_name() {

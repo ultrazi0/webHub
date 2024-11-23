@@ -1,15 +1,14 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Sect.login;
 
 import com.nemo.testing.core.APrivateInvestigatorTest;
+import com.nemo.testing.core.WithDefaultCredentials;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @APrivateInvestigatorTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-class LoginTests extends SpringScenarioTest<LoginGivenStage, LoginWhenStage, LoginThenStage> {
-
-    private static final String DEFAULT_USERNAME = "myTestUsername";
-    private static final String DEFAULT_PASSWORD = "myTestPassword";
+class LoginTests extends SpringScenarioTest<LoginGivenStage, LoginWhenStage, LoginThenStage>
+    implements WithDefaultCredentials {
 
     @Test
     void given_correct_credentials_should_log_in() {

@@ -1,12 +1,10 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
-import com.tngtech.jgiven.annotation.Quoted;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.WithAssertions;
 
-import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
 /**
@@ -54,8 +52,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      */
     protected void assertOnCorrectPage(String pageURI) {
         assertTakingScreenshotThat(url(), "Check page redirect")
-            .withFailMessage("I am not redirected to the requested page")
-            .isEqualTo(baseUrl + pageURI);
+            .isEqualTo(fullUrlOf(pageURI));
     }
 
     /**

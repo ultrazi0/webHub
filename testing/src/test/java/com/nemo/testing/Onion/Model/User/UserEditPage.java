@@ -4,6 +4,7 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import org.openqa.selenium.By;
 import org.springframework.stereotype.Component;
 
+import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Selenide.element;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -35,19 +36,19 @@ public class UserEditPage extends AbstractPage {
     }
 
     public final void enterUsername(final String username) {
-        element(USERNAME_INPUT).sendKeys(username);
+        element(USERNAME_INPUT).setValue(username);
     }
 
     public final void enterOldPassword(final String oldPassword) {
-        element(OLD_PASSWORD_INPUT).sendKeys(oldPassword);
+        element(OLD_PASSWORD_INPUT).setValue(oldPassword);
     }
 
     public final void enterNewPassword(final String newPassword) {
-        element(NEW_PASSWORD_INPUT).sendKeys(newPassword);
+        element(NEW_PASSWORD_INPUT).setValue(newPassword);
     }
 
     public final void enterRepeatPassword(final String repeatPassword) {
-        element(REPEAT_PASSWORD_INPUT).sendKeys(repeatPassword);
+        element(REPEAT_PASSWORD_INPUT).setValue(repeatPassword);
     }
 
     public final void pressCancelButton() {
@@ -57,4 +58,9 @@ public class UserEditPage extends AbstractPage {
     public final void pressSubmitButton() {
         element(SUBMIT_BUTTON).click();
     }
+
+    public final boolean isSubmitted() {
+        return waitAndSeeIf(SUBMIT_BUTTON).becomes(hidden);
+    }
+
 }

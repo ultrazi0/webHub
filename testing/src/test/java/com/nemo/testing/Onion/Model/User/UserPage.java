@@ -25,6 +25,10 @@ public class UserPage extends AbstractPage {
 
     @Override
     public String uri() {
+        if (currentUserId == null) {
+            // If redirected to this page, in which case CURRENT_USER should not be null
+            return uri.replace("{userId}", String.valueOf(currentStage.getCURRENT_USER().getId()));
+        }
         return uri.replace("{userId}", currentUserId.toString());
     }
 

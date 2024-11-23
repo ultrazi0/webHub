@@ -26,7 +26,7 @@ public abstract class AbstractComponent {
     protected DriverService driverService;
 
     @Setter
-    protected AbstractStage<?> currentStage;
+    protected static AbstractStage<?> currentStage;
 
     /**
      * Wraps {@link com.codeborne.selenide.Selenide#element(By)} in order to provide custom wait and check functionality

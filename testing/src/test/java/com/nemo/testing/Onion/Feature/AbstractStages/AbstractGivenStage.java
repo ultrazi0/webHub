@@ -175,17 +175,21 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
      * @return the current instance (self) for method chaining
      */
     public T test_user() {
+        logInAs(TEST_USER_USERNAME, TEST_USER_PASSWORD);
+
+        return self();
+    }
+
+    protected void logInAs(String username, String password) {
         mainPage().openHomePage();
 
-        assumeThat(apiService.login(TEST_USER_USERNAME, TEST_USER_PASSWORD))
+        assumeThat(apiService.login(username, password))
             .as("Check if automatic login successful")
             .isTrue();
 
         driver().getWebDriver().manage().addCookie(
             new Cookie(apiService.getSessionCookieName(), apiService.getSessionId()));
 
-        CURRENT_USER = userService.getUserByUsername(TEST_USER_USERNAME);
-
-        return self();
+        CURRENT_USER = userService.getUserByUsername(username);
     }
 }

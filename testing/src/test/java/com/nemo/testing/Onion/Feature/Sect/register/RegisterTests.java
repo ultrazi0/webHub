@@ -1,15 +1,14 @@
 package com.nemo.testing.Onion.Feature.Sect.register;
 
 import com.nemo.testing.core.OnionTest;
+import com.nemo.testing.core.WithDefaultCredentials;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @OnionTest
 @SuppressWarnings("ResultOfMethodCallIgnored")
-class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage> {
-
-    private static final String DEFAULT_USERNAME = "myTestUsername";
-    private static final String DEFAULT_PASSWORD = "myTestPassword";
+class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenStage, RegisterThenStage>
+    implements WithDefaultCredentials {
 
     @Test
     void if_user_does_not_exit_I_should_be_able_to_register() {

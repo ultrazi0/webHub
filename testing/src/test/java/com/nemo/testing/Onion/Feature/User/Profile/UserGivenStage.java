@@ -1,4 +1,4 @@
-package com.nemo.testing.Onion.Feature.User;
+package com.nemo.testing.Onion.Feature.User.Profile;
 
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;

@@ -3,10 +3,12 @@ package com.nemo.testing.Onion.Feature.AbstractStages;
 import com.codeborne.selenide.Selenide;
 import com.nemo.testing.APrivateInvestigator.Model.Endpoints.WithSecurityEndpoints;
 import com.nemo.testing.Onion.DriverService;
+import com.nemo.testing.Onion.Model.AbstractComponent;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.core.API.APIService;
 import com.nemo.testing.core.API.Request;
 import com.nemo.testing.core.TypedClassInstanceMap;
+import com.nemo.testing.core.WithExtendedDescriptions;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
@@ -34,7 +36,8 @@ import static com.codeborne.selenide.WebDriverRunner.driver;
  * @param <T> the type of the concrete stage that extends this abstract class
  */
 @JGivenStage
-public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T> implements WithSecurityEndpoints {
+public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
+    implements WithSecurityEndpoints, WithExtendedDescriptions {
 
     @Autowired
     protected DriverService driverService;
@@ -105,7 +108,7 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
 
     @BeforeStage
     private void propagateCurrentStageToPage() {
-        mainPage().setCurrentStage(self());
+        AbstractComponent.setCurrentStage(self());
     }
 
     @FillerWord

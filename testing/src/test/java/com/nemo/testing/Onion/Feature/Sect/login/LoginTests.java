@@ -1,7 +1,7 @@
 package com.nemo.testing.Onion.Feature.Sect.login;
 
 import com.nemo.testing.core.OnionTest;
-import com.nemo.testing.core.Tags.Story;
+import com.nemo.testing.core.Tags.WH;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -25,7 +25,7 @@ class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenSt
             .I_expect_username_$_in_top_right_corner(username);
     }
 
-    @Story("HUB-2")
+    @WH("2")
     @ParameterizedTest
     @CsvSource({"puppy, 12345", "user, password1"})
     void when_incorrect_credentials_attempt_to_login_should_fail(String username, String password) {

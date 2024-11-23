@@ -5,8 +5,8 @@ import com.tngtech.jgiven.annotation.IsTag;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@IsTag(description = "This is a story", style = "background-color: purple; color: white")
+@IsTag(prependType = true, description = "This is a story", style = "background-color: deeppink; color: white")
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Story {
+public @interface WH {
     String value();
 }

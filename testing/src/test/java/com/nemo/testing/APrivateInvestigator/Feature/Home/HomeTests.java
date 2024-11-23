@@ -2,6 +2,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
 import com.nemo.testing.core.API.WithErrorMessages;
 import com.nemo.testing.core.APrivateInvestigatorTest;
+import com.nemo.testing.core.Tags.WH;
 import com.nemo.webHub.Commands.CommandType;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
 
     static String DEFAULT_ROBOT_NAME = "myTestRobot";
 
+    @WH("1")
     @Test
     void if_logged_in_I_should_be_able_to_view_the_list_of_all_commands() {
 
@@ -34,6 +36,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
 
     }
 
+    @WH("1")
     @ParameterizedTest
     @EnumSource(CommandType.class)
     void I_should_be_able_to_view_the_values_of_all_commands(CommandType commandType) {
@@ -51,6 +54,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().get_values_for_command(command);
     }
 
+    @WH("2")
     @Test
     void provided_I_have_a_robot_I_should_be_able_to_get_its_details() {
 
@@ -67,6 +71,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().get_the_correct_robot();
     }
 
+    @WH("3")
     @Test
     void provided_robot_with_this_name_does_not_exist_I_am_able_to_create_a_new_one() {
 

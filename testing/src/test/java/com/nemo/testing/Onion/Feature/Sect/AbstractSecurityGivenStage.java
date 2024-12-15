@@ -12,7 +12,7 @@ import org.jooq.generated.tables.records.UsersRecord;
 @SuppressWarnings("UnusedReturnValue")
 public abstract class AbstractSecurityGivenStage<T extends AbstractSecurityGivenStage<T>> extends AbstractGivenStage<T> {
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public T account_$_already_exists(@Quoted String username, @Hidden String password) {
         UsersRecord usersRecord = new UsersRecord();
         usersRecord.setUsername(username);

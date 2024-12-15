@@ -25,7 +25,7 @@ class RegisterThenStage extends AbstractThenStage<RegisterThenStage> {
         return registerPage;
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public RegisterThenStage my_account_is_created(@Hidden String username) {
         assertThatCode(() -> userService.getUserByUsername(username))
             .as("User with username \"%s\" was not created", username)

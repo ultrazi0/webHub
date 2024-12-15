@@ -43,7 +43,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         return self();
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage robot_with_name_$_does_not_exist(@Quoted String robotName) {
         assumeThatThrownBy(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Check if robot with name \"%s\" does not exist (name should be unique among all users)", robotName)
@@ -53,13 +53,13 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
     }
 
     @NestedSteps
-    @ExtendedDescription("Resolved in the database")
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
     public HomeGivenStage robot_with_name_$_exists(@Quoted String robotName) {
         return robot_with_name_$_does_not_exist(robotName)
             .and().robot_with_name_$_is_created(robotName);
     }
 
-    @ExtendedDescription("Resolved in the database")
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
     public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
         RobotsRecord robotsRecord = new RobotsRecord();
         robotsRecord.setName(robotName);
@@ -95,7 +95,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         return self();
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage its_owner() {
         Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
         assumeThat(createdRobots)

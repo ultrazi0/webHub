@@ -33,7 +33,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         return self();
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeThenStage robot_is_created(String robotName) {
         assertThatCode(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Check in the database if the robot is created")
@@ -104,7 +104,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         return self();
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeThenStage robot_$_does_not_exist(@Quoted String robotName) {
         assertThatCode(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
             .as("Assert that robot with name \"%s\" does not exist", robotName)

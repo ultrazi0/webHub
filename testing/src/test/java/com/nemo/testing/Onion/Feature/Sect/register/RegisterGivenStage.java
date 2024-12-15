@@ -32,7 +32,7 @@ class RegisterGivenStage extends AbstractSecurityGivenStage<RegisterGivenStage> 
         return self();
     }
 
-    @ExtendedDescription("Checked in the database")
+    @ExtendedDescription(CHECKED_IN_DATABASE)
     public RegisterGivenStage my_account_does_not_exist(@Hidden String username) {
         assumeThatThrownBy(() -> userService.getUserByUsername(username))
             .as("User with username \"%s\" already exists", username)

@@ -40,6 +40,10 @@ public class LoginPage extends AbstractPage {
         element(LOGIN_BUTTON).click();
     }
 
+    public final boolean wrongCredentialsMessageIsDisplayed() {
+        return element(WRONG_CREDENTIALS_MESSAGE).isDisplayed();
+    }
+
     public final boolean shouldSeeWrongCredentialsMessage() {
         return element(WRONG_CREDENTIALS_MESSAGE).is(visible, Duration.ofMillis(Configuration.timeout));
     }

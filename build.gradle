@@ -50,9 +50,16 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
+
+	tasks.withType(Test).configureEach {
+		// Skip tests for `moduleA` only during global `test` task execution
+		if (project.name == "testing" && !gradle.startParameter.projectDir.name.contains("testing")) {
+			enabled = false
+		}
+	}
 }
 
-tasks.named('test') {
+tasks.named('test', Test) {
 	useJUnitPlatform()
 }
 

@@ -40,10 +40,6 @@ dependencies {
 
 	runtimeOnly 'org.postgresql:postgresql:42.+'
 	jooqCodegen 'org.postgresql:postgresql:42.+'
-
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 subprojects {
@@ -56,6 +52,45 @@ subprojects {
 			enabled = false
 		}
 	}
+}
+
+testing {
+	suites {
+		test {
+			useJUnitJupiter()
+		}
+
+		integrationTest(JvmTestSuite) {
+			dependencies {
+				implementation project()
+			}
+
+			targets {
+				all {
+					testTask.configure {
+						shouldRunAfter(test)
+					}
+				}
+			}
+		}
+	}
+}
+
+sourceSets {
+	integrationTest {
+		compileClasspath += main.output
+		runtimeClasspath += main.output
+	}
+}
+
+configurations {
+	integrationTestImplementation.extendsFrom implementation
+	integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+dependencies {
+	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+	integrationTestImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test', Test) {

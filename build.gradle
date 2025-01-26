@@ -52,8 +52,7 @@ subprojects {
 	apply plugin: 'io.spring.dependency-management'
 
 	tasks.withType(Test).configureEach {
-		// Skip tests for `moduleA` only during global `test` task execution
-		if (project.name == "testing" && !gradle.startParameter.projectDir.name.contains("testing")) {
+		if (gradle.startParameter.projectDir != null && project.name == "testing" && !gradle.startParameter.projectDir.name.contains("testing")) {
 			enabled = false
 		}
 	}

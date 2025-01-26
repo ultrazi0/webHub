@@ -52,7 +52,7 @@ subprojects {
 	apply plugin: 'io.spring.dependency-management'
 
 	tasks.withType(Test).configureEach {
-		if (gradle.startParameter.projectDir != null && project.name == "testing" && !gradle.startParameter.projectDir.name.contains("testing")) {
+		if (gradle.startParameter.projectDir == null || (project.name == "testing" && !gradle.startParameter.projectDir.name.contains("testing"))) {
 			enabled = false
 		}
 	}

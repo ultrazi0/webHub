@@ -1,4 +1,4 @@
-image: amazoncorretto:21-alpine-full
+image: amazoncorretto:21-alpine
 
 workflow:
   rules:
@@ -20,14 +20,20 @@ build:
 test:
   stage: test
   script:
+    - apk add libstdc++
+    - apk add gcompat
     - chmod +x gradlew
-    - ./gradlew check
+    - ./gradlew test
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
       - build
       - .gradle
+  artifacts:
+    when: always
+    paths:
+      - build/reports/tests
 
 deploy:
   stage: deploy

@@ -22,6 +22,8 @@ test:
   script:
     - apk add libstdc++
     - apk add gcompat
+    - apk add cmake
+    - apk add g++
     - chmod +x gradlew
     - ./gradlew test
   cache:

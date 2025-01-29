@@ -1,4 +1,4 @@
-image: amazoncorretto:21-alpine
+image: eclipse-temurin:21
 
 workflow:
   rules:
@@ -20,10 +20,6 @@ build:
 test:
   stage: test
   script:
-    - apk add libstdc++
-    - apk add gcompat
-    - apk add cmake
-    - apk add g++
     - chmod +x gradlew
     - ./gradlew test
   cache:

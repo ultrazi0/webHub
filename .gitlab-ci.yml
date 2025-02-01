@@ -1,3 +1,9 @@
+stages:
+  - build
+  - test
+  - integration-test
+  - deploy
+
 image: eclipse-temurin:21
 
 workflow:
@@ -10,6 +16,8 @@ build:
   script:
     - chmod +x gradlew
     - ./gradlew --build-cache assemble
+  needs: []
+  dependencies: []
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
@@ -22,6 +30,40 @@ test:
   script:
     - chmod +x gradlew
     - ./gradlew test
+  needs:
+    - build
+  dependencies: []
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+  artifacts:
+    when: always
+    paths:
+      - build/reports/tests
+
+integration-test:
+  stage: integration-test
+  variables:
+    DB_NAME: "webHubDB"
+    DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
+    DB_USERNAME: server
+    DB_PASSWORD: server
+  services:
+    - name: postgres
+      alias: db
+      variables:
+        POSTGRES_DB: $DB_NAME
+        POSTGRES_USER: $DB_USERNAME
+        POSTGRES_PASSWORD: $DB_PASSWORD
+  script:
+    - chmod +x gradlew
+    - ./gradlew integrationTest
+  needs:
+    - build
+  dependencies: []
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
@@ -34,6 +76,8 @@ test:
       - build/reports/tests
 
 deploy:
+  inherit:
+    default: false
   stage: deploy
   script: echo "Define your deployment script!"
   environment: production

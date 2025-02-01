@@ -128,7 +128,7 @@ system-test:
     - release-test-image
   script:
     - chmod +x gradlew
-    - ./gradlew test -Dspring.datasource.url=$DB_URL --project-dir testing
+    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL --project-dir testing
   artifacts:
     name: reports
     when: always

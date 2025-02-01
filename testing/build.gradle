@@ -39,11 +39,7 @@ jar {
 test {
     useJUnitPlatform()
 
-    systemProperties System.getProperties()
-
-    filter {
-        excludeTestsMatching "**.Onion.**"
-    }
+    systemProperties System.getProperties().findAll { ((String) it.key).contains("spring") }
 
     finalizedBy jgivenTestReport
 }
@@ -52,7 +48,7 @@ tasks.register("apiTest", Test) {
     group = "verification"
     useJUnitPlatform()
 
-    systemProperties System.getProperties()
+    systemProperties System.getProperties().findAll { ((String) it.key).contains("spring") }
 
     filter {
         includeTestsMatching "**.APrivateInvestigator.**"

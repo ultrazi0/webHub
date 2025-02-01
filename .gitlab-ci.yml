@@ -109,7 +109,6 @@ release-test-image:
 system-test:
   stage: system-test
   variables:
-    CI_DEBUG_SERVICES: "true"
     FF_NETWORK_PER_BUILD: 1
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
     DB_NAME: "webHubDB"
@@ -129,8 +128,7 @@ system-test:
     - release-test-image
   script:
     - chmod +x gradlew
-    - echo $DB_URL
-    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL
+    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL --project-dir testing
   artifacts:
     name: reports
     when: always

@@ -98,8 +98,13 @@ tasks.named('test', Test) {
 }
 
 processResources {
-	filesMatching("**/application.properties") {
+	filesMatching([ "**/application.properties", "**/initDB.sql" ]) {
+
 		expand(project.properties)
+		filter { String line ->
+			// Replace "#[" with "${" and "]#" with "}", to resolve conflicts between Spring and Gradle
+			line.replaceAll("#\\[(.*)]#", "\\\${\$1}")
+		}
 	}
 }
 
@@ -109,7 +114,7 @@ jooq {
 	configuration {
 		jdbc {
 			driver = project.properties.databaseDriver
-			url = project.properties.databaseUrl
+			url = project.properties.databaseUrl + project.properties.databaseName
 			user = project.properties.databaseUsername
 			password = project.properties.databasePassword
 		}
@@ -128,7 +133,7 @@ jooq {
 }
 
 flyway {
-	url = project.properties.databaseUrl
+	url = project.properties.databaseUrl + project.properties.databaseName
 	user = project.properties.databaseUsername
 	password = project.properties.databasePassword
 	driver = project.properties.databaseDriver

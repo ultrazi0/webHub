@@ -99,7 +99,12 @@ tasks.named('test', Test) {
 
 processResources {
 	filesMatching([ "**/application.properties", "**/initDB.sql" ]) {
+
 		expand(project.properties)
+		filter { String line ->
+			// Replace "#[" with "${" and "]#" with "}", to resolve conflicts between Spring and Gradle
+			line.replaceAll("#\\[(.*)]#", "\\\${\$1}")
+		}
 	}
 }
 

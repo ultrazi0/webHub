@@ -11,9 +11,18 @@ COPY ./testing/build.gradle $APP_HOME/testing/build.gradle
 COPY ./testing/src/main $APP_HOME/testing/src/main
 RUN ./gradlew assemble
 
+FROM gradle AS db-processor
+WORKDIR /app
+
+COPY settings.gradle gradle.properties build.gradle /app/
+
+COPY src/main/resources/db/initDB.sql src/main/resources/db/initDB.sql
+
+RUN gradle processResources
+
 FROM postgres AS db
 
-COPY --from=builder /app/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
+COPY --from=db-processor /app/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
 
 FROM eclipse-temurin:21 AS final
 WORKDIR /app

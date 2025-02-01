@@ -24,6 +24,13 @@ build:
     paths:
       - build
       - .gradle
+  artifacts:
+    when: on_success
+    name: webHub-backend
+    paths:
+      - build/libs/*.jar
+    exclude:
+      - build/libs/*plain.jar
 
 test:
   stage: test
@@ -74,6 +81,26 @@ integration-test:
     when: always
     paths:
       - build/reports/tests
+
+release-test-image:
+  stage: deploy
+  image: docker
+  when: manual
+  services:
+    - name: docker:dind
+      alias: docker
+  variables:
+    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+  needs:
+    - build
+  dependencies:
+    - build
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build --pull -t $TEST_IMAGE .
+    - docker push $TEST_IMAGE
+
 
 deploy:
   inherit:

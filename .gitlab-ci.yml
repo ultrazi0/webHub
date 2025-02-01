@@ -109,6 +109,7 @@ release-test-image:
 system-test:
   stage: system-test
   variables:
+    CI_DEBUG_SERVICES: "true"
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
     DB_NAME: "webHubDB"
     DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot

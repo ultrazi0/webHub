@@ -90,13 +90,15 @@ integration-test:
 release-test-image:
   stage: deploy
   image: docker
-  when: manual
+  #when: manual
   services:
     - name: docker:dind
       alias: docker
   variables:
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
   dependencies:
+    - build
+  needs:
     - build
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin

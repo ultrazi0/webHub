@@ -39,6 +39,8 @@ jar {
 test {
     useJUnitPlatform()
 
+    systemProperties System.getProperties()
+
     filter {
         excludeTestsMatching "**.Onion.**"
     }

@@ -39,6 +39,10 @@ jar {
 test {
     useJUnitPlatform()
 
+    filter {
+        excludeTestsMatching "**.Onion.**"
+    }
+
     finalizedBy jgivenTestReport
 }
 

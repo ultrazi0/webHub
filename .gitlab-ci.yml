@@ -3,6 +3,7 @@ stages:
   - test
   - integration-test
   - deploy
+  - system-test
 
 image: eclipse-temurin:21
 
@@ -82,6 +83,10 @@ integration-test:
     paths:
       - build/reports/tests
 
+.docker-variables:
+  variables:
+    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+
 release-test-image:
   stage: deploy
   image: docker
@@ -98,6 +103,35 @@ release-test-image:
   script:
     - docker build --pull -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
+
+system-test:
+  stage: system-test
+  variables:
+    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+    DB_NAME: "webHubDB"
+    DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
+    DB_USERNAME: server
+    DB_PASSWORD: server
+  services:
+    - name: postgres
+      alias: db
+      variables:
+        POSTGRES_DB: $DB_NAME
+        POSTGRES_USER: $DB_USERNAME
+        POSTGRES_PASSWORD: $DB_PASSWORD
+    - name: $TEST_IMAGE
+      alias: backend
+  needs:
+    - release-test-image
+  script:
+    - chmod +x gradlew
+    - echo $DB_URL
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL
+  artifacts:
+    name: reports
+    when: always
+    paths:
+      - testing/build/reports/
 
 
 deploy:

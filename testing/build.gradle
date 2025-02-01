@@ -42,6 +42,19 @@ test {
     finalizedBy jgivenTestReport
 }
 
+tasks.register("apiTest", Test) {
+    group = "verification"
+    useJUnitPlatform()
+
+    systemProperties System.getProperties()
+
+    filter {
+        includeTestsMatching "**.APrivateInvestigator.**"
+    }
+
+    finalizedBy jgivenTestReport
+}
+
 jgivenTestReport {
     reports {
         html.customJsFile = file('src/test/resources/jgiven/custom.js')

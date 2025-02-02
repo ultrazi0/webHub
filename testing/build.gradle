@@ -12,7 +12,6 @@ repositories {
 
 dependencies {
 
-    implementation project(":webapp")
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
@@ -28,12 +27,22 @@ dependencies {
 
 }
 
+sourceSets {
+    test {
+        compileClasspath += project(":webapp")
+                .extensions
+                .getByType(SourceSetContainer)
+                .named("main").get()
+                .runtimeClasspath
+    }
+}
+
 bootJar {
     enabled = false
 }
 
 jar {
-    enabled = true
+    enabled = false
 }
 
 test {

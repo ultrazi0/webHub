@@ -81,7 +81,10 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage created_at_is(@Quoted OffsetDateTime created_at) {
-        validatableResponse.body("createdAt.with { java.time.OffsetDateTime.parse(it) }", Matchers.equalTo(created_at));
+        validatableResponse.body(
+            "createdAt.with { java.time.OffsetDateTime.parse(it).toInstant() }",
+            Matchers.equalTo(created_at.toInstant())
+        );
 
         return self();
     }

@@ -16,28 +16,26 @@ build:
   stage: build
   script:
     - chmod +x gradlew
-    - ./gradlew --build-cache assemble
+    - ./gradlew --build-cache webapp:assemble
   needs: []
   dependencies: []
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
     paths:
-      - build
+      - webapp/build
       - .gradle
   artifacts:
     when: on_success
     name: webHub-backend
     paths:
-      - build/libs/*.jar
-    exclude:
-      - build/libs/*plain.jar
+      - webapp/build/libs/*.jar
 
 test:
   stage: test
   script:
     - chmod +x gradlew
-    - ./gradlew test
+    - ./gradlew webapp:test
   needs:
     - build
   dependencies: []
@@ -45,12 +43,12 @@ test:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
-      - build
+      - webapp/build
       - .gradle
   artifacts:
     when: always
     reports:
-      junit: build/test-results/**/*.xml
+      junit: webapp/build/test-results/**/*.xml
 
 integration-test:
   stage: integration-test
@@ -68,7 +66,7 @@ integration-test:
         POSTGRES_PASSWORD: $DB_PASSWORD
   script:
     - chmod +x gradlew
-    - ./gradlew integrationTest
+    - ./gradlew webapp:integrationTest
   needs:
     - build
   dependencies: []
@@ -76,12 +74,12 @@ integration-test:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
-      - build
+      - webapp/build
       - .gradle
   artifacts:
     when: always
     reports:
-      junit: build/test-results/**/*.xml
+      junit: webapp/build/test-results/**/*.xml
 
 .docker-variables:
   variables:
@@ -128,7 +126,7 @@ system-test:
     - release-test-image
   script:
     - chmod +x gradlew
-    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend --project-dir testing
+    - ./gradlew testing:apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend
   artifacts:
     when: always
     reports:

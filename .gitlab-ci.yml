@@ -124,6 +124,12 @@ system-test:
       alias: backend
   needs:
     - release-test-image
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - webapp/build
+      - .gradle
   script:
     - chmod +x gradlew
     - ./gradlew testing:apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend

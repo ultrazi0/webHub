@@ -16,7 +16,7 @@ services:
     develop:
       watch:
         - action: rebuild
-          path: /src
+          path: webapp
 
   db:
     build:
@@ -37,7 +37,6 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
-        
 
 volumes:
   db-data:

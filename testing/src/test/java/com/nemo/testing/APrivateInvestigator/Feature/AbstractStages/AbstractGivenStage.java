@@ -59,6 +59,12 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     }
 
     protected void assumeLoggedIn(String username, String password) {
+
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(username);
+        usersRecord.setPassword(password);
+        createEntity(UserEntity.class, usersRecord);
+
         assumeThat(apiService.login(username, password))
             .as("Log in", username, password)
             .withFailMessage("Cannot log in as \"%s\" with password \"%s\"", username, password)

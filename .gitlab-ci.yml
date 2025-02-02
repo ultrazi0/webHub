@@ -103,7 +103,7 @@ release-test-image:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
-    - docker build --pull -t $TEST_IMAGE .
+    - docker build --pull --target jar -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
 system-test:

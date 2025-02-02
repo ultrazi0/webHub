@@ -30,7 +30,7 @@ public class DetectQRCodeTests {
     void givenImageWithQRCode_thenQRCodeFound() {
         QRCodeDetector qrCodeDetector = new QRCodeDetector();
 
-        Mat image = Imgcodecs.imread("code0.jpg");
+        Mat image = Imgcodecs.imread("../code0.jpg");
 
         List<PointInImage> points = detect(image, qrCodeDetector);
         Assert.notNull(points, "QR-code not found");
@@ -40,7 +40,7 @@ public class DetectQRCodeTests {
     void givenImageWithoutQRCode_thenQRCodeNotFound() {
         QRCodeDetector qrCodeDetector = new QRCodeDetector();
 
-        Mat image = Imgcodecs.imread("image0.png");
+        Mat image = Imgcodecs.imread("../image0.png");
 
         List<PointInImage> points = detect(image, qrCodeDetector);
         Assert.isNull(points, "QR-code found in an image without one");
@@ -50,7 +50,7 @@ public class DetectQRCodeTests {
     void givenQRCode_thenFindMiddle() {
         QRCodeDetector qrCodeDetector = new QRCodeDetector();
 
-        Mat image0 = Imgcodecs.imread("code0.jpg");
+        Mat image0 = Imgcodecs.imread("../code0.jpg");
 
         int imageWidth = image0.width();
         int imageHeight = image0.height();

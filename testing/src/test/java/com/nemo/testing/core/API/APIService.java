@@ -1,10 +1,15 @@
 package com.nemo.testing.core.API;
 
+import io.restassured.RestAssured;
 import io.restassured.config.SessionConfig;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static org.junit.platform.commons.util.StringUtils.isBlank;
 
 /**
  * Service for interactions with the API layer. Provides session support and automatically handles CSRF tokens
@@ -12,10 +17,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class APIService implements WithBaseEndpoints {
 
-    private static SessionFilter sessionFilter = new SessionFilter();
-    private static CsrfFilter csrfFilter = new CsrfFilter(getCsrfConfig());
+    @Getter
+    private static String baseUri = "http://localhost";
+    @Getter
+    private static int defaultPort = 8080;
+    @Getter
+    private static String basePath = "/api";
+    private static String CSRF_URI = "/csrf";
 
-    private static final String CSRF_URI = "/csrf";
+    private static SessionFilter sessionFilter = new SessionFilter();
+    private CsrfFilter csrfFilter;
+
+    public APIService(
+        @Value("${rest-assured.base-uri}") String baseUri,
+        @Value("${rest-assured.default-port}") Integer defaultPort,
+        @Value("${rest-assured.base-path}") String basePath,
+        @Value("${rest-assured.csrf-path}") String csrfUri
+    ) {
+        if (!isBlank(baseUri)) APIService.baseUri = baseUri;
+        if (defaultPort != null) APIService.defaultPort = defaultPort;
+        if (!isBlank(basePath)) APIService.basePath = basePath;
+        if (!isBlank(csrfUri)) APIService.CSRF_URI = csrfUri;
+        this.csrfFilter = new CsrfFilter(getCsrfConfig());
+
+        RestAssured.baseURI = APIService.baseUri;
+        RestAssured.port = APIService.defaultPort;
+        RestAssured.basePath = APIService.basePath;
+    }
+
 
     /**
      * Send a request

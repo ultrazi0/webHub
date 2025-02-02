@@ -24,20 +24,20 @@ FROM postgres AS db
 
 COPY --from=db-processor /app/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
 
-FROM eclipse-temurin:21 AS final
-WORKDIR /app
-
-EXPOSE 8080
-
-COPY --from=builder /app/build/libs/*.jar /app/jars/*.jar
-
-ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]
-
 FROM eclipse-temurin:21 AS jar
 WORKDIR /app
 
 EXPOSE 8080
 
 COPY /build/libs/*.jar /app/jars/*.jar
+
+ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]
+
+FROM eclipse-temurin:21 AS final
+WORKDIR /app
+
+EXPOSE 8080
+
+COPY --from=builder /app/build/libs/*.jar /app/jars/*.jar
 
 ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]

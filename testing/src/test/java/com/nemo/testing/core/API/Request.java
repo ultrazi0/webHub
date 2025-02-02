@@ -18,9 +18,6 @@ import lombok.experimental.Delegate;
  * */
 public class Request implements RequestSpecification {
 
-    private static final String BASE_URI = "http://backend:8080/";
-    private static final String BASE_PATH = "/api";
-
     @Delegate
     private final RequestSpecification delegate;
 
@@ -28,7 +25,11 @@ public class Request implements RequestSpecification {
     private Endpoint endpoint = null;
 
     protected Request() {
-        this.delegate = RestAssured.with().baseUri(BASE_URI).and().basePath(BASE_PATH);
+        this.delegate = RestAssured.with()
+            .baseUri(APIService.getBaseUri())
+            .and().port(APIService.getDefaultPort())
+            .and().basePath(APIService.getBasePath());
+
         this.config(RestAssuredConfig.config().logConfig(
             LogConfig.logConfig().enableLoggingOfRequestAndResponseIfValidationFails()));
     }

@@ -49,8 +49,8 @@ test:
       - .gradle
   artifacts:
     when: always
-    paths:
-      - build/reports/tests
+    reports:
+      junit: build/test-results/**/*.xml
 
 integration-test:
   stage: integration-test
@@ -80,8 +80,8 @@ integration-test:
       - .gradle
   artifacts:
     when: always
-    paths:
-      - build/reports/tests
+    reports:
+      junit: build/test-results/**/*.xml
 
 .docker-variables:
   variables:
@@ -103,7 +103,7 @@ release-test-image:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
-    - docker build --pull -t $TEST_IMAGE .
+    - docker build --pull --target jar -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
 system-test:
@@ -128,12 +128,11 @@ system-test:
     - release-test-image
   script:
     - chmod +x gradlew
-    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL --project-dir testing
+    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend --project-dir testing
   artifacts:
-    name: reports
     when: always
-    paths:
-      - testing/build/reports/
+    reports:
+      junit: testing/build/test-results/**/*.xml
 
 
 deploy:

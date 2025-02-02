@@ -29,11 +29,13 @@ dependencies {
 
 sourceSets {
     test {
-        compileClasspath += project(":webapp")
+        def classpath = project(":webapp")
                 .extensions
                 .getByType(SourceSetContainer)
                 .named("main").get()
                 .runtimeClasspath
+        compileClasspath += classpath
+        runtimeClasspath += classpath
     }
 }
 

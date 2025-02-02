@@ -3,12 +3,12 @@
     {
       "name": "selenide.base-url",
       "type": "java.lang.String",
-      "description": "Provides the base URL."
+      "description": "Provides the base URL for UI tests."
   },
     {
       "name": "selenide.timeout",
       "type": "java.lang.Long",
-      "description": "Timeout in milliseconds to fail a test."
+      "description": "Timeout in milliseconds to fail a UI test."
   },
     {
       "name": "selenide.polling-interval",
@@ -18,7 +18,7 @@
     {
       "name": "selenide.browser",
       "type": "java.lang.String",
-      "description": "Which browser to use. Supported values: \"chrome\", \"firefox\", \"ie\", \"edge\", \"safari\"."
+      "description": "Which browser to use. Supported values: 'chrome', 'firefox', 'ie', 'edge', 'safari'."
   },
     {
       "name": "selenide.browser-size",
@@ -34,5 +34,25 @@
       "name": "selenide.headless",
       "type": "java.lang.Boolean",
       "description": "Enables the ability to run the browser in headless mode."
+  },
+    {
+      "name": "rest-assured.base-uri",
+      "type": "java.lang.String",
+      "description": "Provides the base URI for API tests (default is http://localhost)."
+  },
+    {
+      "name": "rest-assured.default-port",
+      "type": "java.lang.Integer",
+      "description": "Provides a default port for API tests (default is 8080)."
+  },
+    {
+      "name": "rest-assured.base-path",
+      "type": "java.lang.String",
+      "description": "Provides the base PATH for API tests (default is /api)."
+  },
+    {
+      "name": "rest-assured.csrf-path",
+      "type": "java.lang.String",
+      "description": "What is the path to get CSRF token (default is /csrf)."
   }
 ] }

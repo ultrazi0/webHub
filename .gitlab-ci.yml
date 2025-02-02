@@ -49,8 +49,8 @@ test:
       - .gradle
   artifacts:
     when: always
-    paths:
-      - build/reports/tests
+    reports:
+      junit: build/test-results/**/*.xml
 
 integration-test:
   stage: integration-test
@@ -80,8 +80,8 @@ integration-test:
       - .gradle
   artifacts:
     when: always
-    paths:
-      - build/reports/tests
+    reports:
+      junit: build/test-results/**/*.xml
 
 .docker-variables:
   variables:
@@ -130,10 +130,9 @@ system-test:
     - chmod +x gradlew
     - ./gradlew apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend --project-dir testing
   artifacts:
-    name: reports
     when: always
-    paths:
-      - testing/build/reports/
+    reports:
+      junit: testing/build/test-results/**/*.xml
 
 
 deploy:

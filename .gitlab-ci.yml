@@ -128,8 +128,7 @@ system-test:
     - release-test-image
   script:
     - chmod +x gradlew
-    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend \
-      -Drest-assured.default-port=8080 --project-dir testing
+    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend --project-dir testing
   artifacts:
     name: reports
     when: always

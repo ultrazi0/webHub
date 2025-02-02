@@ -48,7 +48,6 @@ tasks.register("apiTest", Test) {
     group = "verification"
     useJUnitPlatform()
 
-    println(System.getProperties())
     systemProperties System.getProperties().findAll { it.key != "library.jansi.path" }
 
     filter {

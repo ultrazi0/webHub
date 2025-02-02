@@ -12,6 +12,7 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.WebDriverRunner.url;
 
@@ -47,7 +48,10 @@ class UserThenStage extends AbstractThenStage<UserThenStage> {
     }
 
     public UserThenStage see_their_username() {
-        Set<UserEntity> createdUsers = createdEntities.getInstances(UserEntity.class);
+        Set<UserEntity> createdUsers = createdEntities.getInstances(UserEntity.class).stream()
+            .filter(user -> !user.getUsername().equals(CURRENT_USER.getUsername()))
+            .collect(Collectors.toSet());
+
         assertThat(createdUsers)
             .as("Assert only one user is created")
             .hasSize(1);

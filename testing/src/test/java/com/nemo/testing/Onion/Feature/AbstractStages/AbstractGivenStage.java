@@ -6,6 +6,7 @@ import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.testing.core.Persistence.WithPersistence;
 import com.nemo.testing.core.TypedClassInstanceMap;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.BeforeScenario;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -15,6 +16,7 @@ import org.assertj.core.api.Assumptions;
 import org.assertj.core.api.WithAssumptions;
 import org.jooq.Record;
 import org.jooq.exception.DataAccessException;
+import org.jooq.generated.tables.records.UsersRecord;
 import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -192,6 +194,11 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
     }
 
     protected void logInAs(String username, String password) {
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(username);
+        usersRecord.setPassword(password);
+        createEntity(UserEntity.class, usersRecord);
+
         mainPage().openHomePage();
 
         assumeThat(apiService.login(username, password))

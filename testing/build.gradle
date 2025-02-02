@@ -39,7 +39,7 @@ jar {
 test {
     useJUnitPlatform()
 
-    systemProperties System.getProperties().findAll { ((String) it.key).contains("spring") }
+    systemProperties System.getProperties().findAll { it.key != "library.jansi.path" }
 
     finalizedBy jgivenTestReport
 }
@@ -48,7 +48,8 @@ tasks.register("apiTest", Test) {
     group = "verification"
     useJUnitPlatform()
 
-    systemProperties System.getProperties().findAll { ((String) it.key).contains("spring") }
+    println(System.getProperties())
+    systemProperties System.getProperties().findAll { it.key != "library.jansi.path" }
 
     filter {
         includeTestsMatching "**.APrivateInvestigator.**"

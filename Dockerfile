@@ -6,30 +6,28 @@ COPY gradle $APP_HOME/gradle
 COPY gradlew $APP_HOME
 COPY settings.gradle gradle.properties build.gradle $APP_HOME
 
-COPY ./src ./src
-COPY ./testing/build.gradle $APP_HOME/testing/build.gradle
-COPY ./testing/src/main $APP_HOME/testing/src/main
-RUN ./gradlew assemble
+COPY /webapp $APP_HOME/webapp
+RUN ./gradlew webapp:assemble
 
 FROM gradle AS db-processor
 WORKDIR /app
 
 COPY settings.gradle gradle.properties build.gradle /app/
 
-COPY src/main/resources/db/initDB.sql src/main/resources/db/initDB.sql
+COPY webapp/src/main/resources/db/initDB.sql /app/webapp/src/main/resources/db/initDB.sql
 
-RUN gradle processResources
+RUN gradle webapp:processResources
 
 FROM postgres AS db
 
-COPY --from=db-processor /app/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
+COPY --from=db-processor /app/webapp/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
 
 FROM eclipse-temurin:21 AS jar
 WORKDIR /app
 
 EXPOSE 8080
 
-COPY /build/libs/*.jar /app/jars/*.jar
+COPY webapp/build/libs/*.jar /app/jars/*.jar
 
 ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]
 
@@ -38,6 +36,6 @@ WORKDIR /app
 
 EXPOSE 8080
 
-COPY --from=builder /app/build/libs/*.jar /app/jars/*.jar
+COPY --from=builder /app/webapp/build/libs/*.jar /app/jars/*.jar
 
 ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]

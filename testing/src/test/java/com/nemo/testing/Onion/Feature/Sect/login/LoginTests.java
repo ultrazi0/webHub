@@ -11,11 +11,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenStage, LoginPageThenStage> {
 
     @ParameterizedTest
-    @CsvSource({"puppy, 1234", "user, password"})
+    @CsvSource({"test1234, 1234", "user1234, password12345"})
     void when_correct_credentials_I_should_be_able_to_log_in(String username, String password) {
 
         given()
-            .I_am().on_login_page()
+            .account_$_already_exists(username, password)
+            .and().I_am().on_login_page()
             .and().I_am().not_logged_in();
 
         when()

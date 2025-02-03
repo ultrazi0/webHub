@@ -88,7 +88,7 @@ integration-test:
   variables:
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
 
-release-test-image:
+release-test-backend-image:
   stage: deploy
   image: docker
   #when: manual
@@ -106,6 +106,22 @@ release-test-image:
   script:
     - docker build --pull --target jar -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
+
+release-test-frontend-image:
+  stage: deploy
+  image: docker
+  services:
+    - name: docker:dind
+      alias: docker
+  variables:
+    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+  dependencies: []
+  needs: [] # should be removed, this job should be run manually
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # Move this to separate stage (job above has the same before_script)
+  script:
+    - docker build --pull -t ${TEST_IMAGE}-frontend frontend
+    - docker push ${TEST_IMAGE}-frontend
 
 system-test:
   stage: system-test
@@ -125,8 +141,11 @@ system-test:
         POSTGRES_PASSWORD: $DB_PASSWORD
     - name: $TEST_IMAGE
       alias: backend
+    - name: ${TEST_IMAGE}-frontend
+      alias: frontend
   needs:
-    - release-test-image
+    - release-test-frontend-image
+    - release-test-backend-image
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
@@ -135,11 +154,13 @@ system-test:
       - .gradle
   script:
     - chmod +x gradlew
-    - ./gradlew testing:apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend -Dselenide.base-url=http://frontend/
   artifacts:
     when: always
     reports:
       junit: testing/build/test-results/**/*.xml
+    paths:
+      - testing/build/reports/jgiven
 
 
 deploy:

@@ -154,7 +154,7 @@ system-test:
       - .gradle
   script:
     - chmod +x gradlew
-    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend -Dselenide.base-url=http://frontend/
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend -Dselenide.base-url=http://frontend/ -Dselenide.headless=true
   artifacts:
     when: always
     reports:

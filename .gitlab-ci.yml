@@ -2,8 +2,9 @@ stages:
   - build
   - test
   - integration-test
-  - deploy
+  - test-release
   - system-test
+  - deploy
 
 image: eclipse-temurin:21
 
@@ -89,7 +90,7 @@ integration-test:
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
 
 release-test-backend-image:
-  stage: deploy
+  stage: test-release
   image: docker
   #when: manual
   services:
@@ -108,7 +109,7 @@ release-test-backend-image:
     - docker push $TEST_IMAGE
 
 release-test-frontend-image:
-  stage: deploy
+  stage: test-release
   image: docker
   services:
     - name: docker:dind
@@ -164,6 +165,21 @@ system-test:
     paths:
       - testing/build/reports/jgiven
 
+deploy-test-report:
+  pages: true
+  stage: deploy
+  inherit:
+    default: false
+  image: busybox
+  needs:
+    - system-test
+  dependencies:
+    - system-test
+  script:
+    - mv testing/build/reports/jgiven/test/html/ public/
+  artifacts:
+    paths:
+      - "public/"
 
 deploy:
   inherit:

@@ -188,17 +188,18 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
      * @return the current instance (self) for method chaining
      */
     public T test_user() {
+
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(TEST_USER_USERNAME);
+        usersRecord.setPassword(TEST_USER_PASSWORD);
+        createEntity(UserEntity.class, usersRecord);
+
         logInAs(TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
         return self();
     }
 
     protected void logInAs(String username, String password) {
-        UsersRecord usersRecord = new UsersRecord();
-        usersRecord.setUsername(username);
-        usersRecord.setPassword(password);
-        createEntity(UserEntity.class, usersRecord);
-
         mainPage().openHomePage();
 
         assumeThat(apiService.login(username, password))

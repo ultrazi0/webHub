@@ -143,6 +143,8 @@ system-test:
       alias: backend
     - name: ${TEST_IMAGE}-frontend
       alias: frontend
+    - name: selenium/standalone-chrome:latest
+      alias: chrome
   needs:
     - release-test-frontend-image
     - release-test-backend-image
@@ -154,7 +156,7 @@ system-test:
       - .gradle
   script:
     - chmod +x gradlew
-    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend -Dselenide.base-url=http://frontend/ -Dselenide.headless=true
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend -Dselenide.base-url=http://frontend/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
   artifacts:
     when: always
     reports:

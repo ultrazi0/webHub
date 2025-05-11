@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static org.junit.platform.commons.util.StringUtils.isBlank;
 
 /**
  * Service class responsible for configuring and managing the WebDriver instance for browser-based tests.
@@ -32,7 +33,8 @@ public class DriverService {
         @Value("${selenide.browser}") String browser,
         @Value("${selenide.browser-size}") String browserSize,
         @Value("${selenide.screenshots}") boolean screenshots,
-        @Value("${selenide.headless}") boolean headless) {
+        @Value("${selenide.headless}") boolean headless,
+        @Value("${selenide.remote}") String remote) {
 
         Configuration.baseUrl = baseUrl;
         Configuration.timeout = timeout;
@@ -41,6 +43,7 @@ public class DriverService {
         Configuration.browserSize = browserSize;
         Configuration.screenshots = screenshots;
         Configuration.headless = headless;
+        if (!isBlank(remote)) Configuration.remote = remote;
 
         Selenide.open();
         this.driver = getWebDriver();

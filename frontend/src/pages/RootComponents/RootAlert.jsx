@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 
-export default function RootAlert({ variant, message, }) {
+export default function RootAlert({ variant, message }) {
     const [ show, setShow ] = useState(true);
 
     if (!show) {

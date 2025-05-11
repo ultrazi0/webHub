@@ -20,7 +20,7 @@ export async function loginLoader() {
 export async function loginAction({ request }) {
     const success = await fetch("/api/login", {
         method: "POST",
-        body: await request.formData()
+        body: await request.formData(),
     }).then(response => {
         if (response.ok) {
             console.log("Logged in!");

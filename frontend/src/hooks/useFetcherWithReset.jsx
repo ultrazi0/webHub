@@ -14,6 +14,6 @@ export default function useFetcherWithReset() {
     return {
         ...fetcher,
         data: data,
-        reset: () => setData(undefined)
+        reset: () => setData(undefined),
     };
 }

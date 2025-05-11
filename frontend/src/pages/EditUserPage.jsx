@@ -10,20 +10,20 @@ export async function editUserAction({ request }) {
     
     const user = await fetch("/api/user", {
         method: "PUT",
-        body: await request.formData()
+        body: await request.formData(),
     }).then(response => {
         if (response.ok) {
             return response.json();
         } else if (response.status === 404) {
             errors.oldPasswordDoesNotMatch = "Old password does not match";
         } else if (response.status === 409) {
-            errors.usernameTaken = "This username is already taken"
+            errors.usernameTaken = "This username is already taken";
         }
         throw new Error(response.statusText);
     }).catch(error => {
         console.error(error);
         return null;
-    })
+    });
 
     if (user) {
         return redirect("/user/" + user.id);
@@ -45,7 +45,7 @@ export default function EditUserPage() {
     const [newPasswordRepeat, setNewPasswordRepeat] = useState("");
 
     const passwordsDoNotMatch = newPassword !== newPasswordRepeat && newPassword.length > 0 && newPasswordRepeat.length > 0;
-    const newAndOldPasswordsAreTheSame = newPassword.length > 0 && newPassword === oldPassword && newPassword === newPasswordRepeat
+    const newAndOldPasswordsAreTheSame = newPassword.length > 0 && newPassword === oldPassword && newPassword === newPasswordRepeat;
     const allowSubmit = newPassword.length > 0
         ? newPassword === newPasswordRepeat && newPassword !== oldPassword
         : user && username.length > 0 && user.username !== username && oldPassword.length > 0;

@@ -26,35 +26,35 @@ const router = createBrowserRouter([
             index: true,
             element: <Root />,
             loader: robotsLoader,
-            action: addRobotAction
+            action: addRobotAction,
           },
           {
             path: "edit/:robotId",
-            action: editRobotAction
+            action: editRobotAction,
           },
           {
             path: "delete/:robotId",
-            action: deleteRobotAction
+            action: deleteRobotAction,
           },
           {
             path: "control-panel/:robotId",
-            element: <ControlPanel />
+            element: <ControlPanel />,
           },
           {
             path: "login",
             element: <LoginPage />,
             loader: loginLoader,
-            action: loginAction
+            action: loginAction,
           },
           {
             path: "logout",
-            action: logoutAction
+            action: logoutAction,
           },
           {
             path: "register",
             element: <RegisterPage />,
             loader: loginLoader,
-            action: registerAction
+            action: registerAction,
           },
           {
             path: "user/:userId",
@@ -63,25 +63,25 @@ const router = createBrowserRouter([
             children: [
               {
                 path: "delete",
-                action: deleteUserAction
-              }
-            ]
+                action: deleteUserAction,
+              },
+            ],
           },
           {
             path: "user/edit",
             element: <EditUserPage />,
             loader: loginLoader,
-            action: editUserAction
-          }
-        ]
-      }
-    ]
-  }
+            action: editUserAction,
+          },
+        ],
+      },
+    ],
+  },
 ]);
 
 const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
+  </StrictMode>,
 );

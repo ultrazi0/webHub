@@ -9,7 +9,7 @@ import { useState } from "react";
 export async function registerAction({ request }) {
     const success = await fetch("/api/register", {
         method: "POST",
-        body: await request.formData()
+        body: await request.formData(),
     }).then(response => {
         if (response.ok) {
             console.log("New user registered!");
@@ -19,7 +19,7 @@ export async function registerAction({ request }) {
     }).catch(error => {
         console.error(error);
         return false;
-    })
+    });
 
     if (success) {
         return redirect("/");

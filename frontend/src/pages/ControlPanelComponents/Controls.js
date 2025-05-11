@@ -15,7 +15,7 @@ function CommandSelector( {selectedCommand, onSelect} ) {
 
         return () => {
             ignore = true;
-        }
+        };
     }, []);
 
     return (
@@ -52,7 +52,7 @@ function CommandValues( {values, inputValues, onChange, onSubmit} ) {
                         <td>
                             <input value={inputValues[value] || ""} onChange={e => onChange({
                                 ...inputValues,
-                                [value]: e.target.value ? e.target.value : 0
+                                [value]: e.target.value ? e.target.value : 0,
                             })} placeholder="0" type="number" className="form-control" />
                         </td>
                     </tr>
@@ -94,7 +94,7 @@ export default function Commands( {sendCommand} ) {
         sendCommand({
             "messageType": "command",
             "command": selectedCommand,
-            "values": inputValues
+            "values": inputValues,
         });
     }
 

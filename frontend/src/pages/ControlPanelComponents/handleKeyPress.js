@@ -17,39 +17,39 @@ function handleKey(event, sendJsonMessage) {
         "messageType": "command",
         "command": commandType,
         "values": {
-            [valueType]: value
-        }
+            [valueType]: value,
+        },
     });
 
     switch (event.key) {
-        case 'a':
+        case "a":
             sendCommand("MOVE", "turn", keyUp ? 0 : -0.5);
             break;
-        case 'd':
+        case "d":
             sendCommand("MOVE", "turn", keyUp ? 0 : 0.5);
             break;
-        case 'w':
+        case "w":
             sendCommand("MOVE", "speed", keyUp ? 0 : 0.5);
             break;
-        case 's':
+        case "s":
             sendCommand("MOVE", "speed", keyUp ? 0 : -0.5);
             break;
-        case 'ArrowUp':
+        case "ArrowUp":
             sendCommand("TURRET", "tilt", keyUp ? 0 : 1);
             break;
-        case 'ArrowDown':
+        case "ArrowDown":
             sendCommand("TURRET", "tilt", keyUp ? 0 : -1);
             break;
-        case 'ArrowLeft':
+        case "ArrowLeft":
             sendCommand("TURRET", "turn", keyUp ? 0 : -1);
             break;
-        case 'ArrowRight':
+        case "ArrowRight":
             sendCommand("TURRET", "turn", keyUp ? 0 : 1);
             break;
         case "Escape":
             sendJsonMessage({
                 "messageType": "command",
-                "command": "STOP"
+                "command": "STOP",
             });
             break;
         default:

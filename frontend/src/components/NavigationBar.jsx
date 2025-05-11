@@ -9,7 +9,7 @@ export async function userLoader() {
     const user = await fetch("/api/user")
     .then(response => {
         if (response.ok) {
-            return response.json()
+            return response.json();
         } else if (response.status === 401) {
             return null;
         }
@@ -25,7 +25,7 @@ export async function userLoader() {
 export async function logoutAction({ request }) {
     const success = await fetch("/api/logout", {
         method: "POST",
-        body: await request.formData()
+        body: await request.formData(),
     }).then(response => {
         if (response.ok) {
             return true;
@@ -34,7 +34,7 @@ export async function logoutAction({ request }) {
     }).catch(error => {
         console.log(error);
         return false;
-    })
+    });
 
     return success;
 }

@@ -44,7 +44,7 @@ export async function addRobotAction({ request }) {
 
     const success = await fetch("/api/robots", {
         method: "post",
-        body: formData
+        body: formData,
     }).then(response => {
         if (response.ok) {
             return true;
@@ -63,7 +63,7 @@ export async function editRobotAction({ request, params }) {
 
     const success = await fetch("/api/robots/" + params.robotId, {
         method: "put",
-        body: formData
+        body: formData,
     }).then(response => {
         if (response.ok) {
             return true;
@@ -81,7 +81,7 @@ export async function deleteRobotAction({ request, params }) {
 
     const success = await fetch("/api/robots/" + params.robotId, {
         method: "delete",
-        body: await request.formData()
+        body: await request.formData(),
     }).then(response => {
         if (response.ok) {
             return true;
@@ -123,8 +123,8 @@ export default function Root() {
                 id: nextMessageId++,
                 variant: "success",
                 message: "New robot has been created!",
-                createdAt: Date.now()
-            }
+                createdAt: Date.now(),
+            },
         ]);
         addRobotFetcher.reset();
     }
@@ -137,8 +137,8 @@ export default function Root() {
                 id: nextMessageId++,
                 variant: "success",
                 message: "Robot has been updated!",
-                createdAt: Date.now()
-            }
+                createdAt: Date.now(),
+            },
         ]);
         editRobotFetcher.reset();
     }
@@ -151,8 +151,8 @@ export default function Root() {
                 id: nextMessageId++,
                 variant: "success",
                 message: "Robot has been deleted",
-                createdAt: Date.now()
-            }
+                createdAt: Date.now(),
+            },
         ]);
         deleteRobotFetcher.reset();
     }
@@ -165,8 +165,8 @@ export default function Root() {
                 id: nextMessageId++,
                 variant: "danger",
                 message: "Something went wrong while deleting this robot...",
-                createdAt: Date.now()
-            }
+                createdAt: Date.now(),
+            },
         ]);
         deleteRobotFetcher.reset();
     }

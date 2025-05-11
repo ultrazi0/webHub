@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import ControlRow from "./ControlPanelComponents/ControlRow";
 import ImageRow from "./ControlPanelComponents/ImageRow";
+import ControlRow from "./ControlPanelComponents/ControlRow";
+import useGamepad from "../hooks/useGamepad";
 
 export default function ControlPanel() {
     const { robotId } = useParams()
@@ -8,12 +9,14 @@ export default function ControlPanel() {
     return (
         <>
             <h1>
-                Control Panel
+                <span style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+                    Control Panel
+                </span>
             </h1>
             <div className="container text-center">
                 <ImageRow robotId={robotId} />
                 <ControlRow robotId={robotId} />
             </div>
         </>
-    )
+    );
 }

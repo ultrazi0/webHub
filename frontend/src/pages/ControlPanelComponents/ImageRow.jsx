@@ -10,10 +10,10 @@ export default function ImageRow( {robotId} ) {
 
     // Establishing WebSocket connection
     const { lastJsonMessage } = useWebSocket(WS_URL, {
-        shouldReconnect: (closeEvent) => false,
+        shouldReconnect: () => false,
         onError: (event) => console.error("Image-WebSocket error observed:", event),
         onOpen: () => console.log("Image-WebSocket connection opened"),
-        onClose: (event) => console.log("Image-WebSocket connection closed:", event)
+        onClose: (event) => console.log("Image-WebSocket connection closed:", event),
     });
 
     // If there is a json message, then change image variable
@@ -29,7 +29,7 @@ export default function ImageRow( {robotId} ) {
                 }
             }
         }
-    }, [lastJsonMessage])
+    }, [lastJsonMessage]);
 
     return (
         <div className="row g-2 my-2">

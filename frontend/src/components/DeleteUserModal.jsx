@@ -16,7 +16,7 @@ export async function deleteUserAction() {
 
     const success = await fetch("/api/user", {
         method: "DELETE",
-        headers: headers 
+        headers: headers,
     }).then(response => {
         if (response.ok) {
             return true;

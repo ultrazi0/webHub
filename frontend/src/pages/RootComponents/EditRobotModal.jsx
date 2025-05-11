@@ -37,7 +37,7 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
 
         return () => {
             ignore = true;
-        }
+        };
     }, [robot, robotId]);
 
     return (

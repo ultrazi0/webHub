@@ -8,10 +8,10 @@ export default function ControlRow( {robotId} ) {
 
     const WS_URL = "ws://localhost:8080/api/command/client/" + robotId;
     const { sendJsonMessage, lastJsonMessage } = useWebSocket(WS_URL, {
-        shouldReconnect: (closeEvent) => false,
+        shouldReconnect: () => false,
         onError: (event) => console.error("Command-WebSocket error observed:", event),
         onOpen: () => console.log("Command-WebSocket connection opened"),
-        onClose: (event) => console.log("Command-WebSocket connection closed:", event)
+        onClose: (event) => console.log("Command-WebSocket connection closed:", event),
     });
 
     // Handle updates to the textarea
@@ -41,8 +41,8 @@ export default function ControlRow( {robotId} ) {
         return () => {
             window.removeEventListener("keydown", onKeyPress);
             window.removeEventListener("keyup", onKeyPress);
-        }
-    }, [ sendJsonMessage ])
+        };
+    }, [ sendJsonMessage ]);
 
     return (
         <div className="row g-2 my-2">

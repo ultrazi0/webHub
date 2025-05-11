@@ -3,7 +3,7 @@ import { Button, Col, Container, Image, Row } from "react-bootstrap";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../contexts";
 import DeleteUserModal from "../components/DeleteUserModal";
-import useFetcherWithReset from "../useFetcherWithReset";
+import useFetcherWithReset from "../hooks/useFetcherWithReset";
 
 
 export async function loadUser({ params }) {

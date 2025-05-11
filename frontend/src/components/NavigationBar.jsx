@@ -1,6 +1,6 @@
 import { Button, Navbar, Container, Image, Nav, ButtonGroup, Dropdown } from "react-bootstrap";
 import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
-import useFetcherWithReset from "../useFetcherWithReset";
+import useFetcherWithReset from "../hooks/useFetcherWithReset";
 import { useState } from "react";
 import LogoutModal from "./LogoutModal";
 import { AuthenticationContext } from "../contexts";

@@ -3,7 +3,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { useLoaderData, useRevalidator } from "react-router-dom";
 import RootAlert from "./RootComponents/RootAlert";
 import AddRobotModal from "./RootComponents/AddRobotModal";
-import useFetcherWithReset from "../useFetcherWithReset";
+import useFetcherWithReset from "../hooks/useFetcherWithReset";
 import RobotCard from "./RootComponents/RobotCard";
 import EditRobotModal from "./RootComponents/EditRobotModal";
 import DeleteRobotModal from "./RootComponents/DeleteRobotModal";

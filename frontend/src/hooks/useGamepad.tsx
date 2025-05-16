@@ -59,31 +59,37 @@ type AxesState<T extends Layout> = {
     [key in T["axes"][number]]: number;
 };
 
-export default function useGamepad<T extends Layout>(layout: T, callbacks: Callbacks<T>, index: number = 0, options: Options = defaultOptions): [ Pick<Gamepad, "id" | "index" | "connected"> | null, ButtonState<T>, AxesState<T> ] {
+type IdentifiableGamepad = Pick<Gamepad, "id" | "index" | "connected"> | null;
+
+export default function useGamepad<T extends Layout>(layout: T, callbacks: Callbacks<T>, index: number = 0, options: Options = defaultOptions): [ IdentifiableGamepad, ButtonState<T>, AxesState<T> ] {
     
-    const [ gamepad, setGamepad ] = useState<Pick<Gamepad, "id" | "index" | "connected"> | null>(null);
+    const [ gamepad, setGamepad ] = useState<IdentifiableGamepad>(null);
     const [ buttonState, setButtonState ] = useState<ButtonState<T>>(() => clearButtonState(layout));
     const [ axesState, setAxesState] = useState<AxesState<T>>(() => clearAxesState(layout));
 
-    const updateButtonState = useCallback((newButtonState: ButtonState<T>) =>
-        setButtonState(oldButtonState => {
-            layout.buttons.forEach((buttonName: keyof ButtonState<T>) => {
-                if (oldButtonState[buttonName] !== newButtonState[buttonName]) {
-                    callbacks[buttonName]?.(newButtonState[buttonName]);
-                }
-            });
-            return newButtonState;
-        }), [ layout.buttons, callbacks ]);
+    const updateButtonState = useCallback((newButtonState: ButtonState<T>) => {
+        let changed: boolean = false;
+        layout.buttons.forEach((buttonName: keyof ButtonState<T>) => {
+            if (buttonState[buttonName] !== newButtonState[buttonName]) {
+                changed = true;
+                callbacks[buttonName]?.(newButtonState[buttonName]);
+            }
+        });
+        
+        if (changed) setButtonState(newButtonState);
+    }, [ layout.buttons, buttonState, callbacks ]);
     
-    const updateAxesState = useCallback((newAxesState: AxesState<T>) =>
-        setAxesState(oldAxesState => {
-            layout.axes.forEach((axisName: keyof AxesState<T>) => {
-                if (Math.abs(oldAxesState[axisName] - newAxesState[axisName]) > options.threshold) {
-                    callbacks[axisName]?.(newAxesState[axisName]);
-                }
-            });
-            return newAxesState;       
-        }), [ layout.axes, options.threshold, callbacks ]);
+    const updateAxesState = useCallback((newAxesState: AxesState<T>) => {
+        let changed: boolean = false;
+        layout.axes.forEach((axisName: keyof AxesState<T>) => {
+            if (Math.abs(axesState[axisName] - newAxesState[axisName]) > options.threshold) {
+                changed = true;
+                callbacks[axisName]?.(newAxesState[axisName]);
+            }
+        });
+        
+        if (changed) setAxesState(newAxesState);
+    }, [ layout.axes, axesState, options.threshold, callbacks ]);
 
     const updateGamepadState = useCallback((gamepad: Gamepad) => {
 
@@ -114,22 +120,26 @@ export default function useGamepad<T extends Layout>(layout: T, callbacks: Callb
     }, [ layout, updateButtonState, updateAxesState ]);
 
     const updateGamepad = useCallback(() => {
-        const gamepad = navigator.getGamepads()[index];
+        const newGamepad = navigator.getGamepads()[index];
 
-        if (gamepad) {
+        if (newGamepad) {
             // gamepad exists
-            setGamepad({
-                id: gamepad.id,
-                index: gamepad.index,
-                connected: gamepad.connected,
-            });
-            updateGamepadState(gamepad);
+            if (!gamepadsAreEqual(gamepad, newGamepad)) {
+                setGamepad({
+                    id: newGamepad.id,
+                    index: newGamepad.index,
+                    connected: newGamepad.connected,
+                });
+            }
+            updateGamepadState(newGamepad);
         } else {
-            setGamepad(null);
-            setButtonState(() => clearButtonState(layout));
-            setAxesState(() => clearAxesState(layout));
+            if (gamepad != null) {
+                setGamepad(null);
+                setButtonState(() => clearButtonState(layout));
+                setAxesState(() => clearAxesState(layout));
+            }
         }
-    }, [ index, layout, updateGamepadState ]);
+    }, [ gamepad, index, layout, updateGamepadState ]);
 
     useEffect(() => {
 
@@ -162,4 +172,8 @@ function clearAxesState<T extends Layout>(layout: T) {
             axesState[currentValue] = 0;
             return axesState;
         }, {} as AxesState<T>);
+}
+
+function gamepadsAreEqual(gamepad1: IdentifiableGamepad | undefined, gamepad2: IdentifiableGamepad | undefined) {
+    return gamepad1?.id === gamepad2?.id && gamepad1?.index === gamepad2?.index && gamepad1?.connected === gamepad2?.connected;
 }

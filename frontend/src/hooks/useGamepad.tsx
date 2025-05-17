@@ -45,7 +45,7 @@ export const XBOXLayout = {
     ],
 } as const;
 
-export type Callbacks<T extends Layout> = {
+export type onChangeCallbacks<T extends Layout> = {
     [key in T["buttons"][number]]?: (pressed: boolean) => void;
 } & {
     [key in T["axes"][number]]?: (value: number) => void;
@@ -61,7 +61,7 @@ type AxesState<T extends Layout> = {
 
 type IdentifiableGamepad = Pick<Gamepad, "id" | "index" | "connected"> | null;
 
-export default function useGamepad<T extends Layout>(layout: T, callbacks: Callbacks<T>, index: number = 0, options: Options = defaultOptions): [ IdentifiableGamepad, ButtonState<T>, AxesState<T> ] {
+export default function useGamepad<T extends Layout>(layout: T, callbacks: onChangeCallbacks<T>, index: number = 0, options: Options = defaultOptions): [ IdentifiableGamepad, ButtonState<T>, AxesState<T> ] {
     
     const [ gamepad, setGamepad ] = useState<IdentifiableGamepad>(null);
     const [ buttonState, setButtonState ] = useState<ButtonState<T>>(() => clearButtonState(layout));

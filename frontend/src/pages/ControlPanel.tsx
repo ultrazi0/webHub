@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
 import ImageRow from "./ControlPanelComponents/ImageRow";
 import ControlRow from "./ControlPanelComponents/ControlRow";
-import { Callbacks, XBOXLayout } from "../hooks/useGamepad";
+import { onChangeCallbacks, XBOXLayout } from "../hooks/useGamepad";
 import Gamepad from "../components/Gamepad";
 
 export default function ControlPanel() {
     const { robotId } = useParams();
 
-    const callbacks: Callbacks<typeof XBOXLayout> = {
+    const callbacks: onChangeCallbacks<typeof XBOXLayout> = {
         A: pressed => console.log("A pressed: " + pressed),
         "-RightStickY": value => console.log("Right stick Y: " + value),
     };

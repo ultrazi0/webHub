@@ -63,7 +63,7 @@ type IdentifiableGamepad = Pick<Gamepad, "id" | "index" | "connected"> | null;
 
 export default function useGamepad<T extends Layout>(layout: T, callbacks: onChangeCallbacks<T>, index: number = 0, options: Options = defaultOptions): [ IdentifiableGamepad, ButtonState<T>, AxesState<T> ] {
     
-    const [ gamepad, setGamepad ] = useState<IdentifiableGamepad>(null);
+    const [ gamepad, setGamepad ] = useState<IdentifiableGamepad>(() => toIdentifiableGamepad(navigator.getGamepads()[index]));
     const [ buttonState, setButtonState ] = useState<ButtonState<T>>(() => clearButtonState(layout));
     const [ axesState, setAxesState] = useState<AxesState<T>>(() => clearAxesState(layout));
 
@@ -125,11 +125,7 @@ export default function useGamepad<T extends Layout>(layout: T, callbacks: onCha
         if (newGamepad) {
             // gamepad exists
             if (!gamepadsAreEqual(gamepad, newGamepad)) {
-                setGamepad({
-                    id: newGamepad.id,
-                    index: newGamepad.index,
-                    connected: newGamepad.connected,
-                });
+                setGamepad(toIdentifiableGamepad(newGamepad));
             }
             updateGamepadState(newGamepad);
         } else {
@@ -176,4 +172,12 @@ function clearAxesState<T extends Layout>(layout: T) {
 
 function gamepadsAreEqual(gamepad1: IdentifiableGamepad | undefined, gamepad2: IdentifiableGamepad | undefined) {
     return gamepad1?.id === gamepad2?.id && gamepad1?.index === gamepad2?.index && gamepad1?.connected === gamepad2?.connected;
+}
+
+function toIdentifiableGamepad(gamepad: Gamepad | null | undefined): IdentifiableGamepad | null {
+    return gamepad ? {
+        id: gamepad.id,
+        index: gamepad.index,
+        connected: gamepad.connected,
+    } : null;
 }

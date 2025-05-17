@@ -1,13 +1,20 @@
 import { useEffect, useRef } from "react";
-import Controls from "./Controls";
-import handleKeyPress from "./handleKeyPress";
 import useWebSocket from "react-use-websocket";
+import handleKeyPress from "./handleKeyPress";
+import { Col, Row } from "react-bootstrap";
+import Controls from "./Controls";
 
-export default function ControlRow( {robotId} ) {
+type CommandResponse = {
+    messageType: "regularMessage" | "feedback",
+    feedback?: string,
+    message?: string,
+}
+
+export default function ControlRow({ robotId }: { robotId: string }) {
     const feedbackArea = useRef(null); // ref that controls textarea for feedback
 
     const WS_URL = "ws://localhost:8080/api/command/client/" + robotId;
-    const { sendJsonMessage, lastJsonMessage } = useWebSocket(WS_URL, {
+    const { sendJsonMessage, lastJsonMessage } = useWebSocket<CommandResponse>(WS_URL, {
         shouldReconnect: () => false,
         onError: (event) => console.error("Command-WebSocket error observed:", event),
         onOpen: () => console.log("Command-WebSocket connection opened"),
@@ -20,7 +27,7 @@ export default function ControlRow( {robotId} ) {
             if (Object.keys(lastJsonMessage).length) {
                 if ((lastJsonMessage.messageType === "feedback") || (lastJsonMessage.messageType === "regularMessage")) {
                     if (feedbackArea.current) {
-                        // Add message depending on which field is present in the message
+                        // Add a message depending on which field is present in the message
                         feedbackArea.current.value += lastJsonMessage.feedback ? lastJsonMessage.feedback + "\n" : "Message: \"" + lastJsonMessage.message + "\"\n";
                         feedbackArea.current.scrollTop = feedbackArea.current.scrollHeight; // Scroll down
                     } else {
@@ -30,10 +37,10 @@ export default function ControlRow( {robotId} ) {
                 }
             }
         }
-    }, [lastJsonMessage]);
+    }, [ lastJsonMessage ]);
 
     useEffect(() => {
-        const onKeyPress = (event) => handleKeyPress(event, sendJsonMessage);
+        const onKeyPress = (event: KeyboardEvent) => handleKeyPress(event, sendJsonMessage);
 
         window.addEventListener("keydown", onKeyPress);
         window.addEventListener("keyup", onKeyPress);
@@ -45,13 +52,13 @@ export default function ControlRow( {robotId} ) {
     }, [ sendJsonMessage ]);
 
     return (
-        <div className="row g-2 my-2">
-            <div className="col">
-                <textarea className="form-control" ref={feedbackArea} readOnly={true} rows={10}></textarea>
-            </div>
-            <div className="col">
+        <Row className="g-2 my-2">
+            <Col>
+                <textarea className="form-control" ref={feedbackArea} readOnly={true} rows={10} />
+            </Col>
+            <Col>
                 <Controls sendCommand={sendJsonMessage} />
-            </div>
-        </div>
+            </Col>
+        </Row>
     );
 }

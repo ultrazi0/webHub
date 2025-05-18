@@ -92,7 +92,7 @@ export default function Commands( {sendCommand} ) {
 
     function handleCommandSend() {
         sendCommand({
-            "messageType": "command",
+            "messageType": "COMMAND",
             "command": selectedCommand,
             "values": inputValues,
         });

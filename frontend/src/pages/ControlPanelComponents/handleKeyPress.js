@@ -14,7 +14,7 @@ function handleKey(event, sendJsonMessage) {
     }
 
     const sendCommand = (commandType, valueType, value) => sendJsonMessage({
-        "messageType": "command",
+        "messageType": "COMMAND",
         "command": commandType,
         "values": {
             [valueType]: value,
@@ -48,7 +48,7 @@ function handleKey(event, sendJsonMessage) {
             break;
         case "Escape":
             sendJsonMessage({
-                "messageType": "command",
+                "messageType": "COMMAND",
                 "command": "STOP",
             });
             break;

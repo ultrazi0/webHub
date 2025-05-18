@@ -2,14 +2,7 @@ import { useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 import { Col, Row } from "react-bootstrap";
 import CameraStream from "./CameraStream";
-
-// TODO: combine with ControlResponse and align with the BE
-type ImageResponse = {
-    messageType: "image" | "lastImage" | "regularMessage",
-    image?: string,
-    message?: string,
-    feedback?: string,
-}
+import { AimImageMessage, ImageMessage, MessageType, RegularMessage } from "./index";
 
 export default function ImageRow({ robotId }: { robotId: string }) {
     const [image, setImage] = useState<string>("");
@@ -18,7 +11,7 @@ export default function ImageRow({ robotId }: { robotId: string }) {
     const WS_URL = "ws://localhost:8080/api/image/client/" + robotId;
 
     // Establishing WebSocket connection
-    const { lastJsonMessage } = useWebSocket<ImageResponse>(WS_URL, {
+    const { lastJsonMessage } = useWebSocket<ImageMessage | AimImageMessage | RegularMessage>(WS_URL, {
         shouldReconnect: () => false,
         onError: (event) => console.error("Image-WebSocket error observed:", event),
         onOpen: () => console.log("Image-WebSocket connection opened"),
@@ -29,11 +22,11 @@ export default function ImageRow({ robotId }: { robotId: string }) {
     useEffect(() => {
         if (lastJsonMessage) {
             if (Object.keys(lastJsonMessage).length) {
-                if (lastJsonMessage.messageType === "image") {
+                if (lastJsonMessage.messageType === MessageType.Image) {
                     setImage("data:image/jpg;base64, " + lastJsonMessage.image);
-                } else if (lastJsonMessage.messageType === "lastImage") {
+                } else if (lastJsonMessage.messageType === MessageType.AimImage) {
                     setLastImage("data:image/jpg;base64," + lastJsonMessage.image);
-                } else if (lastJsonMessage.messageType === "regularMessage") {
+                } else if (lastJsonMessage.messageType === MessageType.RegularMessage) {
                     console.log("Message from /api/image/topic: " + lastJsonMessage.message);
                 }
             }

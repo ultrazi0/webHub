@@ -1,16 +1,16 @@
-package com.nemo.webHub.Commands;
+package com.nemo.webHub.Sock.Messages;
 
 import com.fasterxml.jackson.core.*;
+import com.nemo.webHub.Commands.CommandType;
 import jakarta.annotation.Nullable;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-public record JsonCommand(CommandType command, Map<String, Double> values) {
+public record JsonCommand(CommandType command, Map<String, Double> values) implements JsonMessage {
 
     @Nullable
     public static JsonCommand createFromJson(String json) throws IOException {
@@ -23,10 +23,10 @@ public record JsonCommand(CommandType command, Map<String, Double> values) {
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
             String fieldName = jsonParser.currentName();
 
-            if ("messageType".equals(fieldName)) {
+            if (JsonMessage.getMessageTypeFieldName().equals(fieldName)) {
                 jsonParser.nextToken();
-                if (!jsonParser.getText().equals("command")) {
-                    // If messageType says message is not a command, no need to parse further
+                if (!MessageType.COMMAND.toString().equals(jsonParser.getText())) {
+                    // If messageType says the message is not a command, no need to parse further
                     return null;
                 }
             }
@@ -58,27 +58,21 @@ public record JsonCommand(CommandType command, Map<String, Double> values) {
 
     }
 
-    public String jsonify() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.COMMAND;
+    }
 
-        JsonFactory jsonFactory = new JsonFactory();
-        JsonGenerator jsonGenerator = jsonFactory.createGenerator(stream, JsonEncoding.UTF8);
-
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("messageType", "command");
+    @Override
+    public void addImplementationSpecificFields(JsonGenerator jsonGenerator) throws IOException {
         jsonGenerator.writeStringField("command", String.valueOf(command));
 
         jsonGenerator.writeObjectFieldStart("values");
-        for (Map.Entry<String, Double> entry : values.entrySet()) {
+        for (Entry<String, Double> entry : values.entrySet()) {
             jsonGenerator.writeFieldName(entry.getKey().toLowerCase());
             jsonGenerator.writeNumber(entry.getValue());
         }
         jsonGenerator.writeEndObject();
-        jsonGenerator.writeEndObject();
-
-        jsonGenerator.close();
-
-        return stream.toString(StandardCharsets.UTF_8);
     }
 
     public static String jsonifyMultipleCommands(List<JsonCommand> commandList) throws IOException {

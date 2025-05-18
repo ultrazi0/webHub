@@ -1,13 +1,13 @@
 package com.nemo.webHub.Sock.Image;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 
-import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
+import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 /**
  * Endpoint: /api/image/client/{robotId}
@@ -15,9 +15,10 @@ import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
  * This handler manages client image-websocket subscribers.
  * It is not the idea that it should handle messages.
  */
+@RequiredArgsConstructor
 public class ImageClientHandler extends TextWebSocketHandler {
-    @Autowired
-    private ImageSubscribers imageSubscribers;
+
+    private final ImageSubscribers imageSubscribers;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {

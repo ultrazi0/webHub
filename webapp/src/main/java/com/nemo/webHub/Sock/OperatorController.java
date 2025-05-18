@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 
 @Component
-public class Operators {
+public class OperatorController {
 
     private final HashMap<String, Integer> operatorSessionToRobot = new HashMap<>();
     private final HashMap<Integer, String> robotToOperatorSession = new HashMap<>();

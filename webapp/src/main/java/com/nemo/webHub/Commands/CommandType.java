@@ -1,5 +1,8 @@
 package com.nemo.webHub.Commands;
 
+import lombok.Getter;
+
+@Getter
 public enum CommandType {
     MOVE (new String[] {"Speed", "Turn"}),
     TURRET (new String[] {"Tilt", "Turn"}),
@@ -13,7 +16,4 @@ public enum CommandType {
         this.keys = keys;
     }
 
-    public String[] getKeys() {
-        return keys;
-    }
 }

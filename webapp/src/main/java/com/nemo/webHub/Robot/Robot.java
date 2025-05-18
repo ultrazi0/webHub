@@ -1,7 +1,7 @@
 package com.nemo.webHub.Robot;
 
 import com.nemo.webHub.Commands.CommandType;
-import com.nemo.webHub.Commands.JsonCommand;
+import com.nemo.webHub.Sock.Messages.JsonCommand;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -88,7 +88,7 @@ public class Robot {
 
         JsonCommand jsonCommand = new JsonCommand(commandType, getState().get(commandType));
 
-        session.sendMessage(new TextMessage(jsonCommand.jsonify()));
+        session.sendMessage(jsonCommand.toTextMessage());
     }
 
     public void sendStop() throws IOException {
@@ -105,7 +105,7 @@ public class Robot {
         });
 
         JsonCommand stopCommand = new JsonCommand(CommandType.STOP, new HashMap<>());
-        session.sendMessage(new TextMessage(stopCommand.jsonify()));
+        session.sendMessage(stopCommand.toTextMessage());
     }
 
     public void sendMessage(TextMessage textMessage) throws IOException {

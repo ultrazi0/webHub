@@ -1,11 +1,11 @@
 package com.nemo.webHub.Sock.Command;
 
-import com.nemo.webHub.Commands.JsonCommand;
+import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sock.Image.ImageSubscribers;
 import com.nemo.webHub.Sock.Image.JsonImage;
-import com.nemo.webHub.Sock.Operators;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nemo.webHub.Sock.OperatorController;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -15,7 +15,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
+import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 
 /**
@@ -26,13 +26,12 @@ import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
  * <p>
  * Message must be a parsable JSON, otherwise an exception is thrown.
  */
+@RequiredArgsConstructor
 public class CommandClientHandler extends TextWebSocketHandler {
-    @Autowired
-    private RobotService robotService;
-    @Autowired
-    private Operators operators;
-    @Autowired
-    ImageSubscribers imageSubscribers;
+
+    private final RobotService robotService;
+    private final OperatorController operatorController;
+    private final ImageSubscribers imageSubscribers;
 
     private static final HashMap<String, WebSocketSession> sessionIdToSessionMap = new HashMap<>();
 
@@ -48,7 +47,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
             );
         }
 
-        operators.addOperator(session.getId(), (int) robotId);
+        operatorController.addOperator(session.getId(), (int) robotId);
         sessionIdToSessionMap.put(session.getId(), session);
 
         // Greet the subscriber
@@ -67,9 +66,9 @@ public class CommandClientHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws RuntimeException, IOException {
 
-        Integer robotId = operators.getRobotId(session.getId());
+        Integer robotId = operatorController.getRobotId(session.getId());
 
-        operators.removeOperator(session.getId());
+        operatorController.removeOperator(session.getId());
         sessionIdToSessionMap.remove(session.getId(), session);
 
         if (robotService.robotIsConnected(robotId)) {
@@ -93,7 +92,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
 
         System.out.println("Created command: " + command);
 
-        int robotId = operators.getRobotId(session.getId());
+        int robotId = operatorController.getRobotId(session.getId());
 
         if (!robotService.robotIsConnected(robotId)) {
             System.out.println("Received a command, but robot with ID #" + robotId + " has not connected yet");
@@ -114,7 +113,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
 
                 boolean success = robotService.startAimAndSendResult(robotId, lastImage);
 
-                imageSubscribers.sendMessageToAllSessions(robotId, new TextMessage(lastImage.jsonify("lastImage")));
+                imageSubscribers.sendMessageToAllSessions(robotId, lastImage.asAimImage().toTextMessage());
 
                 if (success) {
                     session.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));

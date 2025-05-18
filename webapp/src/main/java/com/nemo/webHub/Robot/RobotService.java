@@ -1,23 +1,21 @@
 package com.nemo.webHub.Robot;
 
 import com.nemo.webHub.Commands.Aim.AimLogic;
-import com.nemo.webHub.Commands.JsonCommand;
+import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Config;
 import com.nemo.webHub.Sock.Image.JsonImage;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-
 @Service
+@RequiredArgsConstructor
 public class RobotService {
 
-    @Autowired
-    private Config config;
+    private final Config config;
 
     private final HashMap<Integer, Robot> connectedRobotsHashMap = new HashMap<>();
 
@@ -64,7 +62,7 @@ public class RobotService {
             JsonCommand aimCommand = AimLogic.createCommand(angles);
 
             Robot robot = connectedRobotsHashMap.get(id);
-            robot.sendMessage(new TextMessage(aimCommand.jsonify()));
+            robot.sendMessage(aimCommand.toTextMessage());
 
             return true;
         } else {

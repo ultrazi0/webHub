@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import useWebSocket from "react-use-websocket";
 import handleKeyPress from "./handleKeyPress";
 import { Col, Row } from "react-bootstrap";
@@ -19,17 +19,19 @@ export default function ControlRow({ robotId }: { robotId: string }) {
         onClose: (event) => console.log("Command-WebSocket connection closed:", event),
     });
 
-    const gamepadCommands = getCommands(sendJsonMessage);
+    const gamepadOnChangeCallbacks = useMemo((): onChangeCallbacks<typeof XBOXLayout> => {
+        const gamepadCommands = getCommands(sendJsonMessage);
 
-    const gamepadOnChangeCallbacks: onChangeCallbacks<typeof XBOXLayout> = {
-        B: pressed => { if (pressed) gamepadCommands.stop(); },
-        LB: pressed => { if (pressed) gamepadCommands.aim(); },
-        X: pressed => { if (pressed) gamepadCommands.shoot(); },
-        LeftStickX: value => gamepadCommands.move(0, value),
-        "-LeftStickY": value => gamepadCommands.move(-value, 0),
-        RightStickX: value => gamepadCommands.turret(0, value),
-        "-RightStickY": value => gamepadCommands.turret(-value, 0),
-    };
+       return {
+            B: pressed => { if (pressed) gamepadCommands.stop(); },
+            LB: pressed => { if (pressed) gamepadCommands.aim(); },
+            X: pressed => { if (pressed) gamepadCommands.shoot(); },
+            LeftStickX: value => gamepadCommands.move(0, value),
+            "-LeftStickY": value => gamepadCommands.move(-value, 0),
+            RightStickX: value => gamepadCommands.turret(0, value),
+            "-RightStickY": value => gamepadCommands.turret(-value, 0),
+        };
+    }, [ sendJsonMessage ]);
 
     // Handle updates to the textarea
     useEffect(() => {

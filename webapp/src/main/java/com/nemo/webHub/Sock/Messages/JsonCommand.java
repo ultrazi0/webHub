@@ -1,24 +1,52 @@
 package com.nemo.webHub.Sock.Messages;
 
 import com.fasterxml.jackson.core.*;
+import com.nemo.webHub.Commands.Command;
 import com.nemo.webHub.Commands.CommandType;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public record JsonCommand(CommandType command, Map<String, Double> values) implements JsonMessage {
+public record JsonCommand(CommandType command, Map<String, Double> values) implements Command, JsonMessage {
+
+    @NotNull
+    public static List<JsonCommand> createFromJson(String json) throws IOException {
+        JsonFactory jsonFactory = new JsonFactory();
+
+        List<JsonCommand> result = new ArrayList<>();
+        try (JsonParser jsonParser = jsonFactory.createParser(json)) {
+            switch (jsonParser.nextToken()) {
+                case START_ARRAY -> {
+                    do {
+                        JsonCommand command = createFromJson(jsonParser);
+                        if (command != null) {
+                            result.add(command);
+                        }
+                    } while (jsonParser.nextToken() != JsonToken.END_ARRAY);
+                }
+                case START_OBJECT -> {
+                    JsonCommand command = createFromJson(jsonParser);
+                    if (command != null) {
+                        result.add(command);
+                    }
+                }
+                default -> throw new IOException("Unexpected token: " + jsonParser.currentToken());
+            }
+        }
+
+        return result;
+    }
 
     @Nullable
-    public static JsonCommand createFromJson(String json) throws IOException {
-        JsonFactory jsonFactory = new JsonFactory();
-        JsonParser jsonParser = jsonFactory.createParser(json);
-
+    private static JsonCommand createFromJson(JsonParser jsonParser) throws IOException {
         CommandType command = null;
-        HashMap<String, Double> commandValues = new HashMap<>();
+        Map<String, Double> commandValues = new HashMap<>();
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
             String fieldName = jsonParser.currentName();
@@ -39,7 +67,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
             if ("values".equals(fieldName)) {
                 jsonParser.nextToken();
                 while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-                    String valueName = jsonParser.currentName();
+                    String valueName = jsonParser.currentName().toLowerCase();
                     jsonParser.nextToken();
                     Double value = jsonParser.getValueAsDouble(0d);
 
@@ -48,14 +76,11 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
             }
         }
 
-        jsonParser.close();
-
         if (command == null) {
             return null;
         }
 
         return new JsonCommand(command, commandValues);
-
     }
 
     @Override
@@ -75,17 +100,18 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
         jsonGenerator.writeEndObject();
     }
 
-    public static String jsonifyMultipleCommands(List<JsonCommand> commandList) throws IOException {
-        StringBuilder result = new StringBuilder("[");
+    @Override
+    public String[] getCommandProperties() {
+        return command.getKeys();
+    }
 
-        for (JsonCommand jsonCommand : commandList) {
-            result.append(jsonCommand.jsonify());
-            result.append(',');
+    @Override
+    public boolean isValid() {
+        for (String property : getCommandProperties()) {
+            if (!values.containsKey(property.toLowerCase())) {
+                return false;
+            }
         }
-
-        result.append(']');
-
-        return result.toString();
-
+        return true;
     }
 }

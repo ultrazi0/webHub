@@ -2,10 +2,9 @@ package com.nemo.webHub.Sock.Command;
 
 import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Robot.RobotService;
-import com.nemo.webHub.Sock.Image.ImageSubscribers;
-import com.nemo.webHub.Sock.Image.JsonImage;
 import com.nemo.webHub.Sock.OperatorController;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,6 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
@@ -26,12 +26,12 @@ import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMes
  * <p>
  * Message must be a parsable JSON, otherwise an exception is thrown.
  */
+@Slf4j
 @RequiredArgsConstructor
 public class CommandClientHandler extends TextWebSocketHandler {
 
     private final RobotService robotService;
     private final OperatorController operatorController;
-    private final ImageSubscribers imageSubscribers;
 
     private static final HashMap<String, WebSocketSession> sessionIdToSessionMap = new HashMap<>();
 
@@ -81,52 +81,26 @@ public class CommandClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("Transmitting message from client: " + message.getPayload());
+    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws IOException {
+        log.trace("Transmitting message from client: {}", message.getPayload());
 
-        JsonCommand command = JsonCommand.createFromJson(message.getPayload());
+        List<JsonCommand> commands = JsonCommand.createFromJson(message.getPayload());
 
-        if (command == null) {
-            throw new NoSuchFieldException("Provided JSON has no field \"command\"");
+        if (commands.isEmpty()) {
+            throw new IllegalArgumentException("Provided JSON has no commands");
         }
 
-        System.out.println("Created command: " + command);
+        log.trace("Created commands: {}", commands);
 
         int robotId = operatorController.getRobotId(session.getId());
 
         if (!robotService.robotIsConnected(robotId)) {
-            System.out.println("Received a command, but robot with ID #" + robotId + " has not connected yet");
+            log.debug("Received a command, but robot with ID #{} has not connected yet", robotId);
             session.sendMessage(createRegularJsonTextMessage("Robot with this ID is not connected yet"));
             return;
         }
 
-        switch (command.command()) {
-            case MOVE, TURRET -> robotService.updateAndSendRobotState(robotId, command);
-            case STOP -> robotService.sendStopToRobot(robotId);
-            case AIM -> {
-                JsonImage lastImage = JsonImage.getLastImage(robotId);
-
-                if (lastImage == null) {
-                    session.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
-                    break;
-                }
-
-                boolean success = robotService.startAimAndSendResult(robotId, lastImage);
-
-                imageSubscribers.sendMessageToAllSessions(robotId, lastImage.asAimImage().toTextMessage());
-
-                if (success) {
-                    session.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
-                } else {
-                    session.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
-                }
-            }
-            case SHOOT -> session.sendMessage(createRegularJsonTextMessage(
-                    // TODO: this is obviously a placeholder
-                    "I hear you, but you have to use use your imagination for now :("
-            ));
-        }
-
+        robotService.handleCommands(robotId, commands, session);
     }
 
     static WebSocketSession getSession(String sessionId) {

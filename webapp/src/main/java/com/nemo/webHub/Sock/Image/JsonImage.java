@@ -27,34 +27,34 @@ public class JsonImage implements JsonMessage {
     @Nullable
     public static JsonImage createFromJson(String json) throws IOException {
         JsonFactory jsonFactory = new JsonFactory();
-        JsonParser jsonParser = jsonFactory.createParser(json);
 
-        String image = null;
+        try (JsonParser jsonParser = jsonFactory.createParser(json)) {
 
-        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-            String fieldName = jsonParser.currentName();
+            String image = null;
 
-            if (JsonMessage.getMessageTypeFieldName().equals(fieldName)) {
-                jsonParser.nextToken();
-                if (!MessageType.IMAGE.toString().equals(jsonParser.getText())) {
-                    // If messageType says message is not an image, no need to parse further
-                    return null;
+            while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                String fieldName = jsonParser.currentName();
+
+                if (JsonMessage.getMessageTypeFieldName().equals(fieldName)) {
+                    jsonParser.nextToken();
+                    if (!MessageType.IMAGE.toString().equals(jsonParser.getText())) {
+                        // If messageType says a message is not an image, no need to parse further
+                        return null;
+                    }
+                }
+
+                if ("image".equals(fieldName)) {
+                    jsonParser.nextToken();
+                    image = jsonParser.getText();
                 }
             }
 
-            if ("image".equals(fieldName)) {
-                jsonParser.nextToken();
-                image = jsonParser.getText();
+            if (image == null) {
+                return null;
             }
+
+            return new JsonImage(decode(image));
         }
-        jsonParser.close();
-
-        if (image == null) {
-            return null;
-        }
-
-        return new JsonImage(decode(image));
-
     }
 
     public JsonImage asAimImage() {
@@ -89,7 +89,6 @@ public class JsonImage implements JsonMessage {
 
     @Nullable
     public static JsonImage getLastImage(int robotId) {
-        System.out.println("Last image map: " + lastImageMap);
         return lastImageMap.get(robotId);
     }
 

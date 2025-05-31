@@ -1,81 +1,98 @@
 package com.nemo.webHub.Robot;
 
 import com.nemo.webHub.Commands.Aim.AimLogic;
+import com.nemo.webHub.Sock.Image.ImageSubscribers;
 import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Config;
 import com.nemo.webHub.Sock.Image.JsonImage;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
+
+import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 @Service
 @RequiredArgsConstructor
 public class RobotService {
 
     private final Config config;
+    private final ImageSubscribers imageSubscribers;
 
-    private final HashMap<Integer, Robot> connectedRobotsHashMap = new HashMap<>();
+    private final Map<Integer, Robot> connectedRobotsMap = new HashMap<>();
 
     public void addConnectedRobot(Robot robot) {
-        connectedRobotsHashMap.put(robot.getId(), robot);
-        System.out.println("New robot connected, hashmap: " + connectedRobotsHashMap);
+        connectedRobotsMap.put(robot.getId(), robot);
+        System.out.println("New robot connected, hashmap: " + connectedRobotsMap);
     }
 
     public void removeConnectedRobot(int id) {
-        connectedRobotsHashMap.remove(id);
+        connectedRobotsMap.remove(id);
         JsonImage.removeFromLastImageMap(id);
 
-        System.out.println("Robot disconnected, hashmap: " + connectedRobotsHashMap);
+        System.out.println("Robot disconnected, hashmap: " + connectedRobotsMap);
     }
 
     public boolean robotIsConnected(int id) {
-        return connectedRobotsHashMap.containsKey(id);
+        return connectedRobotsMap.containsKey(id);
     }
 
     public Robot getRobotById(int id) {
-        return connectedRobotsHashMap.get(id);
+        return connectedRobotsMap.get(id);
     }
 
-    public void updateAndSendRobotState(int id, JsonCommand updateCommand) throws IOException {
-        Robot robot = connectedRobotsHashMap.get(id);
+    public void handleCommands(int robotId, List<JsonCommand> commands, WebSocketSession clientSession) throws IOException {
+        Robot robot = connectedRobotsMap.get(robotId);
 
-        updateCommand.values().forEach((key, value) -> {
-            // For each value in one command update this field (key - field name, value - field value)
-            robot.setStateField(updateCommand.command(), key, value);
-        });
+        List<JsonCommand> commandsToSend = new LinkedList<>();
+        for (JsonCommand command : commands) {
+            if (command.isValid()) {
+                JsonCommand commandToSend = switch (command.command()) {
+                    case MOVE, TURRET, STOP, SHOOT -> command;
+                    case AIM -> {
+                        JsonImage lastImage = JsonImage.getLastImage(robotId);
 
-        robot.sendRobotState(updateCommand.command());
+                        if (lastImage == null) {
+                            clientSession.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
+                            yield null;
+                        }
 
+                        JsonCommand aimCommand = createAimCommand(lastImage);
+
+                        imageSubscribers.sendMessageToAllSessions(robotId, lastImage.asAimImage().toTextMessage());
+
+                        if (aimCommand == null) {
+                            clientSession.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
+                            yield null;
+                        }
+
+                        clientSession.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
+                        yield aimCommand;
+                    }
+                };
+
+                if (commandToSend != null) {
+                    commandsToSend.add(commandToSend);
+                }
+            }
+        }
+
+        robot.sendCommands(commandsToSend);
     }
 
     public void sendStopToRobot(int id) throws IOException {
-        connectedRobotsHashMap.get(id).sendStop();
+        connectedRobotsMap.get(id).sendStop();
     }
 
-    public boolean startAimAndSendResult(int id, @NotNull JsonImage lastImage) throws IOException {
-        double[] angles = AimLogic.aim(lastImage,config);
+    @Nullable
+    private JsonCommand createAimCommand(@NotNull JsonImage lastImage) {
+        double[] angles = AimLogic.aim(lastImage, config);
 
-        if (angles != null) {
-            JsonCommand aimCommand = AimLogic.createCommand(angles);
-
-            Robot robot = connectedRobotsHashMap.get(id);
-            robot.sendMessage(aimCommand.toTextMessage());
-
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    public void sendRobotState(int id) throws IOException {
-        Robot robot = connectedRobotsHashMap.get(id);
-
-        robot.sendRobotState();
-
+        return angles == null ? null : AimLogic.createCommand(angles);
     }
 
 }

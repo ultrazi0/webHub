@@ -61,7 +61,7 @@ public class WebSockConfig implements WebSocketConfigurer {
     }
 
     private WebSocketHandler commandClientHandler() {
-        return new CommandClientHandler(robotService, operatorController, imageSubscribers);
+        return new CommandClientHandler(robotService, operatorController);
     }
 
     @Bean

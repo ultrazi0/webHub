@@ -79,6 +79,7 @@ const router = createBrowserRouter([
   },
 ]);
 
+// @ts-expect-error - root should always be present
 const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>

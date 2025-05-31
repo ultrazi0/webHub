@@ -1,4 +1,5 @@
 import { Button, FormGroup, FormText, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
+import { FetcherWithReset } from "../hooks/useFetcherWithReset";
 
 
 export async function deleteUserAction() {
@@ -14,7 +15,7 @@ export async function deleteUserAction() {
 
     headers.append(csrfToken.headerName, csrfToken.token);
 
-    const success = await fetch("/api/user", {
+    return await fetch("/api/user", {
         method: "DELETE",
         headers: headers,
     }).then(response => {
@@ -26,11 +27,15 @@ export async function deleteUserAction() {
         console.error(error);
         return false;
     });
-
-    return success;
 }
 
-export default function DeleteUserModal({ fetcher, showModal, setShowModal }) {
+type DeleteUserModalProps = {
+    fetcher: FetcherWithReset<boolean>,
+    showModal: boolean,
+    setShowModal: (showModal: boolean) => void,
+};
+
+export default function DeleteUserModal({ fetcher, showModal, setShowModal }: DeleteUserModalProps) {
     
     const handleCloseModal = () => {
         setShowModal(false);

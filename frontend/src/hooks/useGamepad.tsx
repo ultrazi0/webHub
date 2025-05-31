@@ -153,7 +153,7 @@ export default function useGamepad<T extends Layout>(layout: T, callbacks: onCha
         window.addEventListener("gamepadconnected", updateGamepad);
         window.addEventListener("gamepaddisconnected", updateGamepad);
 
-        const interval = gamepad ? setInterval(updateGamepad, 100) : null;
+        const interval = gamepad ? setInterval(updateGamepad, 100) : undefined;
 
         return () => {
             window.removeEventListener("gamepadconnected", updateGamepad);

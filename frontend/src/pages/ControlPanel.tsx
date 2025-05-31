@@ -13,8 +13,8 @@ export default function ControlPanel() {
                 </span>
             </h1>
             <div className="container text-center">
-                <ImageRow robotId={robotId} />
-                <ControlRow robotId={robotId} />
+                <ImageRow robotId={robotId ?? null} />
+                <ControlRow robotId={robotId ?? null} />
             </div>
         </>
     );

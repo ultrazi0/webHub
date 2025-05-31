@@ -4,11 +4,11 @@ import { Col, Row } from "react-bootstrap";
 import CameraStream from "./CameraStream";
 import { AimImageMessage, ImageMessage, MessageType, RegularMessage } from "./index";
 
-export default function ImageRow({ robotId }: { robotId: string }) {
+export default function ImageRow({ robotId }: { robotId: string | null }) {
     const [image, setImage] = useState<string>("");
     const [lastImage, setLastImage] = useState<string>("");
 
-    const WS_URL = "ws://localhost:8080/api/image/client/" + robotId;
+    const WS_URL = robotId ? "ws://localhost:8080/api/image/client/" + robotId : null;
 
     // Establishing WebSocket connection
     const { lastJsonMessage } = useWebSocket<ImageMessage | AimImageMessage | RegularMessage>(WS_URL, {

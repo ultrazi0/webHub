@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { Button, FormGroup, FormText, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import CsrfHiddenInput from "./CsrfHiddenInput";
+import { FetcherWithReset } from "../hooks/useFetcherWithReset";
 
-export default function LogoutModal({ fetcher, showModal, setShowModal }) {
+type LogoutModalProps = {
+    fetcher: FetcherWithReset<boolean>,
+    showModal: boolean,
+    setShowModal: (showModal: boolean) => void,
+};
+
+export default function LogoutModal({ fetcher, showModal, setShowModal }: LogoutModalProps) {
     const [csrfToken, setCsrfToken] = useState(null);
     
     const handleCloseModal = () => {

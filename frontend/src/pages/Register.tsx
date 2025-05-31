@@ -1,39 +1,23 @@
-import { Col, Container, Row, Image, FormGroup, FormLabel, FormControl, Button, FormText } from "react-bootstrap";
-import { Form, redirect, useActionData, useLoaderData } from "react-router-dom";
+import { Button, Col, Container, FormControl, FormGroup, FormLabel, FormText, Image, Row } from "react-bootstrap";
+import { ActionFunctionArgs, Form, redirect, useActionData, useLoaderData } from "react-router-dom";
 
 import logo from "../logo.svg";
 import CsrfHiddenInput from "../components/CsrfHiddenInput";
 import { useState } from "react";
+import { LoginLoaderData } from "./Login";
 
-
-export async function registerAction({ request }) {
-    const success = await fetch("/api/register", {
+export async function registerAction({ request }: ActionFunctionArgs) {
+    const response = await fetch("/api/register", {
         method: "POST",
         body: await request.formData(),
-    }).then(response => {
-        if (response.ok) {
-            console.log("New user registered!");
-            return true;
-        }
-        throw new Error(response.statusText);
-    }).catch(error => {
-        console.error(error);
-        return false;
     });
 
-    if (success) {
-        return redirect("/");
-    }
-
-    const errors = {};
-    errors.usernameTaken = "This username is already taken";
-
-    return errors;
+    return response.ok ? redirect("/") : response;
 }
 
 export default function RegisterPage() {
-    const { csrfToken } = useLoaderData();
-    const errors = useActionData();
+    const { csrfToken } = useLoaderData<LoginLoaderData>();
+    const response = useActionData<{ error?: string }>();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -54,7 +38,7 @@ export default function RegisterPage() {
                         <FormGroup className="mb-3 mt-3" controlId="formRegisterUsername">
                             <FormLabel>Username</FormLabel>
                             <FormControl type="text" placeholder="Enter your username" name="username" value={username} onChange={(event) => setUsername(event.target.value)} />
-                            {errors?.usernameTaken && <FormText className="text-danger-emphasis">{errors.usernameTaken}</FormText>}
+                            {response?.error && <FormText className="text-danger-emphasis">{response.error}</FormText>}
                         </FormGroup>
                         <FormGroup className="mb-3" controlId="formRegisterPassword">
                             <FormLabel>Password</FormLabel>

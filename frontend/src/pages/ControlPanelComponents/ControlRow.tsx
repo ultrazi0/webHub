@@ -8,10 +8,11 @@ import { onChangeCallbacks, XBOXLayout } from "../../hooks/useGamepad";
 import Gamepad from "../../components/Gamepad";
 import { FeedbackMessage, MessageType, RegularMessage } from "./index";
 
-export default function ControlRow({ robotId }: { robotId: string }) {
-    const feedbackArea = useRef(null); // ref that controls textarea for feedback
+export default function ControlRow({ robotId }: { robotId: string | null }) {
+    const feedbackArea = useRef<HTMLTextAreaElement | null>(null); // ref that controls textarea for feedback
 
-    const WS_URL = "ws://localhost:8080/api/command/client/" + robotId;
+    const WS_URL = robotId ? "ws://localhost:8080/api/command/client/" + robotId : null;
+
     const { sendJsonMessage, lastJsonMessage } = useWebSocket<RegularMessage | FeedbackMessage>(WS_URL, {
         shouldReconnect: () => false,
         onError: (event) => console.error("Command-WebSocket error observed:", event),

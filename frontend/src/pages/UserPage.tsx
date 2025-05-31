@@ -1,12 +1,16 @@
 import { useContext, useState } from "react";
 import { Button, Col, Container, Image, Row } from "react-bootstrap";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { LoaderFunctionArgs, useLoaderData, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../contexts";
 import DeleteUserModal from "../components/DeleteUserModal";
 import useFetcherWithReset from "../hooks/useFetcherWithReset";
+import { User } from "../types";
 
+type LoaderData = {
+    user: User | null;
+}
 
-export async function loadUser({ params }) {
+export async function loadUser({ params }: LoaderFunctionArgs): Promise<LoaderData> {
     const user = await fetch("/api/user/" + params.userId)
     .then(response => {
         if (response.ok) {
@@ -25,22 +29,21 @@ export default function UserPage() {
     const navigate = useNavigate();
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const deleteUserFetcher = useFetcherWithReset();
+    const deleteUserFetcher = useFetcherWithReset<boolean>();
 
     const currentUser = useContext(AuthenticationContext);
-    let { user } = useLoaderData();    
+    const { user: retrievedUser } = useLoaderData<LoaderData>();
 
     if (deleteUserFetcher.data === true) {
         setShowDeleteModal(false);
         deleteUserFetcher.reset();
     }
 
-    if (user === null) {
-        user = {
-            id: null,
-            username: "Anonym",
-        };
-    }
+
+    const user: Omit<User, "id"> & { id: User["id"] | null } = retrievedUser ?? {
+        id: null,
+        username: "Anonym",
+    };
 
     return (
         <>

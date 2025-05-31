@@ -1,10 +1,15 @@
 import logo from "../logo.svg";
 
 import { Button, Container, FormControl, FormGroup, FormLabel, FormText, Row, Col, Image } from "react-bootstrap";
-import { Form, redirect, useActionData, useLoaderData } from "react-router-dom";
+import { ActionFunctionArgs, Form, redirect, useActionData, useLoaderData } from "react-router-dom";
 import CsrfHiddenInput from "../components/CsrfHiddenInput";
+import { CsrfResponse } from "../types";
 
-export async function loginLoader() {
+export type LoginLoaderData = {
+    csrfToken: CsrfResponse;
+}
+
+export async function loginLoader(): Promise<LoginLoaderData> {
 
     const csrfToken = await fetch("/api/csrf")
     .then(response => {
@@ -17,7 +22,9 @@ export async function loginLoader() {
     return { csrfToken };
 }
 
-export async function loginAction({ request }) {
+type ActionData = Response | null;
+
+export async function loginAction({ request }: ActionFunctionArgs): Promise<ActionData> {
     const success = await fetch("/api/login", {
         method: "POST",
         body: await request.formData(),
@@ -37,8 +44,8 @@ export async function loginAction({ request }) {
 }
 
 export default function LoginPage() {
-    const { csrfToken } = useLoaderData();
-    const user = useActionData();
+    const { csrfToken } = useLoaderData<LoginLoaderData>();
+    const user = useActionData<ActionData>();
 
     return (
         <Container>
@@ -56,9 +63,15 @@ export default function LoginPage() {
                         <FormGroup className="mb-3" controlId="formLoginPassword">
                             <FormLabel>Password</FormLabel>
                             <FormControl type="password" placeholder="Password" name="password" />
-                            {user === null && <FormText className="text-danger-emphasis">Wrong username and/or password</FormText>}
+                            {user === null && (
+                                <FormText className="text-danger-emphasis">Wrong username and/or password</FormText>
+                            )}
                         </FormGroup>
-                        {csrfToken && <FormGroup className="mb-3" controlId="formLoginCsrfToken"><CsrfHiddenInput csrfToken={csrfToken} /></FormGroup>}
+                        {csrfToken && (
+                            <FormGroup className="mb-3" controlId="formLoginCsrfToken">
+                                <CsrfHiddenInput csrfToken={csrfToken} />
+                            </FormGroup>
+                        )}
                         <Button type="submit" variant="primary">Log in</Button>
                     </Form>
                 </Col>

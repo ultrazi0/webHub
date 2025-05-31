@@ -1,11 +1,17 @@
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
+import { Robot } from "../../types";
 
-export default function RobotInfoModal({ robot, setRobot }) {
+type RobotInfoModalProps = {
+    robot: Robot | null,
+    setRobot: (robot: Robot | null) => void,
+};
+
+export default function RobotInfoModal({ robot, setRobot }: RobotInfoModalProps) {
 
     const handleCloseModal = () => setRobot(null);
 
     return (
-        <Modal show={robot} onHide={handleCloseModal}>
+        <Modal show={!!robot} onHide={handleCloseModal}>
             <ModalHeader closeButton>
                 <ModalTitle>Robot Info</ModalTitle>
             </ModalHeader>
@@ -25,8 +31,13 @@ export default function RobotInfoModal({ robot, setRobot }) {
                     <br />
                     <b>Owned by:</b> <span>{robot?.ownerName}</span>
                     <br />
-                    <b>Robot was created at:</b> <span>{new Date(robot?.createdAt).toLocaleString()}</span>
-                    <br />
+                    {robot && (
+                        <>
+                            <b>Robot was created at:</b>
+                            <span>{new Date(robot.createdAt).toLocaleString()}</span>
+                            <br />
+                        </>
+                    )}
                     <i>This robot is currently {robot?.online ? <span className="text-success">online</span> : <span className="text-danger">offline</span>}</i>
                 </p>
             </ModalBody>

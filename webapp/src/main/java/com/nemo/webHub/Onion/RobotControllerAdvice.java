@@ -21,6 +21,6 @@ public class RobotControllerAdvice {
     ResponseEntity<String> nameAlreadyTaken(DataAccessException ignore) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .header("Content-Type", "application/json")
-                .body("{\"error\": \"Name already taken\"}");
+                .body("{\"error\": \"This username is already taken\"}");
     }
 }

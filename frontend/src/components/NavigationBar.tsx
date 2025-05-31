@@ -1,11 +1,16 @@
-import { Button, Navbar, Container, Image, Nav, ButtonGroup, Dropdown } from "react-bootstrap";
-import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
+import { Button, ButtonGroup, Container, Dropdown, Image, Nav, Navbar } from "react-bootstrap";
+import { ActionFunctionArgs, Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import useFetcherWithReset from "../hooks/useFetcherWithReset";
 import { useState } from "react";
 import LogoutModal from "./LogoutModal";
 import { AuthenticationContext } from "../contexts";
+import { User } from "../types";
 
-export async function userLoader() {
+type UserLoaderData = {
+    user: User | null;
+}
+
+export async function userLoader(): Promise<UserLoaderData> {
     const user = await fetch("/api/user")
     .then(response => {
         if (response.ok) {
@@ -22,8 +27,8 @@ export async function userLoader() {
     return { user };
 }
 
-export async function logoutAction({ request }) {
-    const success = await fetch("/api/logout", {
+export async function logoutAction({ request }: ActionFunctionArgs) {
+    return await fetch("/api/logout", {
         method: "POST",
         body: await request.formData(),
     }).then(response => {
@@ -35,16 +40,14 @@ export async function logoutAction({ request }) {
         console.log(error);
         return false;
     });
-
-    return success;
 }
 
 export default function NavigationBar() {
     const navigate = useNavigate();
-    const { user } = useLoaderData();
-    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const { user } = useLoaderData<UserLoaderData>();
+    const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
 
-    const logoutFetcher = useFetcherWithReset();
+    const logoutFetcher = useFetcherWithReset<boolean>();
 
     if (logoutFetcher.data === true) {
         setShowLogoutModal(false);
@@ -61,7 +64,7 @@ export default function NavigationBar() {
                     </Link>
                     <Nav>
                         {user ? <Dropdown as={ButtonGroup} align="end">
-                            <Link variant="outline-info" className="btn btn-outline-info d-flex align-items-center" to={"/user/" + user.id}>
+                            <Link className="btn btn-outline-info d-flex align-items-center" to={"/user/" + user.id}>
                                 <Image src={"https://robohash.org/" + user.username + ".png?set=set5&size=32x32"} roundedCircle/>
                                 {" " + user.username}
                             </Link>

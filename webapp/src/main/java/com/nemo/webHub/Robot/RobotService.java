@@ -1,6 +1,7 @@
 package com.nemo.webHub.Robot;
 
 import com.nemo.webHub.Commands.Aim.AimLogic;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Sock.Image.ImageSubscribers;
 import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Config;
@@ -53,33 +54,36 @@ public class RobotService {
         List<JsonCommand> commandsToSend = new LinkedList<>();
         for (JsonCommand command : commands) {
             if (command.isValid()) {
-                JsonCommand commandToSend = switch (command.command()) {
-                    case MOVE, TURRET, STOP, SHOOT -> command;
-                    case AIM -> {
-                        JsonImage lastImage = JsonImage.getLastImage(robotId);
+                if (command.command() instanceof StandardCommandType standardCommand) {
+                    JsonCommand commandToSend = switch (standardCommand) {
+                        case MOVE, TURRET, STOP, SHOOT -> command;
+                        case AIM -> {
+                            JsonImage lastImage = JsonImage.getLastImage(robotId);
 
-                        if (lastImage == null) {
-                            clientSession.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
-                            yield null;
+                            if (lastImage == null) {
+                                clientSession.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
+                                yield null;
+                            }
+
+                            JsonCommand aimCommand = createAimCommand(lastImage);
+
+                            imageSubscribers.sendMessageToAllSessions(robotId, lastImage.asAimImage().toTextMessage());
+
+                            if (aimCommand == null) {
+                                clientSession.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
+                                yield null;
+                            }
+
+                            clientSession.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
+                            yield aimCommand;
                         }
+                    };
 
-                        JsonCommand aimCommand = createAimCommand(lastImage);
-
-                        imageSubscribers.sendMessageToAllSessions(robotId, lastImage.asAimImage().toTextMessage());
-
-                        if (aimCommand == null) {
-                            clientSession.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
-                            yield null;
-                        }
-
-                        clientSession.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
-                        yield aimCommand;
+                    if (commandToSend != null) {
+                        commandsToSend.add(commandToSend);
                     }
-                };
-
-                if (commandToSend != null) {
-                    commandsToSend.add(commandToSend);
                 }
+
             }
         }
 

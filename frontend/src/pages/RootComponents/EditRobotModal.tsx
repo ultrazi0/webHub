@@ -1,9 +1,18 @@
 import { Button, FormControl, FormGroup, FormLabel, FormText, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import CsrfHiddenInput from "../../components/CsrfHiddenInput";
+import { FetcherWithReset } from "../../hooks/useFetcherWithReset";
+import { CsrfResponse, Robot } from "../../types";
 
-export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken }) {
-    const [robot, setRobot] = useState(null);
+type EditRobotModalProps = {
+    fetcher: FetcherWithReset<boolean>,
+    robotId: number | null,
+    setRobotId: (robotId: number | null) => void,
+    csrfToken: CsrfResponse,
+}
+
+export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken }: EditRobotModalProps) {
+    const [robot, setRobot] = useState<Robot | null>(null);
 
     const handleCloseModal = () => {
         setRobotId(null);
@@ -38,10 +47,10 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
         return () => {
             ignore = true;
         };
-    }, [robot, robotId]);
+    }, [ robot, robotId ]);
 
     return (
-        <Modal show={robot != null} onHide={handleCloseModal} backdrop="static" keyboard={true}>
+        <Modal show={!!robot} onHide={handleCloseModal} backdrop="static" keyboard={true}>
             <ModalHeader closeButton>
                 <ModalTitle>Edit robot</ModalTitle>
             </ModalHeader>
@@ -49,8 +58,15 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                 <ModalBody>
                     <FormGroup className="mb-3" controlId="formName">
                         <FormLabel>Robot name</FormLabel>
-                        <FormControl type="text" placeholder="Enter robot name" name="name" defaultValue={robot ? robot.name : ""} />
-                        {fetcher.data === false && <FormText className="text-danger-emphasis">This name is already taken</FormText>}
+                        <FormControl
+                            type="text"
+                            placeholder="Enter robot name"
+                            name="name"
+                            defaultValue={robot ? robot.name : ""}
+                        />
+                        {fetcher.data === false && (
+                            <FormText className="text-danger-emphasis">This name is already taken</FormText>
+                        )}
                         {csrfToken && <CsrfHiddenInput csrfToken={csrfToken} />}
                     </FormGroup>
                 </ModalBody>

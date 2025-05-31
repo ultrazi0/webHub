@@ -1,7 +1,16 @@
 import { Button, FormGroup, FormText, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap";
 import CsrfHiddenInput from "../../components/CsrfHiddenInput";
+import { FetcherWithReset } from "../../hooks/useFetcherWithReset";
+import { CsrfResponse } from "../../types";
 
-export default function DeleteRobotModal({ fetcher, robotId, setRobotId, csrfToken }) {
+type DeleteRobotModalProps = {
+    fetcher: FetcherWithReset<boolean>,
+    robotId: number | null,
+    setRobotId: (robotId: number | null) => void,
+    csrfToken: CsrfResponse,
+};
+
+export default function DeleteRobotModal({ fetcher, robotId, setRobotId, csrfToken }: DeleteRobotModalProps) {
 
     const handleCloseModal = () => {
         setRobotId(null);
@@ -9,7 +18,7 @@ export default function DeleteRobotModal({ fetcher, robotId, setRobotId, csrfTok
     };
 
     return (
-        <Modal show={robotId} onHide={handleCloseModal}>
+        <Modal show={!!robotId} onHide={handleCloseModal}>
             <ModalHeader closeButton>
                 <ModalTitle>Delete robot</ModalTitle>
             </ModalHeader>

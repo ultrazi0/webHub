@@ -2,7 +2,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.core.Persistence.RobotService;
-import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
@@ -29,7 +29,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage get_all_commands() {
-        List<String> expectedList = Arrays.stream(CommandType.values()).map(CommandType::toString).toList();
+        List<String> expectedList = Arrays.stream(StandardCommandType.values()).map(StandardCommandType::toString).toList();
 
         validatableResponse.body("", Matchers.equalTo(expectedList));
 
@@ -37,7 +37,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage get_values_for_command(@Quoted String command) {
-        List<String> expectedValues = Arrays.stream(CommandType.valueOf(command).getKeys()).toList();
+        List<String> expectedValues = Arrays.stream(StandardCommandType.valueOf(command).getKeys()).toList();
 
         // TODO: find a way to show the expected values in the report
         validatableResponse.body("", Matchers.equalTo(expectedValues));

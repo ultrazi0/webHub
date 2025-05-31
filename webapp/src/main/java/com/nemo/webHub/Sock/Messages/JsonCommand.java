@@ -3,6 +3,7 @@ package com.nemo.webHub.Sock.Messages;
 import com.fasterxml.jackson.core.*;
 import com.nemo.webHub.Commands.Command;
 import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 
@@ -61,7 +62,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
 
             if ("command".equals(fieldName)) {
                 jsonParser.nextToken();
-                command = CommandType.valueOf(jsonParser.getText());
+                command = StandardCommandType.valueOf(jsonParser.getText());
             }
 
             if ("values".equals(fieldName)) {

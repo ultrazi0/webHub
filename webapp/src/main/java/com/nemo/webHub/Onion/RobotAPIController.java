@@ -1,6 +1,7 @@
 package com.nemo.webHub.Onion;
 
 import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
@@ -35,12 +36,12 @@ public class RobotAPIController {
     @GetMapping("/getAllCommands")
     public CommandType[] getAllCommands() {
 
-        return CommandType.values();
+        return StandardCommandType.values();
     }
 
     @Nullable
     @GetMapping("/commandValues")
-    public String[] commandValues(@Nullable @RequestParam("commandType") CommandType commandType) {
+    public String[] commandValues(@Nullable @RequestParam("commandType") StandardCommandType commandType) {
         if (commandType == null) {
             return null;
         }

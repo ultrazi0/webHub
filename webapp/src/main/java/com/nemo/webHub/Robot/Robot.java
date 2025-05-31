@@ -1,6 +1,6 @@
 package com.nemo.webHub.Robot;
 
-import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Sock.Messages.JsonMessage;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class Robot {
     }
 
     public void sendStop() throws IOException {
-        JsonCommand stopCommand = new JsonCommand(CommandType.STOP, Map.of());
+        JsonCommand stopCommand = new JsonCommand(StandardCommandType.STOP, Map.of());
         session.sendMessage(stopCommand.toTextMessage());
     }
 

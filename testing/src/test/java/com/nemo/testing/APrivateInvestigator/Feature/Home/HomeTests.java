@@ -3,7 +3,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 import com.nemo.testing.core.API.WithErrorMessages;
 import com.nemo.testing.core.APrivateInvestigatorTest;
 import com.nemo.testing.core.Tags.WH;
-import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,8 +38,8 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
 
     @WH("1")
     @ParameterizedTest
-    @EnumSource(CommandType.class)
-    void I_should_be_able_to_view_the_values_of_all_commands(CommandType commandType) {
+    @EnumSource(StandardCommandType.class)
+    void I_should_be_able_to_view_the_values_of_all_commands(StandardCommandType commandType) {
         String command = commandType.name();
 
         given()

@@ -49,6 +49,8 @@ export type onChangeCallbacks<T extends Layout> = {
     [key in T["buttons"][number]]?: (pressed: boolean) => void;
 } & {
     [key in T["axes"][number]]?: (value: number) => void;
+} & {
+    onAxesChange?: (axesState: AxesState<T>) => void;
 };
 
 type ButtonState<T extends Layout> = {
@@ -82,14 +84,23 @@ export default function useGamepad<T extends Layout>(layout: T, callbacks: onCha
     const updateAxesState = useCallback((newAxesState: AxesState<T>) => {
         let changed: boolean = false;
         layout.axes.forEach((axisName: keyof AxesState<T>) => {
+            if (Math.abs(newAxesState[axisName]) < options.deadZone) {
+                newAxesState[axisName] = 0;
+            } else {
+                newAxesState[axisName] = round(newAxesState[axisName]);
+            }
+
             if (Math.abs(axesState[axisName] - newAxesState[axisName]) > options.threshold) {
                 changed = true;
                 callbacks[axisName]?.(newAxesState[axisName]);
             }
         });
-        
-        if (changed) setAxesState(newAxesState);
-    }, [ layout.axes, axesState, options.threshold, callbacks ]);
+
+        if (changed) {
+            callbacks.onAxesChange?.(newAxesState);
+            setAxesState(newAxesState);
+        }
+    }, [ layout.axes, axesState, options, callbacks ]);
 
     const updateGamepadState = useCallback((gamepad: Gamepad) => {
 
@@ -180,4 +191,9 @@ function toIdentifiableGamepad(gamepad: Gamepad | null | undefined): Identifiabl
         index: gamepad.index,
         connected: gamepad.connected,
     } : null;
+}
+
+function round(value: number, precision: number = 2) {
+    const multiplier = 10 ** precision;
+    return Math.round((value + Number.EPSILON) * multiplier) / multiplier;
 }

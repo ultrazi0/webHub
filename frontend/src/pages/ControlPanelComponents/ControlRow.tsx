@@ -23,13 +23,27 @@ export default function ControlRow({ robotId }: { robotId: string }) {
         const gamepadCommands = getCommands(sendJsonMessage);
 
        return {
-            B: pressed => { if (pressed) gamepadCommands.stop(); },
-            LB: pressed => { if (pressed) gamepadCommands.aim(); },
-            X: pressed => { if (pressed) gamepadCommands.shoot(); },
-            LeftStickX: value => gamepadCommands.move(0, value),
-            "-LeftStickY": value => gamepadCommands.move(-value, 0),
-            RightStickX: value => gamepadCommands.turret(0, value),
-            "-RightStickY": value => gamepadCommands.turret(-value, 0),
+           B: pressed => { if (pressed) gamepadCommands.stop(); },
+           LB: pressed => { if (pressed) gamepadCommands.aim(); },
+           X: pressed => { if (pressed) gamepadCommands.shoot(); },
+           onAxesChange: axes => {
+               const moveSpeed = axes.LeftStickX ?? 0;
+               const moveTurn = -(axes["-LeftStickY"] ?? 0);
+               const turretSpeed = axes.RightStickX ?? 0;
+               const turretTurn = -(axes["-RightStickY"] ?? 0);
+
+               const shouldMove = moveSpeed !== 0 || moveTurn !== 0;
+               const shouldMoveTurret = turretSpeed !== 0 || turretTurn !== 0;
+               if (shouldMove && shouldMoveTurret) {
+                   gamepadCommands.moveAndTurret([ moveSpeed, moveTurn ], [ turretSpeed, turretTurn ]);
+               } else if (shouldMove) {
+                   gamepadCommands.move(moveSpeed, moveTurn);
+               } else if (shouldMoveTurret) {
+                   gamepadCommands.turret(turretSpeed, turretTurn);
+               } else {
+                   gamepadCommands.stop();
+               }
+           },
         };
     }, [ sendJsonMessage ]);
 

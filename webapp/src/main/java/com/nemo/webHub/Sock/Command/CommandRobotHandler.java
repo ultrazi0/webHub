@@ -8,6 +8,7 @@ import com.nemo.webHub.Sock.Messages.JsonMessage;
 import com.nemo.webHub.Sock.Messages.MessageType;
 import com.nemo.webHub.Sock.OperatorController;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -28,6 +29,7 @@ import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMes
  * Message must be a parsable JSON, otherwise an exception is thrown.
  *
  */
+@Slf4j
 @RequiredArgsConstructor
 public class CommandRobotHandler extends TextWebSocketHandler {
 
@@ -87,7 +89,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
         String operatorSessionId = operatorController.getOperatorSessionId(robotId);
 
         if (operatorSessionId == null) {
-            System.out.println("Operator for robot with ID #" + robotId + " is not connected yet");
+            log.trace("Operator for robot with ID #{} is not connected yet", robotId);
             session.sendMessage(createRegularJsonTextMessage("Operator is not connected yet"));
             return;
         }

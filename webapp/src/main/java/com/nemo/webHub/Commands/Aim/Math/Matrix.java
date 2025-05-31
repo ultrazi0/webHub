@@ -112,6 +112,7 @@ public class Matrix {
         return new Point3D(this.matrix[0][0], this.matrix[1][0], this.matrix[2][0]);
     }
 
+    @Deprecated
     public void printMatrix() {
         for (double[] row : this.matrix) {
             System.out.print('[');

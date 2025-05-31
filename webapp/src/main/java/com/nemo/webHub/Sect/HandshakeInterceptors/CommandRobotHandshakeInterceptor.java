@@ -12,8 +12,8 @@ import java.util.Map;
 
 /**
  * Handshake interceptor for connection requests sent from robots to the command websocket.
- * In order to access this interceptor, the robot must already be authenticated,
- * otherwise Spring Security just won't allow it here. Hence, the ID can be
+ * In order to access this interceptor, the robot must already be authenticated;
+ * otherwise, Spring Security just won't allow it here. Hence, the ID can be
  * retrieved from the principal object and additional ventures to the database
  * in order to check whether the robot exists is unnecessary.
  *
@@ -29,8 +29,8 @@ public class CommandRobotHandshakeInterceptor extends AbstractHandshakeIntercept
 
     @Override
     public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes)
-            throws Exception {
+                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes
+    ) {
 
         RobotEntity robot = getCurrentRobot();
 
@@ -41,7 +41,6 @@ public class CommandRobotHandshakeInterceptor extends AbstractHandshakeIntercept
         }
 
         attributes.put("robotId", robot.getId());
-        System.out.println(robot);
 
         // Allow connection
         return true;

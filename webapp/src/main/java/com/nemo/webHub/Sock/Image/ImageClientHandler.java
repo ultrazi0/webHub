@@ -1,6 +1,7 @@
 package com.nemo.webHub.Sock.Image;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -15,13 +16,14 @@ import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMes
  * This handler manages client image-websocket subscribers.
  * It is not the idea that it should handle messages.
  */
+@Slf4j
 @RequiredArgsConstructor
 public class ImageClientHandler extends TextWebSocketHandler {
 
     private final ImageSubscribers imageSubscribers;
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         Object robotId = session.getAttributes().get("robotId");
 
         if (!(robotId instanceof Integer)) {
@@ -38,16 +40,16 @@ public class ImageClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws Exception {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         int robotId = (int) session.getAttributes().get("robotId");
 
         imageSubscribers.removeSession(robotId, session);
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, @NonNull TextMessage message) throws IOException {
+    public void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) throws IOException {
 
-        System.out.println(">>> Something is going wrong <<<");
+        log.warn("Image websocket is not supposed to receive messages, received: {} from {}", message, session);
 
         session.sendMessage(createRegularJsonTextMessage("Please, don't do that"));
 

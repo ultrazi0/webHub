@@ -22,15 +22,17 @@ public class DBConfig {
         this.dslContext = dslContext;
     }
 
+    /**
+     * This method starts JOOQ initialization
+     * <br/>
+     * It seems that Spring Boot does not initialize JDBC before the first request is made.
+     * Not like this is mandatory or not starting on startup is a problem - it's just messy,
+     * so it's better to keep it at the top
+     * <br/>
+     * <b>It would, however, be nice to have a better way to initialize the database.</b>
+     * */
     @PostConstruct
     private void init() {
-        /*
-         * This method starts JOOQ initialization
-         * It seems that Spring Boot does not initialize JDBC before the first request is made.
-         * Not like this is mandatory or not starting on startup is a problem - its just messy,
-         * so it's better to keep it at the top
-         */
-
         Result<Record> result = dslContext.select().from(ROBOTS).fetch();
 
         for (Record r : result) {

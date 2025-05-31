@@ -56,7 +56,6 @@ public class UserApiController {
 
     @PutMapping("/user")
     public ResponseEntity<UserEntity> updateUser(@AuthenticationPrincipal UserEntity user, @ModelAttribute EditRequest editRequest) {
-        System.out.println(editRequest);
         String newUsername = editRequest.username();
         String oldPassword = editRequest.oldPassword();
         String newPassword = editRequest.newPassword();

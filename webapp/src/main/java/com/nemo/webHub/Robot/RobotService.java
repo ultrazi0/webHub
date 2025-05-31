@@ -8,6 +8,7 @@ import com.nemo.webHub.Sock.Image.JsonImage;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -16,6 +17,7 @@ import java.util.*;
 
 import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RobotService {
@@ -27,14 +29,14 @@ public class RobotService {
 
     public void addConnectedRobot(Robot robot) {
         connectedRobotsMap.put(robot.getId(), robot);
-        System.out.println("New robot connected, hashmap: " + connectedRobotsMap);
+        log.trace("New robot connected, hashmap: {}", connectedRobotsMap);
     }
 
     public void removeConnectedRobot(int id) {
         connectedRobotsMap.remove(id);
         JsonImage.removeFromLastImageMap(id);
 
-        System.out.println("Robot disconnected, hashmap: " + connectedRobotsMap);
+        log.trace("Robot disconnected, hashmap: {}", connectedRobotsMap);
     }
 
     public boolean robotIsConnected(int id) {

@@ -33,14 +33,8 @@ export default function ControlRow({ robotId }: { robotId: string | null }) {
                const turretSpeed = -(axes["-RightStickY"] ?? 0);
                const turretTurn = axes.RightStickX ?? 0;
 
-               const shouldMove = moveSpeed !== 0 || moveTurn !== 0;
-               const shouldMoveTurret = turretSpeed !== 0 || turretTurn !== 0;
-               if (shouldMove && shouldMoveTurret) {
+               if (moveSpeed !== 0 || moveTurn !== 0 || turretSpeed !== 0 || turretTurn !== 0) {
                    gamepadCommands.moveAndTurret([ moveSpeed, moveTurn ], [ turretSpeed, turretTurn ]);
-               } else if (shouldMove) {
-                   gamepadCommands.move(moveSpeed, moveTurn);
-               } else if (shouldMoveTurret) {
-                   gamepadCommands.turret(turretSpeed, turretTurn);
                } else {
                    gamepadCommands.stop();
                }

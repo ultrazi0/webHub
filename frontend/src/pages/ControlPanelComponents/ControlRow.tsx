@@ -27,6 +27,10 @@ export default function ControlRow({ robotId }: { robotId: string | null }) {
            B: pressed => { if (pressed) gamepadCommands.stop(); },
            LB: pressed => { if (pressed) gamepadCommands.aim(); },
            X: pressed => { if (pressed) gamepadCommands.shoot(); },
+           DPadLeft: pressed => { if (pressed) gamepadCommands.turret(0, -1); },
+           DPadRight: pressed => { if (pressed) gamepadCommands.turret(0, 1); },
+           DPadUp: pressed => { if (pressed) gamepadCommands.turret(1, 0); },
+           DPadDown: pressed => { if (pressed) gamepadCommands.turret(-1, 0); },
            onAxesChange: axes => {
                const moveSpeed = -(axes["-LeftStickY"] ?? 0);
                const moveTurn = axes.LeftStickX ?? 0;

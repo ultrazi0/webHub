@@ -24,7 +24,7 @@ export const getCommands = (sendJsonMessage: SendJsonMessage) => ({
         ]),
     }),
     turret: (tilt: number, turn: number) => sendCommand(sendJsonMessage, {
-        command: CommandType.TURRET_CONTINUOUS,
+        command: CommandType.TURRET,
         values: new Map([
             [ "Tilt", tilt ],
             [ "Turn", turn ],

@@ -28,10 +28,10 @@ export default function ControlRow({ robotId }: { robotId: string | null }) {
            LB: pressed => { if (pressed) gamepadCommands.aim(); },
            X: pressed => { if (pressed) gamepadCommands.shoot(); },
            onAxesChange: axes => {
-               const moveSpeed = axes.LeftStickX ?? 0;
-               const moveTurn = -(axes["-LeftStickY"] ?? 0);
-               const turretSpeed = axes.RightStickX ?? 0;
-               const turretTurn = -(axes["-RightStickY"] ?? 0);
+               const moveSpeed = -(axes["-LeftStickY"] ?? 0);
+               const moveTurn = axes.LeftStickX ?? 0;
+               const turretSpeed = -(axes["-RightStickY"] ?? 0);
+               const turretTurn = axes.RightStickX ?? 0;
 
                const shouldMove = moveSpeed !== 0 || moveTurn !== 0;
                const shouldMoveTurret = turretSpeed !== 0 || turretTurn !== 0;
@@ -89,7 +89,12 @@ export default function ControlRow({ robotId }: { robotId: string | null }) {
                     <Controls sendCommand={sendJsonMessage} />
                 </Col>
             </Row>
-            <Gamepad layout={XBOXLayout} callbacks={gamepadOnChangeCallbacks} />
+            <Row className="g-2 my-2">
+                <Col />
+                <Col>
+                    <Gamepad layout={XBOXLayout} callbacks={gamepadOnChangeCallbacks} />
+                </Col>
+            </Row>
         </>
     );
 }

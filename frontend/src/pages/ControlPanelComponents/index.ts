@@ -9,6 +9,7 @@ export enum MessageType {
 export enum CommandType {
     MOVE = "MOVE",
     TURRET = "TURRET",
+    TURRET_CONTINUOUS = "TURRET_CONTINUOUS",
     AIM = "AIM",
     SHOOT = "SHOOT",
     STOP = "STOP",

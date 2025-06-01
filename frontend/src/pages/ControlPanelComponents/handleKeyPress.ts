@@ -36,16 +36,16 @@ function handleKey(event: KeyboardEvent, sendJsonMessage: SendJsonMessage) {
             sendCommand(CommandType.MOVE, { speed: keyUp ? 0 : -0.5, turn: 0 });
             break;
         case "ArrowUp":
-            sendCommand(CommandType.TURRET, { tilt: keyUp ? 0 : 1, turn: 0 });
+            sendCommand(CommandType.TURRET_CONTINUOUS, { tilt: keyUp ? 0 : 1, turn: 0 });
             break;
         case "ArrowDown":
-            sendCommand(CommandType.TURRET, { tilt: keyUp ? 0 : -1, turn: 0});
+            sendCommand(CommandType.TURRET_CONTINUOUS, { tilt: keyUp ? 0 : -1, turn: 0});
             break;
         case "ArrowLeft":
-            sendCommand(CommandType.TURRET, { turn: keyUp ? 0 : -1, tilt: 0 });
+            sendCommand(CommandType.TURRET_CONTINUOUS, { turn: keyUp ? 0 : -1, tilt: 0 });
             break;
         case "ArrowRight":
-            sendCommand(CommandType.TURRET, { turn: keyUp ? 0 : 1, tilt: 0 });
+            sendCommand(CommandType.TURRET_CONTINUOUS, { turn: keyUp ? 0 : 1, tilt: 0 });
             break;
         case "Escape":
             sendCommand(CommandType.STOP, {});

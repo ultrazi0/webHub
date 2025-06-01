@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum StandardCommandType implements CommandType {
     MOVE(new String[] {"Speed", "Turn"}),
     TURRET(new String[] {"Tilt", "Turn"}),
+    TURRET_CONTINUOUS(TURRET.getKeys()),
     AIM,
     SHOOT,
     STOP;

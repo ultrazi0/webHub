@@ -56,7 +56,7 @@ public class RobotService {
             if (command.isValid()) {
                 if (command.command() instanceof StandardCommandType standardCommand) {
                     JsonCommand commandToSend = switch (standardCommand) {
-                        case MOVE, TURRET, STOP, SHOOT -> command;
+                        case MOVE, TURRET, TURRET_CONTINUOUS, STOP, SHOOT -> command;
                         case AIM -> {
                             JsonImage lastImage = JsonImage.getLastImage(robotId);
 

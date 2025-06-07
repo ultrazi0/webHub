@@ -5,9 +5,11 @@ import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.webHub.User.User;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -26,16 +28,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class RobotAPIController {
 
-    @Autowired
-    private RobotRepository robotRepository;
-    @Autowired
-    private RobotModelAssembler robotModelAssembler;
+    private final RobotRepository robotRepository;
+    private final RobotModelAssembler robotModelAssembler;
 
     @GetMapping("/getAllCommands")
     public CommandType[] getAllCommands() {
-
         return StandardCommandType.values();
     }
 
@@ -95,6 +95,32 @@ public class RobotAPIController {
                 .map(robotModelAssembler::toModel).toList();
 
         return CollectionModel.of(robots, linkTo(methodOn(this.getClass()).getUserRobots(user)).withSelfRel());
+    }
+
+    @PostMapping("/robots/{robotId}/share")
+    public ResponseEntity<List<User>> shareRobot(
+        @PathVariable int robotId,
+        @NotEmpty @RequestParam("users") List<String> users,
+        @AuthenticationPrincipal UserEntity currentUser
+    ) {
+        boolean success = robotRepository.shareRobot(robotId, currentUser.getId(), users);
+        if (success) {
+            return ResponseEntity.ok(robotRepository.getSharedUsers(robotId, currentUser.getId()));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/robots/{robotId}/unshare")
+    public ResponseEntity<List<User>> unshareRobot(
+        @PathVariable int robotId,
+        @NotEmpty @RequestParam("users") List<Integer> users,
+        @AuthenticationPrincipal UserEntity currentUser
+    ) {
+        boolean success = robotRepository.unshareRobot(robotId, currentUser.getId(), users);
+        if (success) {
+            return ResponseEntity.ok(robotRepository.getSharedUsers(robotId, currentUser.getId()));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @Deprecated

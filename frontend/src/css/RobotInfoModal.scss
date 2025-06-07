@@ -1,0 +1,139 @@
+@use "bootstrap/scss/bootstrap" as *;
+
+$transition-duration: 1s;
+$robot-info-block-width: calc(($modal-md - (var(--bs-modal-padding) + var(--bs-modal-border-width)) * 2));
+$shared-users-block-width: calc($modal-md * 0.5);
+
+.robot-info-modal {
+  .modal-dialog {
+    @include transition($modal-transition, max-width $transition-duration !important);
+  }
+
+  &.expanded {
+    #shared-users-header, .shared-users-block > .list-group {
+      opacity: 1;
+    }
+  }
+
+  #shared-users-header, .shared-users-block > .list-group {
+    opacity: 0;
+    transition: opacity calc(0.5 * $transition-duration);
+  }
+
+  #shared-users-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--bs-modal-bg);
+    padding: 0 8px 2px 4px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .btn {
+      --bs-btn-hover-color: #{$primary-bg-subtle};
+      --bs-btn-hover-bg: transparent;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .modal-body {
+      display: grid;
+      grid-template-columns: $robot-info-block-width;
+    }
+
+    &.expanded {
+      #{--bs-modal-width}: #{calc($modal-md + $shared-users-block-width)};
+      grid-template-columns: $robot-info-block-width $shared-users-block-width;
+    }
+    
+    .info-section {
+      grid-column: 1;
+    }
+
+    .shared-users-block {
+      grid-column: 2;
+      overflow-x: hidden;
+      width: 0;
+      transition: width $transition-duration ease,
+        padding-left $transition-duration ease,
+        border-left-color calc(0.8 * $transition-duration) ease calc(0.2 * $transition-duration);
+      border-left: var(--bs-border-width) solid transparent;
+      white-space: nowrap;
+
+      // Make it dependent on the height of the first column
+      height: 0;
+      min-height: 100%;
+
+      &.expanded {
+        padding-left: 1rem;
+        width: 100%;
+        max-width: $shared-users-block-width;
+        border-left-color: $cyan-400;
+      }
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .modal-body {
+      display: grid;
+      grid-template-rows: max-content 0fr;
+      transition: grid-template-rows $transition-duration ease;
+    }
+
+    &.expanded .modal-body {
+      grid-template-rows: max-content 1fr;
+    }
+
+    .shared-users-block {
+      margin-top: 0;
+      overflow: auto;
+      max-height: 200px;
+      transition: margin-top $transition-duration ease;
+
+      &.expanded {
+        margin-top: 1rem;
+      }
+    }
+  }
+}
+
+.list-group-item, .list-group-item > form {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  > input {
+    max-width: 60%;
+    margin-left: -0.5rem;
+  }
+
+}
+
+.share-user-actions {
+  display: flex;
+  align-items: center;
+}
+
+.share-button, .unshare-button {
+  transition: opacity 0.5s ease-in-out;
+  user-select: none;
+
+  >:hover {
+    cursor: pointer;
+    opacity: 0.66;
+  }
+}
+
+.share-button {
+  color: var(--bs-success);
+  margin-right: 0.5em;
+}
+
+.unshare-button {
+  color: var(--bs-danger);
+}

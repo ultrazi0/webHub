@@ -51,7 +51,7 @@ export default function EditUserPage() {
     const { csrfToken } = useLoaderData();
     const errors = useActionData<readonly EditUserErrors[]>();
 
-    const [username, setUsername] = useState(user ? user.username : "");
+    const [username, setUsername] = useState(user?.username ?? "");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [newPasswordRepeat, setNewPasswordRepeat] = useState("");

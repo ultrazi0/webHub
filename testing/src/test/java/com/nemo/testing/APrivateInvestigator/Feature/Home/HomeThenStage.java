@@ -58,7 +58,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
             .and().name_is(robot.getName())
             .and().password_is(robot.getPassword().replaceFirst("\\{noop}", ""))
             .and().created_at_is(robot.getCreatedAt())
-            .and().owner_id_is(robot.getOwnerId())
+            .and().owner_id_is(robot.getOwner().getId())
             .and().online_status_is(robot.isOnline());
     }
 
@@ -90,7 +90,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage owner_id_is(@Quoted int owner_id) {
-        validatableResponse.body("ownerId", Matchers.equalTo(owner_id));
+        validatableResponse.body("owner.id", Matchers.equalTo(owner_id));
 
         return self();
     }

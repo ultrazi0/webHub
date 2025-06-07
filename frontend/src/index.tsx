@@ -11,6 +11,7 @@ import RegisterPage, { registerAction } from "./pages/Register";
 import UserPage, { loadUser } from "./pages/UserPage";
 import EditUserPage, { editUserAction } from "./pages/EditUserPage";
 import { deleteUserAction } from "./components/DeleteUserModal";
+import { sendShareRobotRequest, sendUnshareRobotRequery } from "./pages/RootComponents/RobotInfoModal";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
           {
             path: "delete/:robotId",
             action: deleteRobotAction,
+          },
+          {
+            path: "share/:robotId",
+            action: sendShareRobotRequest,
+          },
+          {
+            path: "unshare/:robotId",
+            action: sendUnshareRobotRequery,
           },
           {
             path: "control-panel/:robotId",

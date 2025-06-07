@@ -175,7 +175,7 @@ export default function Root() {
             <AddRobotModal fetcher={addRobotFetcher} showModal={showAddModal} setShowModal={setShowAddModal} csrfToken={csrfToken} />
             <EditRobotModal fetcher={editRobotFetcher} robotId={editRobotId} setRobotId={setEditRobotId} csrfToken={csrfToken} />
             <DeleteRobotModal fetcher={deleteRobotFetcher} robotId={deleteRobotId} setRobotId={setDeleteRobotId} csrfToken={csrfToken} />
-            <RobotInfoModal robot={robotInfo} setRobot={setRobotInfo} />
+            <RobotInfoModal robot={robotInfo} setRobot={setRobotInfo} user={user} csrfToken={csrfToken} />
             <Container>
                 {
                     messages.map(message => (

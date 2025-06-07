@@ -41,12 +41,12 @@ export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, s
                     <CardTitle>{robot.name}</CardTitle>
                     <CardText>
                         Created at: {createdAt.toString()}
-                        {user && user.id !== robot.ownerId && robot.ownerName && (
+                        {user && user.id !== robot.owner.id && robot.owner.username && (
                             <>
                                 <br />
-                                <i>Owned by:</i>
-                                <Link to={"user/" + robot.ownerId} className="link-info link-opacity-50-hover">
-                                    <b>{robot.ownerName}</b>
+                                <i>Owned by: </i>
+                                <Link to={"user/" + robot.owner.id} className="link-info link-opacity-50-hover">
+                                    <b>{robot.owner.username}</b>
                                 </Link>
                             </>
                         )}
@@ -55,7 +55,7 @@ export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, s
                 <CardFooter className="d-flex justify-content-between align-items-center">
                     {robot.online ? <span className="text-success">Online</span> : <span className="text-danger">Offline</span>}
                     
-                    {user && user.id === robot.ownerId && (
+                    {user && user.id === robot.owner.id && (
                         <Button
                             onClick={(event) => {
                                 event.stopPropagation();

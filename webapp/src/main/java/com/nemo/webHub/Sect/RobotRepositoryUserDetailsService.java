@@ -3,7 +3,7 @@ package com.nemo.webHub.Sect;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.nemo.webHub.Decibel.RobotRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,16 +16,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * Custom {@link UserDetailsService} to hold {@link RobotEntity} objects.
- * It is primarily needed to store and be able to access the robot IDs.
+ * It is primarily necessary to store and be able to access the robot IDs.
  * */
 @Service
+@RequiredArgsConstructor
 public class RobotRepositoryUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private RobotRepository robotRepository;
+    private final RobotRepository robotRepository;
 
     @Override
     public UserDetails loadUserByUsername(String robotIdString) throws UsernameNotFoundException {
@@ -46,7 +45,7 @@ public class RobotRepositoryUserDetailsService implements UserDetailsService {
         private final Set<GrantedAuthority> authorities;
 
         public Robot(RobotEntity robot) {
-            super(robot.getId(), robot.getName(), robot.getPassword(), robot.getCreatedAt(), robot.getOwnerId());
+            super(robot.getId(), robot.getName(), robot.getPassword(), robot.getCreatedAt(), robot.getOwner().getId());
             this.authorities = new HashSet<>();
             this.authorities.add(new SimpleGrantedAuthority("ROLE_ROBOT"));
         }

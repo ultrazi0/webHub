@@ -3,14 +3,14 @@ export type Robot = {
     name: string,
     password: string,
     createdAt: Date,
-    ownerId: number,
-    ownerName: string,
+    owner: User
     online: boolean,
+    sharedUsers: User[]
 }
 
 export type User = {
     id: number,
-    username: string,
+    username?: string | null,
 }
 
 export type RestListResponse<T, K extends string> = {

@@ -31,6 +31,7 @@ import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.generated.Bot;
 import org.jooq.generated.Keys;
+import org.jooq.generated.tables.CustomCommands.CustomCommandsPath;
 import org.jooq.generated.tables.UserRobotRelations.UserRobotRelationsPath;
 import org.jooq.generated.tables.Users.UsersPath;
 import org.jooq.generated.tables.records.RobotsRecord;
@@ -183,6 +184,19 @@ public class Robots extends TableImpl<RobotsRecord> {
             _users = new UsersPath(this, Keys.ROBOTS__ROBOTS_OWNER_ID_FKEY, null);
 
         return _users;
+    }
+
+    private transient CustomCommandsPath _customCommands;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>bot.custom_commands</code> table
+     */
+    public CustomCommandsPath customCommands() {
+        if (_customCommands == null)
+            _customCommands = new CustomCommandsPath(this, null, Keys.CUSTOM_COMMANDS__CUSTOM_COMMANDS_ROBOT_ID_FKEY.getInverseKey());
+
+        return _customCommands;
     }
 
     private transient UserRobotRelationsPath _userRobotRelations;

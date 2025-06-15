@@ -1,5 +1,6 @@
 package com.nemo.webHub.Sock.Command;
 
+import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sock.OperatorController;
@@ -32,6 +33,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
 
     private final RobotService robotService;
     private final OperatorController operatorController;
+    private final CommandService commandService;
 
     private static final HashMap<String, WebSocketSession> sessionIdToSessionMap = new HashMap<>();
 
@@ -84,15 +86,15 @@ public class CommandClientHandler extends TextWebSocketHandler {
     protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws IOException {
         log.trace("Transmitting message from client: {}", message.getPayload());
 
-        List<JsonCommand> commands = JsonCommand.createFromJson(message.getPayload());
+        int robotId = operatorController.getRobotId(session.getId());
+
+        List<JsonCommand> commands = JsonCommand.createFromJson(message.getPayload(), commandService, robotId);
 
         if (commands.isEmpty()) {
             throw new IllegalArgumentException("Provided JSON has no commands");
         }
 
         log.trace("Created commands: {}", commands);
-
-        int robotId = operatorController.getRobotId(session.getId());
 
         if (!robotService.robotIsConnected(robotId)) {
             log.debug("Received a command, but robot with ID #{} has not connected yet", robotId);

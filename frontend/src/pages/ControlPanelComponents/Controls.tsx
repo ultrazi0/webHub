@@ -1,41 +1,45 @@
 import { useEffect, useState } from "react";
-import { CommandType, MessageType } from "./index";
-import { Button, FormSelect } from "react-bootstrap";
+import { CommandType, CustomCommandType, MessageType, StandardCommand } from "./index";
+import { Button, FormSelect, Table } from "react-bootstrap";
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
 
+import "../../css/Controls.scss";
+
 type CommandSelectorProps = {
+    robotId: string | null,
     selectedCommand: CommandType | null,
-    onSelect: (command: CommandType) => void,
+    onSelect: (command: CommandType | null) => void,
 }
 
-function CommandSelector({ selectedCommand, onSelect }: CommandSelectorProps) {
+function CommandSelector({ robotId, selectedCommand, onSelect }: CommandSelectorProps) {
     const [commands, setCommands] = useState<readonly CommandType[]>([]);
 
     useEffect(() => {
         let ignore = false;
-        fetch("/api/getAllCommands")
-        .then(response => response.json())
-        .then(json => {
-            if (!ignore) {
-                setCommands(json);
-            }
-        });
+        fetch(`/api/robots/${robotId}/commands`)
+            .then(response => response.json())
+            .then((json: readonly CommandType[]) => {
+                if (!ignore) {
+                    setCommands(json);
+                }
+            });
 
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [ robotId ]);
 
     return (
         <div className="form-floating">
             <FormSelect
                 id="selectCommand"
-                defaultValue={selectedCommand ?? undefined}
-                onChange={event => onSelect(event.target.value as CommandType)}
+                defaultValue={selectedCommand?.commandType ?? undefined}
+                onChange={event =>
+                    onSelect(commands.find(command => command.commandType === event.target.value) ?? null)}
             >
                 <option></option>
                 {commands.map(command => (
-                    <option key={command} value={command}>{command}</option>
+                    <option key={command.commandType} value={command.commandType}>{command.commandType}</option>
                 ))}
             </FormSelect>
             <label htmlFor="selectCommand">Type</label>
@@ -43,98 +47,84 @@ function CommandSelector({ selectedCommand, onSelect }: CommandSelectorProps) {
     );
 }
 
-type ValuesType = readonly string[] | null;
-
-type InputValuesType = {
-    [key: string]: number,
+type InputValuesType<T extends CommandType> = {
+    [K in T["keys"][number]]: number | null;
 }
 
-type CommandValuesProps = {
-    values: ValuesType,
-    inputValues: InputValuesType,
-    onChange: (newInputValues: { [key: string]: number }) => void,
-    onSubmit: () => void,
+type GenericCommandValuesProp<T extends CommandType> = {
+    inputValues: InputValuesType<T> | null,
+    onChange: (newInputValues: InputValuesType<T>) => void,
 }
 
-function CommandValues({ values, inputValues, onChange, onSubmit }: CommandValuesProps) {
+type CommandValuesProps = GenericCommandValuesProp<StandardCommand> | GenericCommandValuesProp<CustomCommandType>
 
-    if (values == null) {
+function CommandValues({ inputValues, onChange }: CommandValuesProps) {
+
+    if (inputValues == null || Object.keys(inputValues).length < 1) {
         return null;
     }
 
-    return (<>
-        {values.length > 0 ? (
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Argument/key</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {values.map(value => (
-                        <tr key={value}>
-                            <td>{value}</td>
-                            <td>
-                                <input
-                                    value={inputValues[value] || ""}
-                                    onChange={e => onChange({
-                                        ...inputValues,
-                                        [value]: e.target.value ? Number(e.target.value) : 0,
-                                    })}
-                                    placeholder="0"
-                                    type="number"
-                                    className="form-control"
-                                />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        ) : <><br/><br/></>}
-
-        <Button variant="primary" onClick={onSubmit}>Submit</Button>
-    </>);
+    return (
+        <Table>
+            <thead>
+                <tr>
+                    <th>Argument/key</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+            {Object.entries(inputValues).map((entry) => (
+                <tr key={entry[0]}>
+                    <td>{entry[0]}</td>
+                    <td>
+                        <input
+                            value={entry[1] ?? ""}
+                            onChange={e => onChange({
+                                ...inputValues,
+                                [entry[0]]: e.target.value ? Number(e.target.value) : 0,
+                            })}
+                            placeholder="0"
+                            type="number"
+                            className="form-control"
+                        />
+                    </td>
+                </tr>
+            ))}
+            </tbody>
+        </Table>
+    );
 }
 
-export default function Commands({ sendCommand }: { sendCommand: SendJsonMessage }) {
-    const [selectedCommand, setSelectedCommand] = useState<CommandType | null>(null);
-    const [values, setValues] = useState<ValuesType>(null);
-    const [inputValues, setInputValues] = useState<InputValuesType>({});
-
-    function handleCommandSelect(command: CommandType) {
-        fetch("/api/commandValues?commandType=" + command)
-        .then(response => response.text())
-        .then(text => {
-            if (text.trim() === "") {
-                setValues(null);
-                return;
-            }
-
-            const json = JSON.parse(text) as readonly string[];
-            setValues(json);
-            
-            const newInputValues: InputValuesType = {};
-            json.forEach(element => {
-                newInputValues[element] = 0;
-            });
-            setInputValues(newInputValues);
-        });
-        setSelectedCommand(command);
-    }
+export default function Commands({ robotId, sendCommand }: { robotId: string | null, sendCommand: SendJsonMessage }) {
+    const [ selectedCommand, setSelectedCommand ] = useState<CommandType | null>(null);
+    const [ inputValues, setInputValues ] = useState<InputValuesType<CommandType> | null>(null);
 
     function handleCommandSend() {
-        sendCommand({
-            "messageType": MessageType.Command,
-            "command": selectedCommand,
-            "values": inputValues,
-        });
+        if (selectedCommand != null) {
+            sendCommand({
+                messageType: MessageType.Command,
+                command: selectedCommand.commandType,
+                values: inputValues,
+            });
+        }
     }
 
     return (
-        <form onSubmit={e => e.preventDefault()}>
-            <CommandSelector selectedCommand={selectedCommand} onSelect={handleCommandSelect} />
-            <CommandValues values={values} inputValues={inputValues} onChange={(newInputValues) => setInputValues(newInputValues)} onSubmit={handleCommandSend} />
-        </form>
+        <>
+            <CommandSelector robotId={robotId} selectedCommand={selectedCommand} onSelect={(command) => {
+                setSelectedCommand(command);
+                setInputValues(command ? getInitialInputValues(command) : null);
+            }} />
+            <CommandValues inputValues={inputValues} onChange={(newInputValues: InputValuesType<CommandType>) => setInputValues(newInputValues)} />
+            <Button className="send-command-button" variant="primary" onClick={handleCommandSend}>Send</Button>
+        </>
     );
+}
+
+function getInitialInputValues(command: CommandType): InputValuesType<CommandType> {
+    const values = {} as InputValuesType<CommandType>;
+    for (const key of command.keys) {
+        values[key as CommandType["keys"][number]] = null;
+    }
+    return values;
 }

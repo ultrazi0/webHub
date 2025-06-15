@@ -3,11 +3,14 @@ package com.nemo.webHub.Decibel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.User.User;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.generated.tables.records.RobotsRecord;
 
 import java.time.OffsetDateTime;
@@ -33,12 +36,14 @@ public class RobotEntity {
     private boolean isOnline = false;
     @NotNull
     private final Set<User> sharedUsers = new HashSet<>();
+    @Nullable
+    private Set<CommandType> commands;
 
     public RobotEntity(int id, String name, UUID password, OffsetDateTime createdAt, int ownerId) {
         this(id, name, "{noop}" + password, createdAt, ownerId);
     }
 
-    public RobotEntity(int id, String name, String password, OffsetDateTime createdAt, int ownerId) {
+    public RobotEntity(int id, @NotNull String name, String password, OffsetDateTime createdAt, int ownerId) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -70,6 +75,14 @@ public class RobotEntity {
 
     public RobotEntity withSharedUsers(Collection<User> sharedUsers) {
         this.sharedUsers.addAll(sharedUsers);
+        return this;
+    }
+
+    public RobotEntity withCommands(Collection<? extends CommandType> commands) {
+        StandardCommandType[] defaultCommands = StandardCommandType.values();
+        this.commands = new HashSet<>(defaultCommands.length + commands.size());
+        this.commands.addAll(List.of(defaultCommands));
+        this.commands.addAll(commands);
         return this;
     }
 

@@ -1,6 +1,7 @@
 package com.nemo.webHub.Robot;
 
 import com.nemo.webHub.Commands.Aim.AimLogic;
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Sock.Image.ImageSubscribers;
 import com.nemo.webHub.Sock.Messages.JsonCommand;
@@ -54,8 +55,9 @@ public class RobotService {
         List<JsonCommand> commandsToSend = new LinkedList<>();
         for (JsonCommand command : commands) {
             if (command.isValid()) {
+                JsonCommand commandToSend = null;
                 if (command.command() instanceof StandardCommandType standardCommand) {
-                    JsonCommand commandToSend = switch (standardCommand) {
+                    commandToSend = switch (standardCommand) {
                         case MOVE, TURRET, TURRET_CONTINUOUS, STOP, SHOOT -> command;
                         case AIM -> {
                             JsonImage lastImage = JsonImage.getLastImage(robotId);
@@ -78,12 +80,13 @@ public class RobotService {
                             yield aimCommand;
                         }
                     };
-
-                    if (commandToSend != null) {
-                        commandsToSend.add(commandToSend);
-                    }
+                } else if (command.command() instanceof CustomCommandType) {
+                   commandToSend = command;
                 }
 
+                if (commandToSend != null) {
+                    commandsToSend.add(commandToSend);
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
-import { CommandType, MessageType } from "./index";
+import { getCommands } from "./handleGamepadEvents";
 
 export default function handleKeyPress(event: KeyboardEvent, sendJsonMessage: SendJsonMessage) {
     if ((document.activeElement?.tagName === "INPUT") || (document.activeElement?.tagName === "TEXTAREA")) {
@@ -16,39 +16,35 @@ function handleKey(event: KeyboardEvent, sendJsonMessage: SendJsonMessage) {
         keyUp = true;
     }
 
-    const sendCommand = (commandType: CommandType, values: { [ key: string ]: number }) => sendJsonMessage({
-        "messageType": MessageType.Command,
-        "command": commandType,
-        "values": values,
-    });
+    const commands = getCommands(sendJsonMessage);
 
     switch (event.key) {
         case "a":
-            sendCommand(CommandType.MOVE, { turn: keyUp ? 0 : -0.5, speed: 0 });
+            commands.move(0, keyUp ? 0 : -0.5);
             break;
         case "d":
-            sendCommand(CommandType.MOVE, { turn: keyUp ? 0 : 0.5, speed: 0 });
+            commands.move(0, keyUp ? 0 : 0.5);
             break;
         case "w":
-            sendCommand(CommandType.MOVE, { speed: keyUp ? 0 : 0.5, turn: 0});
+            commands.move(keyUp ? 0 : 0.5, 0);
             break;
         case "s":
-            sendCommand(CommandType.MOVE, { speed: keyUp ? 0 : -0.5, turn: 0 });
+            commands.move(keyUp ? 0 : -0.5, 0);
             break;
         case "ArrowUp":
-            sendCommand(CommandType.TURRET_CONTINUOUS, { tilt: keyUp ? 0 : 1, turn: 0 });
+            commands.turret(keyUp ? 0 : 1, 0);
             break;
         case "ArrowDown":
-            sendCommand(CommandType.TURRET_CONTINUOUS, { tilt: keyUp ? 0 : -1, turn: 0});
+            commands.turret(keyUp ? 0 : -1, 0);
             break;
         case "ArrowLeft":
-            sendCommand(CommandType.TURRET_CONTINUOUS, { turn: keyUp ? 0 : -1, tilt: 0 });
+            commands.turret(0, keyUp ? 0 : -1);
             break;
         case "ArrowRight":
-            sendCommand(CommandType.TURRET_CONTINUOUS, { turn: keyUp ? 0 : 1, tilt: 0 });
+            commands.turret(0, keyUp ? 0 : 1);
             break;
         case "Escape":
-            sendCommand(CommandType.STOP, {});
+            commands.stop();
             break;
         default:
             console.log(event.key);

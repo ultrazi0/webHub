@@ -2,8 +2,8 @@ package com.nemo.webHub.Sock.Messages;
 
 import com.fasterxml.jackson.core.*;
 import com.nemo.webHub.Commands.Command;
+import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Commands.CommandType;
-import com.nemo.webHub.Commands.StandardCommandType;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,7 +17,7 @@ import java.util.Map.Entry;
 public record JsonCommand(CommandType command, Map<String, Double> values) implements Command, JsonMessage {
 
     @NotNull
-    public static List<JsonCommand> createFromJson(String json) throws IOException {
+    public static List<JsonCommand> createFromJson(String json, CommandService commandService, int robotId) throws IOException {
         JsonFactory jsonFactory = new JsonFactory();
 
         List<JsonCommand> result = new ArrayList<>();
@@ -25,14 +25,14 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
             switch (jsonParser.nextToken()) {
                 case START_ARRAY -> {
                     do {
-                        JsonCommand command = createFromJson(jsonParser);
+                        JsonCommand command = createFromJson(jsonParser, commandService, robotId);
                         if (command != null) {
                             result.add(command);
                         }
                     } while (jsonParser.nextToken() != JsonToken.END_ARRAY);
                 }
                 case START_OBJECT -> {
-                    JsonCommand command = createFromJson(jsonParser);
+                    JsonCommand command = createFromJson(jsonParser, commandService, robotId);
                     if (command != null) {
                         result.add(command);
                     }
@@ -45,7 +45,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
     }
 
     @Nullable
-    private static JsonCommand createFromJson(JsonParser jsonParser) throws IOException {
+    private static JsonCommand createFromJson(JsonParser jsonParser, CommandService commandService, int robotId) throws IOException {
         CommandType command = null;
         Map<String, Double> commandValues = new HashMap<>();
 
@@ -62,7 +62,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
 
             if ("command".equals(fieldName)) {
                 jsonParser.nextToken();
-                command = StandardCommandType.valueOf(jsonParser.getText());
+                command = commandService.parseCommandType(jsonParser.getText(), robotId);
             }
 
             if ("values".equals(fieldName)) {
@@ -91,7 +91,7 @@ public record JsonCommand(CommandType command, Map<String, Double> values) imple
 
     @Override
     public void addImplementationSpecificFields(JsonGenerator jsonGenerator) throws IOException {
-        jsonGenerator.writeStringField("command", String.valueOf(command));
+        jsonGenerator.writeStringField("command", command.getCommandType());
 
         jsonGenerator.writeObjectFieldStart("values");
         for (Entry<String, Double> entry : values.entrySet()) {

@@ -1,8 +1,10 @@
 package com.nemo.webHub.Commands;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum StandardCommandType implements CommandType {
     MOVE(new String[] {"Speed", "Turn"}),
     TURRET(new String[] {"Tilt", "Turn"}),
@@ -12,6 +14,11 @@ public enum StandardCommandType implements CommandType {
     STOP;
 
     private final String[] keys;
+
+    @Override
+    public String getCommandType() {
+        return this.toString();
+    }
 
     StandardCommandType(String[] keys) {
         this.keys = keys;

@@ -10,6 +10,7 @@ import java.util.List;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
+import org.jooq.generated.tables.CustomCommands;
 import org.jooq.generated.tables.Robots;
 import org.jooq.generated.tables.UserRobotRelations;
 import org.jooq.generated.tables.Users;
@@ -28,6 +29,11 @@ public class Bot extends SchemaImpl {
      * The reference instance of <code>bot</code>
      */
     public static final Bot BOT = new Bot();
+
+    /**
+     * The table <code>bot.custom_commands</code>.
+     */
+    public final CustomCommands CUSTOM_COMMANDS = CustomCommands.CUSTOM_COMMANDS;
 
     /**
      * The table <code>bot.robots</code>.
@@ -67,6 +73,7 @@ public class Bot extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            CustomCommands.CUSTOM_COMMANDS,
             Robots.ROBOTS,
             UserRobotRelations.USER_ROBOT_RELATIONS,
             Users.USERS

@@ -1,0 +1,9 @@
+@use "bootstrap/scss/bootstrap" as *;
+
+td {
+  vertical-align: middle;
+}
+
+.col .form-floating + .send-command-button {
+  margin-top: $spacer;
+}

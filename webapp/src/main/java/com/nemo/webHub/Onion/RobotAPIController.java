@@ -1,12 +1,11 @@
 package com.nemo.webHub.Onion;
 
+import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Commands.CommandType;
-import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.User.User;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,36 +26,47 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/robots")
 @RequiredArgsConstructor
 public class RobotAPIController {
 
     private final RobotRepository robotRepository;
     private final RobotModelAssembler robotModelAssembler;
+    private final CommandService commandService;
 
-    @GetMapping("/getAllCommands")
-    public CommandType[] getAllCommands() {
-        return StandardCommandType.values();
+    @GetMapping("{robotId}/commands")
+    public CommandType[] getRobotCommands(@PathVariable int robotId) {
+        return commandService.getAllCommandForRobot(robotId);
     }
 
-    @Nullable
-    @GetMapping("/commandValues")
-    public String[] commandValues(@Nullable @RequestParam("commandType") StandardCommandType commandType) {
-        if (commandType == null) {
-            return null;
+    @PostMapping("{robotId}/commands")
+    public CommandType insertRobotCommand(
+        @PathVariable int robotId,
+        @RequestParam("commandType") @NotEmpty String commandTypeString,
+        @RequestParam("commandKeys") String[] commandKeys
+    ) {
+        return commandService.insertOrUpdateCustomCommand(robotId, commandTypeString, commandKeys);
+    }
+
+    @DeleteMapping("{robotId}/commands")
+    public ResponseEntity<Void> deleteRobotCommand(
+        @PathVariable int robotId,
+        @RequestParam("commandType") @NotEmpty String commandTypeString
+    ) {
+        if (commandService.deleteCustomCommand(robotId, commandTypeString)) {
+            return ResponseEntity.noContent().build();
         }
-
-        return commandType.getKeys();
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/robots/{robotId}")
+    @GetMapping("{robotId}")
     public EntityModel<RobotEntity> getRobotById(@PathVariable int robotId, @AuthenticationPrincipal UserEntity user) {
         RobotEntity robot = robotRepository.findRobotByIdIfAllowed(robotId, user.getId());
 
         return robotModelAssembler.toModel(robot);
     }
 
-    @PostMapping("/robots")
+    @PostMapping
     public ResponseEntity<EntityModel<RobotEntity>> insertNewRobot(
             @NotNull @RequestParam("name") String name, @AuthenticationPrincipal UserEntity user) {
 
@@ -68,7 +78,7 @@ public class RobotAPIController {
                 .body(robotEntityModel);
     }
 
-    @PutMapping("/robots/{robotId}")
+    @PutMapping("{robotId}")
     public ResponseEntity<EntityModel<RobotEntity>> updateRobot(
             @PathVariable int robotId, @NotNull @RequestParam("name") String name,
             @AuthenticationPrincipal UserEntity user) {  // TODO: consider @RequestBody
@@ -81,14 +91,14 @@ public class RobotAPIController {
                 .body(robotEntityModel);
     }
 
-    @DeleteMapping("/robots/{robotId}")
+    @DeleteMapping("{robotId}")
     public ResponseEntity<Void> deleteRobot(@PathVariable int robotId, @AuthenticationPrincipal UserEntity user) {
         robotRepository.deleteRobot(robotId, user.getId());
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/robots")
+    @GetMapping
     public CollectionModel<EntityModel<RobotEntity>> getUserRobots(@AuthenticationPrincipal UserEntity user) {
 
         List<EntityModel<RobotEntity>> robots = Arrays.stream(robotRepository.getUserRobots(user.getId()))
@@ -97,7 +107,7 @@ public class RobotAPIController {
         return CollectionModel.of(robots, linkTo(methodOn(this.getClass()).getUserRobots(user)).withSelfRel());
     }
 
-    @PostMapping("/robots/{robotId}/share")
+    @PostMapping("{robotId}/share")
     public ResponseEntity<List<User>> shareRobot(
         @PathVariable int robotId,
         @NotEmpty @RequestParam("users") List<String> users,
@@ -110,7 +120,7 @@ public class RobotAPIController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/robots/{robotId}/unshare")
+    @DeleteMapping("{robotId}/unshare")
     public ResponseEntity<List<User>> unshareRobot(
         @PathVariable int robotId,
         @NotEmpty @RequestParam("users") List<Integer> users,

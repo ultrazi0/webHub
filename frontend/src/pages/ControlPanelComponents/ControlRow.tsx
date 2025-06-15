@@ -84,7 +84,7 @@ export default function ControlRow({ robotId }: { robotId: string | null }) {
                     <textarea className="form-control" ref={feedbackArea} readOnly={true} rows={10} />
                 </Col>
                 <Col>
-                    <Controls sendCommand={sendJsonMessage} />
+                    <Controls robotId={robotId} sendCommand={sendJsonMessage} />
                 </Col>
             </Row>
             <Row className="g-2 my-2">

@@ -1,5 +1,6 @@
 package com.nemo.webHub.Decibel;
 
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.User.User;
 import jakarta.validation.constraints.NotNull;
@@ -38,7 +39,7 @@ public class RobotRepository {
 
     @NotNull
     public RobotEntity findRobotByIdIfAllowed(int id, int userId) {
-        Record3<RobotsRecord, String, List<User>> robot = createSelectRobotQuery(userId)
+        Record4<RobotsRecord, String, List<User>, List<CustomCommandType>> robot = createSelectRobotQuery(userId)
             .where(ROBOTS.ROBOT_ID.equal(id).and(USER_ROBOT_RELATIONS.USER_ID.equal(userId)))
             .fetchOne();
 
@@ -49,7 +50,8 @@ public class RobotRepository {
         return new RobotEntity(robot.value1())
             .withOwnerName(robot.value2())
             .withIsOnline(checkAvailability(robot.value1().getRobotId()))
-            .withSharedUsers(robot.value3());
+            .withSharedUsers(robot.value3())
+            .withCommands(robot.value4());
     }
 
     @Deprecated
@@ -141,7 +143,7 @@ public class RobotRepository {
     }
 
     public RobotEntity[] getUserRobots(int userId) {
-        Record3<RobotsRecord, String, List<User>>[] records = createSelectRobotQuery(userId)
+        Record4<RobotsRecord, String, List<User>, List<CustomCommandType>>[] records = createSelectRobotQuery(userId)
             .where(USER_ROBOT_RELATIONS.USER_ID.equal(userId))
             .fetchArray();
 
@@ -150,6 +152,7 @@ public class RobotRepository {
                     .withOwnerName(record.value2())
                     .withIsOnline(checkAvailability(record.value1().getRobotId()))
                     .withSharedUsers(record.value3())
+                    .withCommands(record.value4())
                 ).toArray(RobotEntity[]::new);
     }
 
@@ -197,7 +200,7 @@ public class RobotRepository {
     }
 
     @NotNull
-    private SelectOnConditionStep<Record3<RobotsRecord, String, List<User>>> createSelectRobotQuery(int userId) {
+    private SelectOnConditionStep<Record4<RobotsRecord, String, List<User>, List<CustomCommandType>>> createSelectRobotQuery(int userId) {
         return db.select(
                 ROBOTS,
                 USERS.USERNAME,
@@ -208,7 +211,12 @@ public class RobotRepository {
                         .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(ROBOTS.ROBOT_ID))
                         .and(USER_ROBOT_RELATIONS.USER_ID.notEqual(ROBOTS.OWNER_ID))
                         .and(ROBOTS.OWNER_ID.equal(userId))
-                ).convertFrom(result -> result.map(Records.mapping(User::new)))
+                ).convertFrom(result -> result.map(Records.mapping(User::new))),
+                multiset(
+                    select(CUSTOM_COMMANDS.COMMAND_TYPE, CUSTOM_COMMANDS.COMMAND_KEYS)
+                        .from(CUSTOM_COMMANDS)
+                        .where(CUSTOM_COMMANDS.ROBOT_ID.equal(ROBOTS.ROBOT_ID))
+                ).convertFrom(result -> result.map(Records.mapping(CustomCommandType::new)))
             )
             .from(ROBOTS)
             .innerJoin(USER_ROBOT_RELATIONS).using(ROBOTS.ROBOT_ID)

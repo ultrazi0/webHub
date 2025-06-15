@@ -78,7 +78,7 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>bot.users.roles</code>.
      */
-    public final TableField<UsersRecord, String[]> ROLES = createField(DSL.name("roles"), SQLDataType.VARCHAR(15).nullable(false).array(), this, "");
+    public final TableField<UsersRecord, String[]> ROLES = createField(DSL.name("roles"), SQLDataType.VARCHAR(15).array().nullable(false), this, "");
 
     /**
      * The column <code>bot.users.created_at</code>.

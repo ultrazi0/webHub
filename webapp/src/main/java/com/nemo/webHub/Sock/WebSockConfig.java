@@ -1,5 +1,6 @@
 package com.nemo.webHub.Sock;
 
+import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.Sect.HandshakeInterceptors.CommandClientHandshakeInterceptor;
@@ -32,6 +33,7 @@ public class WebSockConfig implements WebSocketConfigurer {
     private final RobotService robotService;
     private final RobotRepository robotRepository;
     private final ImageSubscribers imageSubscribers;
+    private final CommandService commandService;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -61,7 +63,7 @@ public class WebSockConfig implements WebSocketConfigurer {
     }
 
     private WebSocketHandler commandClientHandler() {
-        return new CommandClientHandler(robotService, operatorController);
+        return new CommandClientHandler(robotService, operatorController, commandService);
     }
 
     @Bean

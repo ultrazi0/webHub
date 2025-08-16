@@ -1,4 +1,7 @@
-@use "bootstrap/scss/bootstrap" as *;
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/mixins";
 
 $transition-duration: 1s;
 $robot-info-block-width: calc(($modal-md - (var(--bs-modal-padding) + var(--bs-modal-border-width)) * 2));
@@ -119,21 +122,7 @@ $shared-users-block-width: calc($modal-md * 0.5);
   align-items: center;
 }
 
-.share-button, .unshare-button {
-  transition: opacity 0.5s ease-in-out;
-  user-select: none;
-
-  >:hover {
-    cursor: pointer;
-    opacity: 0.66;
-  }
-}
-
 .share-button {
   color: var(--bs-success);
   margin-right: 0.5em;
-}
-
-.unshare-button {
-  color: var(--bs-danger);
 }

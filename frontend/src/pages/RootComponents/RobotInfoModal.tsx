@@ -11,9 +11,11 @@ import {
 import { CsrfResponse, Robot, User } from "../../types";
 import { useState } from "react";
 
+import "../../css/Button.scss";
 import "../../css/RobotInfoModal.scss";
 import { ActionFunctionArgs, FetcherWithComponents, Link, useFetcher } from "react-router-dom";
-import { Check, Trash2, UserPlus } from "lucide-react";
+import { Check, UserPlus } from "lucide-react";
+import DeleteButton from "../../components/DeleteButton";
 
 type RobotInfoModalProps = {
     robot: Robot | null,
@@ -184,12 +186,10 @@ function NewUser({ userId, removeUser, fetcher, actionUri, csrfToken }: WithFetc
                 onChange={event => setUsername(event.target.value)}
             />
             <div className="share-user-actions">
-                <span className="share-button" onClick={onSubmit}>
+                <span className="webHub-button share-button" onClick={onSubmit}>
                     <Check size={18} />
                 </span>
-                <span className="unshare-button" onClick={() => removeUser(userId)}>
-                    <Trash2 size={18} />
-                </span>
+                <DeleteButton onClick={() => removeUser(userId)} />
             </div>
 
         </fetcher.Form>
@@ -217,9 +217,7 @@ function SharedUser({ user, fetcher, actionUri, csrfToken }: { user: User } & Wi
     return (
         <>
             <Link to={"user/" + user.id} className="link-light">{user.username}</Link>
-            <span className="unshare-button" onClick={onSubmit}>
-                <Trash2 size={18} />
-            </span>
+            <DeleteButton onClick={onSubmit} />
         </>
     );
 }

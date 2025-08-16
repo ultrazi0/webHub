@@ -1,0 +1,26 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
+.robot-commands-form {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.command-type-item:hover {
+  z-index: 1;
+  color: var(--bs-list-group-action-hover-color);
+  text-decoration: none;
+  background-color: var(--bs-list-group-action-hover-bg);
+}
+
+.command-type-edit-button {
+  color: var(--bs-primary);
+  margin-right: $spacer;
+}
+
+.command-type-details {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}

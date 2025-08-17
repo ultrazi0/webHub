@@ -9,10 +9,11 @@ COPY settings.gradle gradle.properties build.gradle $APP_HOME
 COPY /webapp $APP_HOME/webapp
 RUN ./gradlew webapp:assemble
 
-FROM gradle AS db-processor
+FROM gradle:8.5 AS db-processor
 WORKDIR /app
 
 COPY settings.gradle gradle.properties build.gradle /app/
+COPY webapp/build.gradle /app/webapp/build.gradle
 
 COPY webapp/src/main/resources/db/initDB.sql /app/webapp/src/main/resources/db/initDB.sql
 

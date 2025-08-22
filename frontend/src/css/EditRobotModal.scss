@@ -2,16 +2,75 @@
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 
-.robot-commands-form {
+$transition-duration: 1s;
+
+.robot-commands-block {
   max-height: 500px;
   overflow-y: auto;
-}
 
-.command-type-item:hover {
-  z-index: 1;
-  color: var(--bs-list-group-action-hover-color);
-  text-decoration: none;
-  background-color: var(--bs-list-group-action-hover-bg);
+  display: flex;
+
+  transition: max-height $transition-duration ease;
+
+  .robot-commands-details-list {
+    overflow-y: auto;
+    width: 100%;
+
+    transition: width $transition-duration,
+      margin-right $transition-duration;
+
+    .list-group-item.selected {
+      color: var(--bs-list-group-action-hover-color);
+      background-color: var(--bs-list-group-action-hover-bg);
+    }
+  }
+
+  &.expanded .robot-commands-details-list {
+    width: 50%;
+    margin-right: 1rem
+  }
+
+  .robot-command-edit-form {
+    padding-top: 0.2rem;
+
+    width: 0;
+    overflow: hidden;
+    border-left: var(--bs-border-width) var(--bs-border-style) transparent;
+
+    transition: width $transition-duration,
+      padding $transition-duration,
+      border-left-color $transition-duration;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .robot-command-edit-form-body {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+
+      .robot-command-edit-form-body-keys-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        height: 10px;
+      }
+    }
+
+    .robot-command-edit-form-footer {
+      text-align: right;
+      padding-top: 0.5rem;
+      border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+    }
+  }
+
+  &.expanded .robot-command-edit-form {
+    width: 50%;
+    padding-left: 1rem;
+    padding-right: 0.2rem;
+
+    border-left-color: var(--bs-border-color);
+  }
 }
 
 .command-type-edit-button {

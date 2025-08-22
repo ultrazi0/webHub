@@ -216,7 +216,7 @@ export default function Root() {
                                             setEditRobotId={setEditRobotId}
                                             setDeleteRobotId={setDeleteRobotId}
                                         />
-                                </Col>
+                                    </Col>
                                 )) : (
                                     <Col>
                                         <p><i>No robots</i></p>

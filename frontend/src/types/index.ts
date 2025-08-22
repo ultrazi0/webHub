@@ -1,3 +1,5 @@
+import { CommandType } from "../pages/ControlPanelComponents";
+
 export type Robot = {
     id: number,
     name: string,
@@ -6,6 +8,7 @@ export type Robot = {
     owner: User
     online: boolean,
     sharedUsers: User[]
+    commands: CommandType[] | null | undefined
 }
 
 export type User = {

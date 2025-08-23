@@ -6,8 +6,8 @@ import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.User.User;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -68,7 +68,7 @@ public class RobotAPIController {
 
     @PostMapping
     public ResponseEntity<EntityModel<RobotEntity>> insertNewRobot(
-            @NotNull @RequestParam("name") String name, @AuthenticationPrincipal UserEntity user) {
+            @NotBlank @RequestParam("name") String name, @AuthenticationPrincipal UserEntity user) {
 
         EntityModel<RobotEntity> robotEntityModel = robotModelAssembler
                 .toModel(robotRepository.insertNewRobot(name, user.getId()));
@@ -80,7 +80,7 @@ public class RobotAPIController {
 
     @PutMapping("{robotId}")
     public ResponseEntity<EntityModel<RobotEntity>> updateRobot(
-            @PathVariable int robotId, @NotNull @RequestParam("name") String name,
+            @PathVariable int robotId, @NotBlank @RequestParam("name") String name,
             @AuthenticationPrincipal UserEntity user) {  // TODO: consider @RequestBody
 
         EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(

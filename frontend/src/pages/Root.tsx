@@ -62,11 +62,17 @@ export async function addRobotAction({ request }: ActionFunctionArgs) {
 }
 
 export async function editRobotAction({ request, params }: ActionFunctionArgs) {
-    const formData = await request.formData();
+    const body: Record<string, unknown> & { csrf?: CsrfResponse } = await request.json();
+
+    if (body.csrf) {
+        request.headers.append(body.csrf.headerName, body.csrf.token);
+        delete body.csrf;
+    }
 
     return await fetch("/api/robots/" + params.robotId, {
         method: "put",
-        body: formData,
+        body: JSON.stringify(body),
+        headers: request.headers,
     }).then(response => {
         if (response.ok) {
             return true;

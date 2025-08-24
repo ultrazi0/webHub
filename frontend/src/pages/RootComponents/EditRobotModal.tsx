@@ -10,9 +10,9 @@ import {
     ModalFooter,
     ModalHeader,
     ModalTitle,
+    Spinner,
 } from "react-bootstrap";
-import { Ref, useEffect, useRef, useState } from "react";
-import CsrfHiddenInput from "../../components/CsrfHiddenInput";
+import { Dispatch, Ref, SetStateAction, useEffect, useRef, useState } from "react";
 import { FetcherWithReset } from "../../hooks/useFetcherWithReset";
 import { CsrfResponse, Robot } from "../../types";
 import { CommandType, StandardCommandTypeEnum } from "../ControlPanelComponents";
@@ -35,7 +35,16 @@ type EditRobotModalProps = {
 }
 
 export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken }: EditRobotModalProps) {
-    const [robot, setRobot] = useState<Robot | null>(null);
+    const [ robot, setRobot ] = useState<Robot | null>(null);
+    const [ robotName, setRobotName ] = useState<string | null>(null);
+    const [ commands, setCommands ] = useState<CommandWithId[]>(() =>
+        (robot?.commands ?? []).map(command => ({
+            ...command,
+            id: self.crypto.randomUUID(),
+        })),
+    );
+
+    const isLoading = fetcher.state !== "idle";
 
     const handleCloseModal = () => {
         setRobotId(null);
@@ -53,9 +62,14 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                 }
                 throw new Error("No robot with this ID or bad request");
             })
-            .then(json => {
+            .then((json: Robot) => {
                 if (!ignore) {
                     setRobot(json);
+                    setRobotName(json.name);
+                    setCommands((json?.commands ?? []).map(command => ({
+                        ...command,
+                        id: self.crypto.randomUUID(),
+                    })));
                 }
             })
             .catch(error => {
@@ -80,7 +94,14 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
             <ModalHeader closeButton>
                 <ModalTitle>Edit robot</ModalTitle>
             </ModalHeader>
-            <fetcher.Form method="put" action={"/edit/" + robotId}>
+            <fetcher.Form onSubmit={event => {
+                event.preventDefault();
+
+                fetcher.submit(
+                    { name: robotName, commands: commands, csrf: csrfToken },
+                    { method: "PUT", action: `/edit/${robotId}`, encType: "application/json" },
+                );
+            }}>
                 <ModalBody>
                     <FormGroup className="mb-3" controlId="formName">
                         <FormLabel>Robot name</FormLabel>
@@ -88,37 +109,44 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                             type="text"
                             placeholder="Enter robot name"
                             name="name"
-                            defaultValue={robot ? robot.name : ""}
+                            defaultValue={robotName ?? ""}
+                            onChange={event => setRobotName(event.target.value)}
                         />
                         {fetcher.data === false && (
                             <FormText className="text-danger-emphasis">This name is already taken</FormText>
                         )}
-                        {csrfToken && <CsrfHiddenInput csrfToken={csrfToken} />}
                     </FormGroup>
                     <hr />
                     <div>
                         <FormLabel>Commands</FormLabel>
-                        <RobotCommandsBlock robot={robot} />
+                        <RobotCommandsBlock robot={robot} commands={commands} setCommands={setCommands} />
                     </div>
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-                    <Button type="submit" variant="primary">Save</Button>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden>
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        ) : "Save"}
+                    </Button>
                 </ModalFooter>
             </fetcher.Form>
         </Modal>
     );
 }
 
-function RobotCommandsBlock({ robot }: {
-    robot: Robot | null
+function RobotCommandsBlock({ robot, commands, setCommands }: {
+    robot: Robot | null,
+    commands: CommandWithId[],
+    setCommands: Dispatch<SetStateAction<CommandWithId[]>>,
 }) {
-    const [ commands, setCommands ] = useState<CommandWithId[]>(() =>
-        (robot?.commands ?? []).map(command => ({
-            ...command,
-            id: self.crypto.randomUUID(),
-        })),
-    );
+
     const [commandFormOpen, setCommandFormOpen] = useState(false);
     const [selectedCommandId, setSelectedCommandId] = useState<CommandIdType | null>(null);
     const commandTypeInputRef = useRef<HTMLInputElement>(null);

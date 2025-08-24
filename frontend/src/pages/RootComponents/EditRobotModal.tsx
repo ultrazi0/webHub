@@ -37,12 +37,7 @@ type EditRobotModalProps = {
 export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken }: EditRobotModalProps) {
     const [ robot, setRobot ] = useState<Robot | null>(null);
     const [ robotName, setRobotName ] = useState<string | null>(null);
-    const [ commands, setCommands ] = useState<CommandWithId[]>(() =>
-        (robot?.commands ?? []).map(command => ({
-            ...command,
-            id: self.crypto.randomUUID(),
-        })),
-    );
+    const [ commands, setCommands ] = useState<CommandWithId[]>(() => getDefaultCommands(robot));
 
     const isLoading = fetcher.state !== "idle";
 
@@ -66,10 +61,7 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                 if (!ignore) {
                     setRobot(json);
                     setRobotName(json.name);
-                    setCommands((json?.commands ?? []).map(command => ({
-                        ...command,
-                        id: self.crypto.randomUUID(),
-                    })));
+                    setCommands(getDefaultCommands(json));
                 }
             })
             .catch(error => {
@@ -296,3 +288,18 @@ function RobotCommandForm({ command, clearSelectedCommand, updateCommand, comman
         </div>
     );
 }
+
+const getDefaultCommands = (robot: Robot | null) =>
+    (robot?.commands ?? []).sort((a, b) => {
+        if (Object.keys(StandardCommandTypeEnum).includes(a.commandType)) {
+            if (!Object.keys(StandardCommandTypeEnum).includes(b.commandType)) {
+                return -1;
+            }
+        } else if (Object.keys(StandardCommandTypeEnum).includes(b.commandType)) {
+            return 1;
+        }
+        return a.commandType.localeCompare(b.commandType);
+    }).map(command => ({
+        ...command,
+        id: self.crypto.randomUUID(),
+    }));

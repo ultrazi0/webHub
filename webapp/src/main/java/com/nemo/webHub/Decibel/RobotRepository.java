@@ -1,16 +1,22 @@
 package com.nemo.webHub.Decibel;
 
+import com.nemo.webHub.Commands.CommandType;
 import com.nemo.webHub.Commands.CustomCommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.User.User;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
+import org.jooq.generated.tables.records.CustomCommandsRecord;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.jooq.generated.Tables.*;
 import static org.jooq.impl.DSL.multiset;
@@ -113,6 +119,27 @@ public class RobotRepository {
         }
 
         return new RobotEntity(robot);
+    }
+
+    @Transactional
+    public RobotEntity updateRobot(int robotId, String name, Collection<CommandType> commandTypes, int userId) {
+        RobotEntity robot = updateRobot(robotId, name, userId);
+
+        db.deleteFrom(CUSTOM_COMMANDS).where(CUSTOM_COMMANDS.ROBOT_ID.equal(robotId)).execute();
+
+        InsertValuesStep3<CustomCommandsRecord, Integer, String, String[]> insertQuery = db.insertInto(CUSTOM_COMMANDS)
+            .columns(CUSTOM_COMMANDS.ROBOT_ID, CUSTOM_COMMANDS.COMMAND_TYPE, CUSTOM_COMMANDS.COMMAND_KEYS);
+
+        for (CommandType commandType : commandTypes) {
+            if (commandType instanceof StandardCommandType) {
+                continue;
+            }
+            insertQuery = insertQuery.values(robotId, commandType.getCommandType(), commandType.getKeys());
+        }
+
+        Stream<CustomCommandsRecord> customCommandsRecordStream = insertQuery.returning().fetchStream();
+
+        return robot.withCommands(customCommandsRecordStream.map(CustomCommandType::of).toList());
     }
 
     /**

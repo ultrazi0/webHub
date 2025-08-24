@@ -1,11 +1,14 @@
 package com.nemo.webHub.Onion;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Commands.CommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.webHub.Onion.Converters.CommandTypeDeserializer;
 import com.nemo.webHub.User.User;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
@@ -80,11 +83,13 @@ public class RobotAPIController {
 
     @PutMapping("{robotId}")
     public ResponseEntity<EntityModel<RobotEntity>> updateRobot(
-            @PathVariable int robotId, @NotBlank @RequestParam("name") String name,
-            @AuthenticationPrincipal UserEntity user) {  // TODO: consider @RequestBody
+            @PathVariable int robotId,
+            @Valid @RequestBody EditRobotRequest request,
+            @AuthenticationPrincipal UserEntity user
+    ) {
 
         EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(
-                robotRepository.updateRobot(robotId, name, user.getId()));
+                robotRepository.updateRobot(robotId, request.name(), request.commands(), user.getId()));
 
         return ResponseEntity
                 .created(robotEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -144,4 +149,10 @@ public class RobotAPIController {
         }
         throw new IllegalArgumentException("Principal is not an instance of UserEntity");
     }
+
+    public record EditRobotRequest(
+        @NotBlank String name,
+        @JsonDeserialize(contentUsing = CommandTypeDeserializer.class) List<CommandType> commands
+    ) {}
+
 }

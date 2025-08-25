@@ -10,21 +10,29 @@ import {
     ModalFooter,
     ModalHeader,
     ModalTitle,
+    OverlayTrigger,
     Spinner,
+    Tooltip,
 } from "react-bootstrap";
 import { Dispatch, Ref, SetStateAction, useEffect, useRef, useState } from "react";
 import { FetcherWithReset } from "../../hooks/useFetcherWithReset";
 import { CsrfResponse, Robot } from "../../types";
 import { CommandType, StandardCommandTypeEnum } from "../ControlPanelComponents";
-
-import "../../css/EditRobotModal.scss";
 import DeleteButton from "../../components/DeleteButton";
 import { ChevronRight, Plus } from "lucide-react";
+import { setError } from "../../utils/validationUtils";
+
+import "../../css/EditRobotModal.scss";
 
 type CommandIdType = ReturnType<Crypto["randomUUID"]>;
 
-type CommandWithId = CommandType & {
+type CommandWithId = Pick<CommandType, "commandType"> & {
     id: CommandIdType,
+    keys: {
+        id: CommandIdType,
+        key: string,
+    }[],
+    isSaved: boolean,
 }
 
 type EditRobotModalProps = {
@@ -34,10 +42,38 @@ type EditRobotModalProps = {
     csrfToken: CsrfResponse,
 }
 
+type FormErrors = {
+    name?: string
+    commands?: Record<CommandIdType, { commandType?: string, keys?: Record<CommandIdType, string> } | undefined>
+}
+
 export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken }: EditRobotModalProps) {
     const [ robot, setRobot ] = useState<Robot | null>(null);
     const [ robotName, setRobotName ] = useState<string | null>(null);
     const [ commands, setCommands ] = useState<CommandWithId[]>(() => getDefaultCommands(robot));
+
+    const validateForm = () => {
+        const errors: FormErrors = {};
+        if ((robotName?.trim() ?? "") === "") {
+            setError(errors, "name", "Robot name must not be empty");
+        }
+        for (const command of commands) {
+            if (command.commandType.trim() === "") {
+                setError(errors, `commands.${command.id}.commandType`, "Command must not be blank");
+            } else if (commands.filter(c => c.commandType === command.commandType).length > 1) {
+                setError(errors, `commands.${command.id}.commandType`, "Commands must be unique");
+            }
+            for (const key of command.keys) {
+                if (command.keys.filter(k => k.key === key.key).length > 1) {
+                    setError(errors, `commands.${command.id}.keys.${key.id}`, "Keys must be unique");
+                }
+            }
+        }
+
+        return errors;
+    };
+
+    const errors = validateForm();
 
     const isLoading = fetcher.state !== "idle";
 
@@ -90,7 +126,11 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                 event.preventDefault();
 
                 fetcher.submit(
-                    { name: robotName, commands: commands, csrf: csrfToken },
+                    {
+                        name: robotName,
+                        commands: commands.map(c => ({ ...c, keys: c.keys.map(k => k.key) })),
+                        csrf: csrfToken,
+                    },
                     { method: "PUT", action: `/edit/${robotId}`, encType: "application/json" },
                 );
             }}>
@@ -103,15 +143,24 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                             name="name"
                             defaultValue={robotName ?? ""}
                             onChange={event => setRobotName(event.target.value)}
+                            isInvalid={errors.name !== undefined || fetcher.data === false}
                         />
                         {fetcher.data === false && (
                             <FormText className="text-danger-emphasis">This name is already taken</FormText>
+                        )}
+                        {errors.name !== undefined && (
+                            <FormText className="text-danger-emphasis">{errors.name}</FormText>
                         )}
                     </FormGroup>
                     <hr />
                     <div>
                         <FormLabel>Commands</FormLabel>
-                        <RobotCommandsBlock robot={robot} commands={commands} setCommands={setCommands} />
+                        <RobotCommandsBlock
+                            robot={robot}
+                            commands={commands}
+                            setCommands={setCommands}
+                            errors={errors}
+                        />
                     </div>
                 </ModalBody>
                 <ModalFooter>
@@ -119,7 +168,7 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                     <Button
                         type="submit"
                         variant="primary"
-                        disabled={isLoading}
+                        disabled={isLoading || Object.keys(errors).length > 0}
                     >
                         {isLoading ? (
                             <Spinner as="span" animation="border" size="sm" role="status" aria-hidden>
@@ -133,10 +182,11 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
     );
 }
 
-function RobotCommandsBlock({ robot, commands, setCommands }: {
+function RobotCommandsBlock({ robot, commands, setCommands, errors }: {
     robot: Robot | null,
     commands: CommandWithId[],
     setCommands: Dispatch<SetStateAction<CommandWithId[]>>,
+    errors: FormErrors,
 }) {
 
     const [commandFormOpen, setCommandFormOpen] = useState(false);
@@ -164,9 +214,10 @@ function RobotCommandsBlock({ robot, commands, setCommands }: {
                             }}
                             style={{ display: "flex", justifyContent: "space-between" }}
                             className={commandFormOpen && command.id === selectedCommandId ? "selected" : undefined}
+                            variant={errors.commands?.[command.id] ? "danger" : undefined}
                         >
                             <span>{command.commandType}</span>
-                            {!Object.keys(StandardCommandTypeEnum).includes(command.commandType) && (
+                            {(!command.isSaved || !Object.keys(StandardCommandTypeEnum).includes(command.commandType)) && (
                                 <DeleteButton
                                     onClick={() => setCommands(commands.filter(it => it.id !== command.id))}
                                 />
@@ -180,6 +231,7 @@ function RobotCommandsBlock({ robot, commands, setCommands }: {
                         id: id,
                         commandType: "",
                         keys: [],
+                        isSaved: false,
                     } ]);
                     setSelectedCommandId(id);
                     setCommandFormOpen(true);
@@ -196,38 +248,46 @@ function RobotCommandsBlock({ robot, commands, setCommands }: {
                 clearSelectedCommand={() => setCommandFormOpen(false)}
                 updateCommand={command => setCommands(prevCommands => prevCommands.map(c => c.id === command.id ? command : c))}
                 commandTypeInputRef={commandTypeInputRef}
+                errors={errors}
             />
         </div>
     );
 }
 
-function RobotCommandForm({ command, clearSelectedCommand, updateCommand, commandTypeInputRef }: {
+function RobotCommandForm({ command, clearSelectedCommand, updateCommand, commandTypeInputRef, errors }: {
     command: CommandWithId | null,
     clearSelectedCommand: () => void,
     updateCommand: (command: CommandWithId) => void,
     commandTypeInputRef: Ref<HTMLInputElement>,
+    errors: FormErrors,
 }) {
-    const isStandardCommand = command ? Object.keys(StandardCommandTypeEnum).includes(command.commandType) : undefined;
+    const isStandardCommand = command ? command.isSaved && Object.keys(StandardCommandTypeEnum).includes(command.commandType) : undefined;
 
     return (
         <div className="robot-command-edit-form">
             <div className="robot-command-edit-form-body">
-                <FormControl
-                    size="sm"
-                    type="text"
-                    placeholder="Command"
-                    ref={commandTypeInputRef}
-                    value={command?.commandType ?? ""}
-                    onChange={event => {
-                        if (command) {
-                            updateCommand({
-                                ...command,
-                                commandType: event.target.value,
-                            });
-                        }
-                    }}
-                    disabled={isStandardCommand ?? true}
-                />
+                <FormGroup>
+                    <FormControl
+                        size="sm"
+                        type="text"
+                        placeholder="Command"
+                        ref={commandTypeInputRef}
+                        value={command?.commandType ?? ""}
+                        onChange={event => {
+                            if (command) {
+                                updateCommand({
+                                    ...command,
+                                    commandType: event.target.value,
+                                });
+                            }
+                        }}
+                        disabled={isStandardCommand ?? true}
+                        isInvalid={!!command?.id && errors.commands?.[command.id]?.commandType !== undefined}
+                    />
+                    {command?.id && errors.commands?.[command.id]?.commandType !== undefined && (
+                        <FormText className="text-danger-emphasis">{errors.commands[command?.id]?.commandType}</FormText>
+                    )}
+                </FormGroup>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.5rem 0" }}>
                     <div>Keys:</div>
                     {!isStandardCommand && (
@@ -238,7 +298,7 @@ function RobotCommandForm({ command, clearSelectedCommand, updateCommand, comman
                                 if (command) {
                                     updateCommand({
                                         ...command,
-                                        keys: [ ...command.keys, "" ],
+                                        keys: [ ...command.keys, { id: self.crypto.randomUUID(), key: "" } ],
                                     });
                                 }
                             }}
@@ -248,31 +308,33 @@ function RobotCommandForm({ command, clearSelectedCommand, updateCommand, comman
                     )}
                 </div>
                 <ListGroup variant="flush" className="robot-command-edit-form-body-keys-list">
-                    {command?.keys.map((key, index) => (
-                        <ListGroup.Item key={index}>
-                            {/*TODO: should not use index as key*/}
-                            <FormControl
-                                size="sm"
-                                type="text"
-                                placeholder="Key"
-                                value={key}
-                                onChange={event => {
-                                    if (command) {
-                                        updateCommand({
-                                            ...command,
-                                            keys: command.keys.map((k, keyIndex) => index === keyIndex ? event.target.value : k),
-                                        });
-                                    }
-                                }}
-                                disabled={isStandardCommand ?? true}
-                            />
+                    {command?.keys.map(key => (
+                        <ListGroup.Item key={key.id}>
+                            <FieldWithTooltipError placement="bottom" errorMessage={errors.commands?.[command?.id]?.keys?.[key.id]}>
+                                <FormControl
+                                    size="sm"
+                                    type="text"
+                                    placeholder="Key"
+                                    value={key.key}
+                                    isInvalid={errors.commands?.[command?.id]?.keys?.[key.id] !== undefined}
+                                    onChange={event => {
+                                        if (command) {
+                                            updateCommand({
+                                                ...command,
+                                                keys: command.keys.map(k => key.id === k.id ? { id: k.id, key: event.target.value } : k),
+                                            });
+                                        }
+                                    }}
+                                    disabled={isStandardCommand ?? true}
+                                />
+                            </FieldWithTooltipError>
                             {!isStandardCommand && (
                                 <DeleteButton
                                     onClick={() => {
                                         if (command) {
                                             updateCommand({
                                                 ...command,
-                                                keys: command.keys.flatMap((k, kIndex) => index === kIndex ? [] : [ k ]),
+                                                keys: command.keys.flatMap(k => key.id === k.id ? [] : [ k ]),
                                             });
                                         }
                                     }}
@@ -289,7 +351,24 @@ function RobotCommandForm({ command, clearSelectedCommand, updateCommand, comman
     );
 }
 
-const getDefaultCommands = (robot: Robot | null) =>
+const FieldWithTooltipError = ({ errorMessage, children, ...props }: {
+    errorMessage: string | undefined
+} & Omit<Parameters<typeof OverlayTrigger>[0], "overlay">) => {
+    if (errorMessage === undefined) {
+        if (typeof children === "function") {
+            return children({ ref: null }) ?? null;
+        }
+        return children;
+    }
+
+    return (
+        <OverlayTrigger overlay={<Tooltip className="error-tooltip">{errorMessage}</Tooltip>} {...props}>
+            {children}
+        </OverlayTrigger>
+    );
+};
+
+const getDefaultCommands = (robot: Robot | null): CommandWithId[] =>
     (robot?.commands ?? []).sort((a, b) => {
         if (Object.keys(StandardCommandTypeEnum).includes(a.commandType)) {
             if (!Object.keys(StandardCommandTypeEnum).includes(b.commandType)) {
@@ -302,4 +381,6 @@ const getDefaultCommands = (robot: Robot | null) =>
     }).map(command => ({
         ...command,
         id: self.crypto.randomUUID(),
+        keys: command.keys.map(key => ({ id: self.crypto.randomUUID(), key: key })),
+        isSaved: true,
     }));

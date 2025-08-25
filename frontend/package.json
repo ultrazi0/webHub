@@ -50,6 +50,7 @@
     "@eslint/js": "^8.57.1",
     "@eslint/json": "^0.12.0",
     "@eslint/markdown": "^6.4.0",
+    "typescript": "^5.9.2",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
     "eslint": "^8.57.1",

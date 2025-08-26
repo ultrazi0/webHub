@@ -1,13 +1,13 @@
 buildscript {
     dependencies {
-        classpath('org.flywaydb:flyway-database-postgresql:10.16.0')
+        classpath('org.flywaydb:flyway-database-postgresql:11.11.2')
     }
 }
 
 plugins {
-    id "org.jooq.jooq-codegen-gradle" version "3.19.23"
-    id "org.flywaydb.flyway" version "10.16.0"
-    id "io.freefair.lombok" version "8.10.2"
+    id "org.jooq.jooq-codegen-gradle" version "3.20.6"
+    id "org.flywaydb.flyway" version "11.11.2"
+    id "io.freefair.lombok" version "8.14.2"
 }
 
 group = 'com.nemo'
@@ -34,8 +34,6 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql:42.+'
     jooqCodegen 'org.postgresql:postgresql:42.+'
-
-    implementation 'org.projectlombok:lombok:1.18.34'
 
     compileOnly 'org.jetbrains:annotations:26.0.2'
 }

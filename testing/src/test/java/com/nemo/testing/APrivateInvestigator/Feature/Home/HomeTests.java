@@ -3,55 +3,35 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 import com.nemo.testing.core.API.WithErrorMessages;
 import com.nemo.testing.core.APrivateInvestigatorTest;
 import com.nemo.testing.core.Tags.WH;
-import com.nemo.webHub.Commands.StandardCommandType;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 @APrivateInvestigatorTest
-@SuppressWarnings("ResultOfMethodCallIgnored")
 class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeThenStage>
     implements WithErrorMessages {
 
     static String DEFAULT_ROBOT_NAME = "myTestRobot";
 
-    @WH("1")
     @Test
-    void if_logged_in_I_should_be_able_to_view_the_list_of_all_commands() {
-
-        given()
-            .I_am().a().test_user();
-
-        when()
-            .I().send_request_to().get_all_commands_endpoint();
-
-        then()
-            .response_is_correct()
-            .and().I().get_all_commands();
-
-    }
-
-    @WH("1")
-    @ParameterizedTest
-    @EnumSource(StandardCommandType.class)
-    void I_should_be_able_to_view_the_values_of_all_commands(StandardCommandType commandType) {
-        String command = commandType.name();
+    void if_robot_exists_it_should_have_standard_commands() {
 
         given()
             .I_am().a().test_user()
-            .and().I().request_values_of_command(command);
+            .and().I().have_a_robot(DEFAULT_ROBOT_NAME)
+            .and().I().request_it();
 
         when()
-            .I().send_request_to().command_values_endpoint();
+            .I().send_request_to().the_get_robot_commands_endpoint();
 
         then()
             .response_is_correct()
-            .and().I().get_values_for_command(command);
+            .and().I().get_a_list_of_only_standard_commands();
+
     }
 
     @WH("2")
@@ -64,7 +44,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().request_it();
 
         when()
-            .I().send_request_to().get_robot_endpoint();
+            .I().send_request_to().the_get_robot_endpoint();
 
         then()
             .response_is_correct()
@@ -81,7 +61,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().set_new_robots_name_to(DEFAULT_ROBOT_NAME);
 
         when()
-            .I().send_request_to().insert_robot_endpoint();
+            .I().send_request_to().the_insert_robot_endpoint();
 
         then()
             .robot_$_is_created(DEFAULT_ROBOT_NAME)
@@ -99,7 +79,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().set_new_robots_name_to(DEFAULT_ROBOT_NAME);
 
         when()
-            .I().send_request_to().insert_robot_endpoint();
+            .I().send_request_to().the_insert_robot_endpoint();
 
         then()
             .and().response_is_correct(409)
@@ -118,11 +98,11 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().change_its_name_to(editedRobotName);
 
         when()
-            .I().send_request_to().edit_robot_endpoint();
+            .I().send_request_to().the_edit_robot_endpoint();
 
         then()
-            .its_name_is_changed_from_$_to(originalRobotName, editedRobotName)
-            .and().response_is_correct(201)
+            .response_is_correct(201)
+            .and().its_name_is_changed_from_$_to(originalRobotName, editedRobotName)
             .and().the_name_of_the_returned_robot_is(editedRobotName);
 
     }
@@ -136,7 +116,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().want_to_delete_it();
 
         when()
-            .I().send_request_to().delete_robot_endpoint();
+            .I().send_request_to().the_delete_robot_endpoint();
 
         then()
             .robot_with_name_$_does_not_exit(DEFAULT_ROBOT_NAME)
@@ -153,7 +133,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
             .and().I().have_robots(robotNames);
 
         when()
-            .I().send_request_to().get_user_robots_endpoint();
+            .I().send_request_to().the_get_user_robots_endpoint();
 
         then()
             .response_is_correct()

@@ -1,5 +1,6 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.webHub.Commands.StandardCommandType;
@@ -15,6 +16,7 @@ import org.hamcrest.Matchers;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @JGivenStage
@@ -28,19 +30,14 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         this.robotService = robotService;
     }
 
-    public HomeThenStage get_all_commands() {
-        List<String> expectedList = Arrays.stream(StandardCommandType.values()).map(StandardCommandType::toString).toList();
+    public HomeThenStage get_a_list_of_only_standard_commands() {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        validatableResponse.body("", Matchers.equalTo(expectedList));
+        Map<?, ?>[] expectedCommandTypes = Arrays.stream(StandardCommandType.values())
+            .map(commandType -> objectMapper.convertValue(commandType, Map.class))
+            .toArray(Map[]::new);
 
-        return self();
-    }
-
-    public HomeThenStage get_values_for_command(@Quoted String command) {
-        List<String> expectedValues = Arrays.stream(StandardCommandType.valueOf(command).getKeys()).toList();
-
-        // TODO: find a way to show the expected values in the report
-        validatableResponse.body("", Matchers.equalTo(expectedValues));
+        validatableResponse.body("", Matchers.containsInAnyOrder(expectedCommandTypes));
 
         return self();
     }

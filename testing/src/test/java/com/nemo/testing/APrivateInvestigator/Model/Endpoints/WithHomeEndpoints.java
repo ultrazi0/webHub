@@ -4,8 +4,7 @@ import com.nemo.testing.core.API.Endpoint;
 import io.restassured.http.Method;
 
 public interface WithHomeEndpoints {
-    Endpoint COMMANDS_ENDPOINT = new Endpoint(Method.GET, "/getAllCommands");
-    Endpoint COMMAND_VALUES_ENDPOINT = new Endpoint(Method.GET, "/commandValues");
+    Endpoint COMMANDS_ENDPOINT = new Endpoint(Method.GET, "/robots/{robotId}/commands");
 
     Endpoint GET_USER_ROBOTS_ENDPOINT = new Endpoint(Method.GET, "/robots");
     Endpoint INSERT_ROBOT_ENDPOINT = new Endpoint(Method.POST, "/robots");

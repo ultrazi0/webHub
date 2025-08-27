@@ -5,10 +5,12 @@ import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.nemo.webHub.Onion.RobotAPIController;
 import com.tngtech.jgiven.annotation.As;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
+import io.restassured.http.ContentType;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,12 +24,6 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @Autowired
     private RobotService robotService;
-
-    public HomeGivenStage request_values_of_command(@Quoted String commandType) {
-        request.queryParam("commandType", commandType);
-
-        return self();
-    }
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage have_a_robot(@Quoted String robotName) {
@@ -75,7 +71,9 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         assumeOnlyOneRobotHasBeenCreated(createdRobots);
 
         request.pathParam("robotId", createdRobots.iterator().next().getId());
-        request.formParam("name", robotName);
+
+        request.contentType(ContentType.JSON);
+        request.body(new RobotAPIController.EditRobotRequest(robotName, List.of()));
 
         return self();
     }

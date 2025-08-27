@@ -3,10 +3,12 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
+import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
@@ -44,12 +47,7 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
 
     @NestedSteps
     public HomeThenStage get_the_correct_robot() {
-        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
-        Assertions.assertThat(createdRobots)
-            .as("Only one robot should have been created")
-            .hasSize(1);
-
-        RobotEntity robot = createdRobots.iterator().next();
+        RobotEntity robot = retrieveCreatedRobotEntity();
 
         return id_is(robot.getId())
             .and().name_is(robot.getName())
@@ -98,6 +96,20 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         return self();
     }
 
+    public HomeThenStage the_retrieved_robot_has_standard_commands_as_well_as_custom_ones(@Hidden CustomCommandType[] customRobotCommands) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<?, ?>[] expectedCommandTypes = Stream.concat(
+            Arrays.stream(StandardCommandType.values()),
+            Arrays.stream(customRobotCommands)
+        ).map(commandType -> objectMapper.convertValue(commandType, Map.class))
+            .toArray(Map[]::new);
+
+        validatableResponse.body("commands", Matchers.containsInAnyOrder(expectedCommandTypes));
+
+        return self();
+    }
+
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeThenStage robot_$_is_created(String robotName) {
         assertThatCode(() -> robotService.findRobotByName(robotName, CURRENT_USER.getId()))
@@ -128,6 +140,21 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         return self();
     }
 
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_has_correct_custom_commands(@Hidden CustomCommandType... customCommands) {
+        RobotEntity robot = retrieveCreatedRobotEntity();
+
+        List<CustomCommandType> customRobotCommands = robotService.getCustomRobotCommands(robot.getId());
+
+        assertThat(customRobotCommands)
+            .as("Assert exactly %s custom commands have been created", customCommands.length)
+            .hasSize(customCommands.length)
+            .as("Assert the robot has exactly the provided commands")
+            .containsExactlyInAnyOrder(customCommands);
+
+        return self();
+    }
+
     public HomeThenStage get_all_my_robots(List<String> robotNames) {
         int size = robotNames.size();
 
@@ -143,5 +170,14 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         validatableResponse.body("robotEntityList.with { it.name }", Matchers.containsInAnyOrder(robotNames.toArray()));
 
         return self();
+    }
+
+    private RobotEntity retrieveCreatedRobotEntity() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        Assertions.assertThat(createdRobots)
+            .as("Only one robot should have been created")
+            .hasSize(1);
+
+        return createdRobots.iterator().next();
     }
 }

@@ -2,12 +2,14 @@ package com.nemo.testing.core.Persistence;
 
 import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
+import org.jooq.generated.tables.records.CustomCommandsRecord;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
+import static org.jooq.generated.Tables.CUSTOM_COMMANDS;
 import static org.jooq.generated.Tables.ROBOTS;
 
 /**
@@ -98,6 +102,15 @@ public class RobotService implements WithPersistence<RobotEntity> {
         return ownerId;
     }
 
+    public List<CustomCommandType> getCustomRobotCommands(int robotId) throws RobotNotFoundException {
+        Stream<CustomCommandsRecord> customCommandsRecordStream = db
+            .selectFrom(CUSTOM_COMMANDS)
+            .where(CUSTOM_COMMANDS.ROBOT_ID.eq(robotId))
+            .fetchStream();
+
+        return customCommandsRecordStream.map(CustomCommandType::of).toList();
+    }
+
     public RobotEntity createNewRobot(String robotName, int ownerId) {
         RobotsRecord robotsRecord = db
             .insertInto(ROBOTS)
@@ -128,6 +141,19 @@ public class RobotService implements WithPersistence<RobotEntity> {
         RobotsRecord[] robotsRecords = insertQuery.returning().fetchArray();
 
         return Arrays.stream(robotsRecords).map(RobotEntity::of).toList();
+    }
+
+    public void createCustomCommands(int robotId, Collection<CustomCommandType> customCommands) {
+        if (customCommands == null || customCommands.isEmpty()) {
+            return;
+        }
+
+        db.batchInsert(
+            customCommands.stream()
+                .map(customCommand ->
+                    new CustomCommandsRecord(robotId, customCommand.getCommandType(), customCommand.getKeys()))
+                .toList()
+            ).execute();
     }
 
     public void deleteRobotById(int id) {

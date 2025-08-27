@@ -3,8 +3,12 @@ package com.nemo.webHub.Commands;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import org.jooq.generated.tables.records.CustomCommandsRecord;
 
+import java.util.Arrays;
+
+@ToString
 @AllArgsConstructor
 public class CustomCommandType implements CommandType {
 
@@ -27,4 +31,12 @@ public class CustomCommandType implements CommandType {
         return new CustomCommandType(customCommandsRecord);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        CustomCommandType that = (CustomCommandType) obj;
+        return this.commandType.equals(that.commandType) && Arrays.equals(this.commandKeys, that.commandKeys);
+    }
 }

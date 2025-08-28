@@ -177,16 +177,18 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     public HomeThenStage the_robot_is_shared_with(String... usernames) {
         RobotEntity robot = retrieveCreatedRobotEntity();
 
-        List<User> sharedUsers = robotService.getSharedUsers(robot.getId(), robot.getOwner().getId());
-
-        assertThat(sharedUsers)
+        assertThat(robotService.getSharedUsersUsernames(robot.getId(), robot.getOwner().getId()))
             .as("Assert exactly %s users have been shared with the robot", usernames.length)
             .hasSize(usernames.length)
             .as("Assert the shared users are exactly the provided users")
-            .extracting(User::getUsername)
             .containsExactlyInAnyOrder(usernames);
 
         return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_is_not_shared_with_anyone() {
+        return the_robot_is_shared_with();
     }
 
     private RobotEntity retrieveCreatedRobotEntity() {

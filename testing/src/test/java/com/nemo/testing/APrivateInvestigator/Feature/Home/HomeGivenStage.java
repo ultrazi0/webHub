@@ -8,6 +8,7 @@ import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Onion.RobotAPIController;
 import com.tngtech.jgiven.annotation.As;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
@@ -121,6 +122,36 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     public HomeGivenStage want_to_share_it_with(String... usernames) {
         request.formParam("users", String.join(",", usernames));
+
+        return request_it();
+    }
+
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage it_is_shared_with(String... usernames) {
+        RobotEntity robot = getCreatedRobot();
+
+        assumeThat(robotService.shareRobotWithUser(robot.getId(), robot.getOwner().getId(), List.of(usernames)))
+            .as("Assume that the robot is shared with the users")
+            .isTrue();
+
+        return self();
+    }
+
+    public HomeGivenStage do_not_want_to_share_it_with_$_anymore(String... usernames) {
+        Set<UserEntity> users = createdEntities.getInstances(UserEntity.class);
+        assumeThat(users)
+            .as("Assume that users have been created")
+            .isNotEmpty()
+            .as("Assume that specified users exist")
+            .extracting(UserEntity::getUsername)
+            .contains(usernames);
+
+        List<String> usernameList = List.of(usernames);
+        Object[] specifiedUserIds = users.stream()
+            .filter(user -> usernameList.contains(user.getUsername()))
+            .map(UserEntity::getId)
+            .toArray();
+        request.formParam("users", specifiedUserIds);
 
         return request_it();
     }

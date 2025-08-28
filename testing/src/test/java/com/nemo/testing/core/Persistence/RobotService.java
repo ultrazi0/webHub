@@ -5,6 +5,7 @@ import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.User.User;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
@@ -38,6 +39,8 @@ public class RobotService implements WithPersistence<RobotEntity> {
 
     @Autowired
     private DSLContext db;
+    @Autowired
+    private RobotRepository robotRepository;
 
     @Override
     public RobotEntity getEntityWith(AbstractUniqueAttributes uniqueAttributes) {
@@ -115,15 +118,9 @@ public class RobotService implements WithPersistence<RobotEntity> {
         return customCommandsRecordStream.map(CustomCommandType::of).toList();
     }
 
-    public List<User> getSharedUsers(int robotId, int ownerId) {
-        Record2<Integer, String>[] users = db.select(USERS.USER_ID, USERS.USERNAME)
-            .from(USERS)
-            .innerJoin(USER_ROBOT_RELATIONS).using(USERS.USER_ID)
-            .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(robotId))
-            .and(USERS.USER_ID.notEqual(ownerId))
-            .fetchArray();
-
-        return Arrays.stream(users).map(user -> new User(user.value1(), user.value2())).toList();
+    public List<String> getSharedUsersUsernames(int robotId, int ownerId) {
+        return robotRepository.getSharedUsers(robotId, ownerId)
+            .map(Record2::value2).toList();
     }
 
     public RobotEntity createNewRobot(String robotName, int ownerId) {
@@ -188,6 +185,10 @@ public class RobotService implements WithPersistence<RobotEntity> {
         if (deleted < 1) {
             log.warn("No robots were deleted, for there were none with id in {}", ids);
         }
+    }
+
+    public boolean shareRobotWithUser(int robotId, int userId, Collection<String> usernames) {
+        return robotRepository.shareRobot(robotId, userId, usernames);
     }
 
     @Override

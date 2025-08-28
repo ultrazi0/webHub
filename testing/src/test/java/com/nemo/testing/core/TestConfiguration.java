@@ -1,5 +1,6 @@
 package com.nemo.testing.core;
 
+import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserRepository;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,12 @@ public class TestConfiguration {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") // It should be created by automatic JOOQ configuration
     public UserRepository userRepository(DSLContext dslContext) {
         return new UserRepository(dslContext, passwordEncoder());
+    }
+
+    @Bean
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") // It should be created by automatic JOOQ configuration
+    public RobotRepository robotRepository(DSLContext dslContext) {
+        return new RobotRepository(dslContext);
     }
 
     // Required by UserRepository

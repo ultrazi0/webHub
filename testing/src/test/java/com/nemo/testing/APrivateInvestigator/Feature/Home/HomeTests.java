@@ -3,6 +3,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 import com.nemo.testing.core.API.WithErrorMessages;
 import com.nemo.testing.core.APrivateInvestigatorTest;
 import com.nemo.testing.core.Tags.CustomCommandsOdyssey;
+import com.nemo.testing.core.Tags.ShareUsers;
 import com.nemo.testing.core.Tags.WH;
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
@@ -238,6 +239,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
+    @ShareUsers
     void if_robot_exists_it_is_possible_to_share_it_with_another_user() {
         final String otherUser1 = "otherUser1";
         final String otherUser2 = "otherUser2";
@@ -255,6 +257,50 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
         then()
             .the().response_is_correct()
             .and().the_robot_is_shared_with(otherUser1, otherUser2);
+
+    }
+
+    @Test
+    @ShareUsers
+    void if_robot_is_shared_this_can_be_seen_in_its_details() {
+        final String otherUser1 = "otherUser1";
+        final String otherUser2 = "otherUser2";
+
+        given()
+            .I_am().a().test_user()
+            .and().user_$_exists(otherUser1, otherUser1)
+            .and().user_$_exists(otherUser2, otherUser2)
+            .and().I().have_a_robot(DEFAULT_ROBOT_NAME)
+            .and().it_is_shared_with(otherUser1, otherUser2)
+            .and().I().request_it();
+
+        when()
+            .I().send_request_to().the().get_robot_endpoint();
+
+        then()
+            .the().response_is_correct()
+            .and().the_robot_is_shared_with(otherUser1, otherUser2);
+
+    }
+
+    @Test
+    @ShareUsers
+    void if_robot_is_shared_with_another_user_it_is_possible_to_unshare_it() {
+        final String otherUser1 = "otherUser1";
+
+        given()
+            .I_am().a().test_user()
+            .and().user_$_exists(otherUser1, otherUser1)
+            .and().I().have_a_robot(DEFAULT_ROBOT_NAME)
+            .and().it_is_shared_with(otherUser1)
+            .and().I().do_not_want_to_share_it_with_$_anymore(otherUser1);
+
+        when()
+            .I().send_request_to().the().unshare_robot_endpoint();
+
+        then()
+            .the().response_is_correct()
+            .and().the_robot_is_not_shared_with_anyone();
 
     }
 

@@ -2,7 +2,7 @@ package com.nemo.webHub.Sock;
 
 import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Decibel.RobotRepository;
-import com.nemo.webHub.Robot.RobotService;
+import com.nemo.webHub.Robot.RobotConnectionService;
 import com.nemo.webHub.Sect.HandshakeInterceptors.CommandClientHandshakeInterceptor;
 import com.nemo.webHub.Sect.HandshakeInterceptors.CommandRobotHandshakeInterceptor;
 import com.nemo.webHub.Sect.HandshakeInterceptors.ImageClientHandshakeInterceptor;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class WebSockConfig implements WebSocketConfigurer {
 
     private final OperatorController operatorController;
-    private final RobotService robotService;
+    private final RobotConnectionService robotConnectionService;
     private final RobotRepository robotRepository;
     private final ImageSubscribers imageSubscribers;
     private final CommandService commandService;
@@ -44,7 +44,7 @@ public class WebSockConfig implements WebSocketConfigurer {
                 .addInterceptors(new ImageRobotHandshakeInterceptor(imageSubscribers));
 
         registry.addHandler(commandRobotHandler(), "/api/command/robot")
-                .addInterceptors(new CommandRobotHandshakeInterceptor(robotService));
+                .addInterceptors(new CommandRobotHandshakeInterceptor(robotConnectionService));
 
         registry.addHandler(commandClientHandler(), "/api/command/client/{robotId}")
                 .addInterceptors(new CommandClientHandshakeInterceptor(robotRepository, operatorController)).setAllowedOrigins("*");
@@ -59,11 +59,11 @@ public class WebSockConfig implements WebSocketConfigurer {
     }
 
     private WebSocketHandler commandRobotHandler() {
-        return new CommandRobotHandler(robotService, operatorController);
+        return new CommandRobotHandler(robotConnectionService, operatorController);
     }
 
     private WebSocketHandler commandClientHandler() {
-        return new CommandClientHandler(robotService, operatorController, commandService);
+        return new CommandClientHandler(robotConnectionService, operatorController, commandService);
     }
 
     @Bean

@@ -2,7 +2,7 @@ package com.nemo.webHub.Sock.Command;
 
 import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Sock.Messages.JsonCommand;
-import com.nemo.webHub.Robot.RobotService;
+import com.nemo.webHub.Robot.RobotConnectionService;
 import com.nemo.webHub.Sock.OperatorController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMes
 @RequiredArgsConstructor
 public class CommandClientHandler extends TextWebSocketHandler {
 
-    private final RobotService robotService;
+    private final RobotConnectionService robotConnectionService;
     private final OperatorController operatorController;
     private final CommandService commandService;
 
@@ -55,14 +55,14 @@ public class CommandClientHandler extends TextWebSocketHandler {
         // Greet the subscriber
         session.sendMessage(createRegularJsonTextMessage("Server>>> Connected to websocket at /api/command/client"));
 
-        if (!robotService.robotIsConnected((int) robotId)) {
+        if (!robotConnectionService.robotIsConnected((int) robotId)) {
             return;
         }
 
-        robotService.getRobotById((int) robotId).sendMessage(createRegularJsonTextMessage(
+        robotConnectionService.getRobotById((int) robotId).sendMessage(createRegularJsonTextMessage(
                 "Operator has just been connected"
         ));
-        robotService.sendStopToRobot((int) robotId);  // Ensures that the robot is not doing anything
+        robotConnectionService.sendStopToRobot((int) robotId);  // Ensures that the robot is not doing anything
     }
 
     @Override
@@ -73,9 +73,9 @@ public class CommandClientHandler extends TextWebSocketHandler {
         operatorController.removeOperator(session.getId());
         sessionIdToSessionMap.remove(session.getId(), session);
 
-        if (robotService.robotIsConnected(robotId)) {
-            robotService.sendStopToRobot(robotId);
-            robotService.getRobotById(robotId).sendMessage(createRegularJsonTextMessage(
+        if (robotConnectionService.robotIsConnected(robotId)) {
+            robotConnectionService.sendStopToRobot(robotId);
+            robotConnectionService.getRobotById(robotId).sendMessage(createRegularJsonTextMessage(
                     "Operator has just disconnected"
             ));
         }
@@ -96,13 +96,13 @@ public class CommandClientHandler extends TextWebSocketHandler {
 
         log.trace("Created commands: {}", commands);
 
-        if (!robotService.robotIsConnected(robotId)) {
+        if (!robotConnectionService.robotIsConnected(robotId)) {
             log.debug("Received a command, but robot with ID #{} has not connected yet", robotId);
             session.sendMessage(createRegularJsonTextMessage("Robot with this ID is not connected yet"));
             return;
         }
 
-        robotService.handleCommands(robotId, commands, session);
+        robotConnectionService.handleCommands(robotId, commands, session);
     }
 
     static WebSocketSession getSession(String sessionId) {

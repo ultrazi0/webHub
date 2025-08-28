@@ -1,9 +1,9 @@
 package com.nemo.webHub.Sect.HandshakeInterceptors;
 
-import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Sock.OperatorController;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.socket.WebSocketHandler;
 
 import java.util.Map;
-
 
 /**
  * Handshake Interceptor for connection requests sent from a user to connect to their robot
@@ -51,8 +50,8 @@ public class CommandClientHandshakeInterceptor extends AbstractHandshakeIntercep
         UserEntity user = getCurrentUser();
 
         // If the robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
-        RobotEntity robot = robotRepository.findRobotByIdIfAllowed(robotId, user.getId());
-        Assert.isTrue(robotId == robot.getId(), "IDs do not match");
+        RobotsRecord robot = robotRepository.findRobotsRecordByIdIfAllowed(robotId, user.getId());
+        Assert.isTrue(robotId.equals(robot.getRobotId()), "IDs do not match");
 
         if (operatorController.getOperatorSessionId(robotId) != null) {
             // Deny the request if someone else is already controlling this robot

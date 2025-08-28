@@ -22,7 +22,7 @@ import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMes
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RobotService {
+public class RobotConnectionService {
 
     private final Config config;
     private final ImageSubscribers imageSubscribers;

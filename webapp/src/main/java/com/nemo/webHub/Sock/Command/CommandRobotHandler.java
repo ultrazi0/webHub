@@ -3,7 +3,7 @@ package com.nemo.webHub.Sock.Command;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.webHub.Robot.Robot;
-import com.nemo.webHub.Robot.RobotService;
+import com.nemo.webHub.Robot.RobotConnectionService;
 import com.nemo.webHub.Sock.Messages.JsonMessage;
 import com.nemo.webHub.Sock.Messages.MessageType;
 import com.nemo.webHub.Sock.OperatorController;
@@ -33,7 +33,7 @@ import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMes
 @RequiredArgsConstructor
 public class CommandRobotHandler extends TextWebSocketHandler {
 
-    private final RobotService robotService;
+    private final RobotConnectionService robotConnectionService;
     private final OperatorController operatorController;
 
     @Override
@@ -47,7 +47,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
             );
         }
 
-        robotService.addConnectedRobot(new Robot((int) robotId, session));
+        robotConnectionService.addConnectedRobot(new Robot((int) robotId, session));
 
         session.sendMessage(createRegularJsonTextMessage("Server>>> Connected to websocket at /api/command/robot"));
 
@@ -68,7 +68,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
         // because otherwise an exception would have been thrown in afterConnectionEstablished
 
         int robotId = (int) session.getAttributes().get("robotId");
-        robotService.removeConnectedRobot(robotId);
+        robotConnectionService.removeConnectedRobot(robotId);
 
         String operatorSessionId = operatorController.getOperatorSessionId(robotId);
 

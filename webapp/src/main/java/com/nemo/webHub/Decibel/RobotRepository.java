@@ -3,10 +3,9 @@ package com.nemo.webHub.Decibel;
 import com.nemo.webHub.Commands.CommandType;
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Commands.StandardCommandType;
-import com.nemo.webHub.Robot.RobotService;
 import com.nemo.webHub.User.User;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.*;
 import org.jooq.generated.tables.records.CustomCommandsRecord;
 import org.jooq.generated.tables.records.RobotsRecord;
@@ -27,37 +26,31 @@ import static org.jooq.impl.DSL.select;
 public class RobotRepository {
 
     private final DSLContext db;
-    private final RobotService robotService;
 
     @NotNull
-    public RobotEntity findRobotById(int id) {
-        RobotsRecord robotsRecord = db
-                .selectFrom(ROBOTS)
-                .where(ROBOTS.ROBOT_ID.equal(id))
-                .fetchOne();
-
-        if (robotsRecord == null) {
-            throw new RobotNotFoundException(id);
-        }
-
-        return new RobotEntity(robotsRecord);
+    public RobotsRecord findRobotById(int id) {
+        return db
+            .selectFrom(ROBOTS)
+            .where(ROBOTS.ROBOT_ID.equal(id))
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
     }
 
     @NotNull
-    public RobotEntity findRobotByIdIfAllowed(int id, int userId) {
-        Record4<RobotsRecord, String, List<User>, List<CustomCommandType>> robot = createSelectRobotQuery(userId)
+    public Record4<RobotsRecord, String, List<User>, List<CustomCommandType>> findRobotDetailedByIdIfAllowed(int id, int userId) {
+        return createSelectRobotQuery(userId)
             .where(ROBOTS.ROBOT_ID.equal(id).and(USER_ROBOT_RELATIONS.USER_ID.equal(userId)))
-            .fetchOne();
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
+    }
 
-        if (robot == null) {
-            throw new RobotNotFoundException(id);
-        }
-
-        return new RobotEntity(robot.value1())
-            .withOwnerName(robot.value2())
-            .withIsOnline(checkAvailability(robot.value1().getRobotId()))
-            .withSharedUsers(robot.value3())
-            .withCommands(robot.value4());
+    @NotNull
+    public RobotsRecord findRobotsRecordByIdIfAllowed(int id, int userId) {
+        return db
+            .selectFrom(ROBOTS)
+            .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
     }
 
     @Deprecated
@@ -75,19 +68,15 @@ public class RobotRepository {
         return new RobotEntity(robotsRecord);
     }
 
-    public RobotEntity insertNewRobot(String name, int userId) {
-        RobotsRecord newRobot = db
-                .insertInto(ROBOTS)
-                .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
-                .values(name, userId)
-                .returning()
-                .fetchOne();
-
-        if (newRobot == null) {
-            throw new RuntimeException("Newly inserted robot is null");
-        }
-
-        return new RobotEntity(newRobot);
+    @NotNull
+    public RobotsRecord insertNewRobot(String name, int userId) {
+        return db
+            .insertInto(ROBOTS)
+            .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
+            .values(name, userId)
+            .returning()
+            .fetchOptional()
+            .orElseThrow(() -> new RuntimeException("Newly inserted robot is null"));
     }
 
     @Deprecated
@@ -106,25 +95,21 @@ public class RobotRepository {
         return new RobotEntity(robot);
     }
 
-    public RobotEntity updateRobot(int id, String name, int userId) {
-        // This method updates the robot only when the user is its owner
-        RobotsRecord robot = db.update(ROBOTS)
-                .set(ROBOTS.NAME, name)
-                .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
-                .returning()
-                .fetchOne();
-
-        if (robot == null) {
-            throw new RobotNotFoundException(id);
-        }
-
-        return new RobotEntity(robot);
+    /// Updates the robot only when the user is its owner
+    @NotNull
+    public RobotsRecord updateRobot(int id, String name, int userId) {
+        return db.update(ROBOTS)
+            .set(ROBOTS.NAME, name)
+            .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
+            .returning()
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
     }
 
+    /// Completely replaces the custom commands of the robot (i.e., deletes old ones and inserts new ones)
+    @NotNull
     @Transactional
-    public RobotEntity updateRobot(int robotId, String name, Collection<CommandType> commandTypes, int userId) {
-        RobotEntity robot = updateRobot(robotId, name, userId);
-
+    public Stream<CustomCommandsRecord> replaceCustomCommands(int robotId, Collection<CommandType> commandTypes) {
         db.deleteFrom(CUSTOM_COMMANDS).where(CUSTOM_COMMANDS.ROBOT_ID.equal(robotId)).execute();
 
         InsertValuesStep3<CustomCommandsRecord, Integer, String, String[]> insertQuery = db.insertInto(CUSTOM_COMMANDS)
@@ -137,9 +122,7 @@ public class RobotRepository {
             insertQuery = insertQuery.values(robotId, commandType.getCommandType(), commandType.getKeys());
         }
 
-        Stream<CustomCommandsRecord> customCommandsRecordStream = insertQuery.returning().fetchStream();
-
-        return robot.withCommands(customCommandsRecordStream.map(CustomCommandType::of).toList());
+        return insertQuery.returning().fetchStream();
     }
 
     /**
@@ -169,21 +152,14 @@ public class RobotRepository {
         }
     }
 
-    public RobotEntity[] getUserRobots(int userId) {
-        Record4<RobotsRecord, String, List<User>, List<CustomCommandType>>[] records = createSelectRobotQuery(userId)
+    @NotNull
+    public Stream<Record4<RobotsRecord, String, List<User>, List<CustomCommandType>>> getUserRobots(int userId) {
+        return createSelectRobotQuery(userId)
             .where(USER_ROBOT_RELATIONS.USER_ID.equal(userId))
-            .fetchArray();
-
-        return Arrays.stream(records)
-                .map(record -> new RobotEntity(record.value1())
-                    .withOwnerName(record.value2())
-                    .withIsOnline(checkAvailability(record.value1().getRobotId()))
-                    .withSharedUsers(record.value3())
-                    .withCommands(record.value4())
-                ).toArray(RobotEntity[]::new);
+            .fetchStream();
     }
 
-    public boolean shareRobot(int robotId, int robotOwnerId, List<String> usernames) {
+    public boolean shareRobot(int robotId, int robotOwnerId, Collection<String> usernames) {
         return db
             .insertInto(USER_ROBOT_RELATIONS)
             .columns(USER_ROBOT_RELATIONS.ROBOT_ID, USER_ROBOT_RELATIONS.USER_ID)
@@ -196,7 +172,7 @@ public class RobotRepository {
             ).onConflictDoNothing().execute() > 0;
     }
 
-    public boolean unshareRobot(int robotId, int robotOwnerId, List<Integer> userIds) {
+    public boolean unshareRobot(int robotId, int robotOwnerId, Collection<Integer> userIds) {
         return db.deleteFrom(USER_ROBOT_RELATIONS)
             .where(USER_ROBOT_RELATIONS.RELATION_ID.in(
                 select(USER_ROBOT_RELATIONS.RELATION_ID)
@@ -206,15 +182,14 @@ public class RobotRepository {
             )).execute() > 0;
     }
 
-    public List<User> getSharedUsers(int robotId, int ownerId) {
-        Record2<Integer, String>[] users = db.select(USERS.USER_ID, USERS.USERNAME)
+    @NotNull
+    public Stream<Record2<Integer, String>> getSharedUsers(int robotId, int ownerId) {
+        return db.select(USERS.USER_ID, USERS.USERNAME)
             .from(USERS)
             .innerJoin(USER_ROBOT_RELATIONS).using(USERS.USER_ID)
             .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(robotId))
             .and(USERS.USER_ID.notEqual(ownerId))
-            .fetchArray();
-
-        return Arrays.stream(users).map(user -> new User(user.value1(), user.value2())).toList();
+            .fetchStream();
     }
 
     @Deprecated
@@ -248,9 +223,5 @@ public class RobotRepository {
             .from(ROBOTS)
             .innerJoin(USER_ROBOT_RELATIONS).using(ROBOTS.ROBOT_ID)
             .innerJoin(USERS).on(ROBOTS.OWNER_ID.equal(USERS.USER_ID));
-    }
-
-    private boolean checkAvailability(int robotId) {
-        return robotService.robotIsConnected(robotId);
     }
 }

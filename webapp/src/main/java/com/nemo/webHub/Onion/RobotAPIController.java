@@ -3,8 +3,8 @@ package com.nemo.webHub.Onion;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.nemo.webHub.Commands.CommandService;
 import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Decibel.RobotService;
 import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.nemo.webHub.Onion.Converters.CommandTypeDeserializer;
 import com.nemo.webHub.User.User;
@@ -22,7 +22,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -33,7 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 public class RobotAPIController {
 
-    private final RobotRepository robotRepository;
+    private final RobotService robotService;
     private final RobotModelAssembler robotModelAssembler;
     private final CommandService commandService;
 
@@ -64,7 +63,7 @@ public class RobotAPIController {
 
     @GetMapping("{robotId}")
     public EntityModel<RobotEntity> getRobotById(@PathVariable int robotId, @AuthenticationPrincipal UserEntity user) {
-        RobotEntity robot = robotRepository.findRobotByIdIfAllowed(robotId, user.getId());
+        RobotEntity robot = robotService.getRobotById(robotId, user.getId());
 
         return robotModelAssembler.toModel(robot);
     }
@@ -74,7 +73,7 @@ public class RobotAPIController {
             @NotBlank @RequestParam("name") String name, @AuthenticationPrincipal UserEntity user) {
 
         EntityModel<RobotEntity> robotEntityModel = robotModelAssembler
-                .toModel(robotRepository.insertNewRobot(name, user.getId()));
+                .toModel(robotService.insertRobot(name, user.getId()));
 
         return ResponseEntity
                 .created(robotEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -89,7 +88,8 @@ public class RobotAPIController {
     ) {
 
         EntityModel<RobotEntity> robotEntityModel = robotModelAssembler.toModel(
-                robotRepository.updateRobot(robotId, request.name(), request.commands(), user.getId()));
+                robotService.updateRobot(robotId, request.name(), request.commands(), user.getId())
+        );
 
         return ResponseEntity
                 .created(robotEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -98,7 +98,7 @@ public class RobotAPIController {
 
     @DeleteMapping("{robotId}")
     public ResponseEntity<Void> deleteRobot(@PathVariable int robotId, @AuthenticationPrincipal UserEntity user) {
-        robotRepository.deleteRobot(robotId, user.getId());
+        robotService.deleteRobot(robotId, user.getId());
 
         return ResponseEntity.noContent().build();
     }
@@ -106,8 +106,8 @@ public class RobotAPIController {
     @GetMapping
     public CollectionModel<EntityModel<RobotEntity>> getUserRobots(@AuthenticationPrincipal UserEntity user) {
 
-        List<EntityModel<RobotEntity>> robots = Arrays.stream(robotRepository.getUserRobots(user.getId()))
-                .map(robotModelAssembler::toModel).toList();
+        List<EntityModel<RobotEntity>> robots = robotService.getUserRobots(user.getId())
+            .map(robotModelAssembler::toModel).toList();
 
         return CollectionModel.of(robots, linkTo(methodOn(this.getClass()).getUserRobots(user)).withSelfRel());
     }
@@ -118,9 +118,9 @@ public class RobotAPIController {
         @NotEmpty @RequestParam("users") List<String> users,
         @AuthenticationPrincipal UserEntity currentUser
     ) {
-        boolean success = robotRepository.shareRobot(robotId, currentUser.getId(), users);
+        boolean success = robotService.shareRobot(robotId, currentUser.getId(), users);
         if (success) {
-            return ResponseEntity.ok(robotRepository.getSharedUsers(robotId, currentUser.getId()));
+            return ResponseEntity.ok(robotService.getSharedUsers(robotId, currentUser.getId()));
         }
         return ResponseEntity.badRequest().build();
     }
@@ -131,9 +131,9 @@ public class RobotAPIController {
         @NotEmpty @RequestParam("users") List<Integer> users,
         @AuthenticationPrincipal UserEntity currentUser
     ) {
-        boolean success = robotRepository.unshareRobot(robotId, currentUser.getId(), users);
+        boolean success = robotService.unshareRobot(robotId, currentUser.getId(), users);
         if (success) {
-            return ResponseEntity.ok(robotRepository.getSharedUsers(robotId, currentUser.getId()));
+            return ResponseEntity.ok(robotService.getSharedUsers(robotId, currentUser.getId()));
         }
         return ResponseEntity.badRequest().build();
     }

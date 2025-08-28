@@ -1,7 +1,7 @@
 package com.nemo.webHub.Sect.HandshakeInterceptors;
 
 import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Robot.RobotService;
+import com.nemo.webHub.Robot.RobotConnectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -21,10 +21,10 @@ import java.util.Map;
  * */
 public class CommandRobotHandshakeInterceptor extends AbstractHandshakeInterceptor{
 
-    private final RobotService robotService;
+    private final RobotConnectionService robotConnectionService;
 
-    public CommandRobotHandshakeInterceptor(RobotService robotService) {
-        this.robotService = robotService;
+    public CommandRobotHandshakeInterceptor(RobotConnectionService robotConnectionService) {
+        this.robotConnectionService = robotConnectionService;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class CommandRobotHandshakeInterceptor extends AbstractHandshakeIntercept
 
         RobotEntity robot = getCurrentRobot();
 
-        if (robotService.robotIsConnected(robot.getId())) {
+        if (robotConnectionService.robotIsConnected(robot.getId())) {
             // Another robot with this ID is already connected - deny request
             response.setStatusCode(HttpStatus.CONFLICT);
             return false;

@@ -32,7 +32,7 @@ public class RobotRepositoryUserDetailsService implements UserDetailsService {
         RobotEntity robot;
         try {
             robotId = Integer.parseInt(robotIdString);
-            robot = robotRepository.findRobotById(robotId);
+            robot = RobotEntity.of(robotRepository.findRobotById(robotId));
         } catch (NumberFormatException | RobotNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());
         }

@@ -237,6 +237,27 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
 
     }
 
+    @Test
+    void if_robot_exists_it_is_possible_to_share_it_with_another_user() {
+        final String otherUser1 = "otherUser1";
+        final String otherUser2 = "otherUser2";
+
+        given()
+            .I_am().a().test_user()
+            .and().user_$_exists(otherUser1, otherUser1)
+            .and().user_$_exists(otherUser2, otherUser2)
+            .and().I().have_a_robot(DEFAULT_ROBOT_NAME)
+            .and().I().want_to_share_it_with(otherUser1, otherUser2);
+
+        when()
+            .I().send_request_to().the().share_robot_endpoint();
+
+        then()
+            .the().response_is_correct()
+            .and().the_robot_is_shared_with(otherUser1, otherUser2);
+
+    }
+
     private static Stream<List<String>> provided_I_have_robots_I_am_able_to_get_them() {
         return Stream.of(
             List.of(),

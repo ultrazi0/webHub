@@ -5,10 +5,12 @@ import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.nemo.webHub.User.User;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
+import org.jooq.Record2;
 import org.jooq.generated.tables.records.CustomCommandsRecord;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import java.util.stream.Stream;
 
 import static org.jooq.generated.Tables.CUSTOM_COMMANDS;
 import static org.jooq.generated.Tables.ROBOTS;
+import static org.jooq.generated.Tables.USERS;
+import static org.jooq.generated.Tables.USER_ROBOT_RELATIONS;
 
 /**
  * The {@code RobotService} class provides functionalities to interact with the robot records
@@ -109,6 +113,17 @@ public class RobotService implements WithPersistence<RobotEntity> {
             .fetchStream();
 
         return customCommandsRecordStream.map(CustomCommandType::of).toList();
+    }
+
+    public List<User> getSharedUsers(int robotId, int ownerId) {
+        Record2<Integer, String>[] users = db.select(USERS.USER_ID, USERS.USERNAME)
+            .from(USERS)
+            .innerJoin(USER_ROBOT_RELATIONS).using(USERS.USER_ID)
+            .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(robotId))
+            .and(USERS.USER_ID.notEqual(ownerId))
+            .fetchArray();
+
+        return Arrays.stream(users).map(user -> new User(user.value1(), user.value2())).toList();
     }
 
     public RobotEntity createNewRobot(String robotName, int ownerId) {

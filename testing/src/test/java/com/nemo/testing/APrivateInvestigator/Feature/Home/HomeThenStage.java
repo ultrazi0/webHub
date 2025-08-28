@@ -7,6 +7,7 @@ import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.nemo.webHub.User.User;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
 import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
@@ -168,6 +169,22 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         validatableResponse.rootPath("_embedded");
         validatableResponse.body("robotEntityList.size()", Matchers.equalTo(size));
         validatableResponse.body("robotEntityList.with { it.name }", Matchers.containsInAnyOrder(robotNames.toArray()));
+
+        return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_is_shared_with(String... usernames) {
+        RobotEntity robot = retrieveCreatedRobotEntity();
+
+        List<User> sharedUsers = robotService.getSharedUsers(robot.getId(), robot.getOwner().getId());
+
+        assertThat(sharedUsers)
+            .as("Assert exactly %s users have been shared with the robot", usernames.length)
+            .hasSize(usernames.length)
+            .as("Assert the shared users are exactly the provided users")
+            .extracting(User::getUsername)
+            .containsExactlyInAnyOrder(usernames);
 
         return self();
     }

@@ -13,4 +13,7 @@ public interface WithHomeEndpoints {
     Endpoint GET_ROBOT_ENDPOINT = new Endpoint(Method.GET, "/robots/{robotId}");
     Endpoint EDIT_ROBOT_ENDPOINT = new Endpoint(Method.PUT, "/robots/{robotId}");
     Endpoint DELETE_ROBOT_ENDPOINT = new Endpoint(Method.DELETE, "/robots/{robotId}");
+
+    Endpoint SHARE_ROBOT_ENDPOINT = new Endpoint(Method.POST, "/robots/{robotId}/share");
+    Endpoint UNSHARE_ROBOT_ENDPOINT = new Endpoint(Method.DELETE, "/robots/{robotId}/unshare");
 }

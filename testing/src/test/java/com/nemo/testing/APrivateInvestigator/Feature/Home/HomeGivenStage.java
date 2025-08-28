@@ -119,6 +119,12 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         return request_it();
     }
 
+    public HomeGivenStage want_to_share_it_with(String... usernames) {
+        request.formParam("users", String.join(",", usernames));
+
+        return request_it();
+    }
+
     @Hidden
     public HomeGivenStage requestRobot(int robotId) {
         request.pathParam("robotId", robotId);

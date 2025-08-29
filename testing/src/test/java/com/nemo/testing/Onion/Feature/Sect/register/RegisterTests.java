@@ -34,7 +34,7 @@ class RegisterTests extends SpringScenarioTest<RegisterGivenStage, RegisterWhenS
         given()
             .I_am().on_register_page()
             .and().I_am().not_logged_in()
-            .and().account_$_already_exists(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+            .and().user_$_exists(DEFAULT_USERNAME, DEFAULT_PASSWORD);
 
         when()
             .I().try_to_register_with_credentials(DEFAULT_USERNAME, DEFAULT_PASSWORD);

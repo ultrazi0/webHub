@@ -3,7 +3,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Home;
 import com.nemo.testing.core.API.WithErrorMessages;
 import com.nemo.testing.core.APrivateInvestigatorTest;
 import com.nemo.testing.core.Tags.CustomCommandsOdyssey;
-import com.nemo.testing.core.Tags.ShareUsers;
+import com.nemo.testing.core.Tags.ShareRobots;
 import com.nemo.testing.core.Tags.WH;
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
@@ -239,7 +239,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    @ShareUsers
+    @ShareRobots
     void if_robot_exists_it_is_possible_to_share_it_with_another_user() {
         final String otherUser1 = "otherUser1";
         final String otherUser2 = "otherUser2";
@@ -261,7 +261,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    @ShareUsers
+    @ShareRobots
     void if_robot_is_shared_this_can_be_seen_in_its_details() {
         final String otherUser1 = "otherUser1";
         final String otherUser2 = "otherUser2";
@@ -284,7 +284,7 @@ class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeTh
     }
 
     @Test
-    @ShareUsers
+    @ShareRobots
     void if_robot_is_shared_with_another_user_it_is_possible_to_unshare_it() {
         final String otherUser1 = "otherUser1";
 

@@ -24,7 +24,11 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.WebDriverRunner.driver;
@@ -112,6 +116,22 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
     protected static String fullUrlOf(String path) {
         return baseUrl + path;
     }
+
+    protected int getCreatedUserId(String username) {
+        return getCreatedUsersIds(username).get(username);
+    }
+
+    protected Map<String, Integer> getCreatedUsersIds(String... usernames) {
+        Set<UserEntity> users = createdEntities.getInstances(UserEntity.class);
+        verifyCreatedUsersSetContains(users, usernames);
+
+        List<String> usernameList = List.of(usernames);
+        return users.stream()
+            .filter(user -> usernameList.contains(user.getUsername()))
+            .collect(Collectors.toMap(UserEntity::getUsername, UserEntity::getId));
+    }
+
+    abstract void verifyCreatedUsersSetContains(Set<UserEntity> users, String... usernames);
 
     @BeforeStage
     private void propagateCurrentStageToPage() {

@@ -34,6 +34,7 @@ public class HomePage extends AbstractPage {
     private final By INFO_BUTTON = By.className("robotCard-infoButton");
     private final By DELETE_BUTTON = By.className("robotCard-closeButton");
     private final By EDIT_BUTTON = By.xpath("./div[contains(@class, 'card-footer')]/button");
+    private final By LINK_TO_OWNER = By.xpath(".//p[@class='card-text']/a");
 
     private By ROBOT_CARD_BY(String robotName) {
         return By.xpath(String.format(
@@ -131,6 +132,16 @@ public class HomePage extends AbstractPage {
         element(ROBOT_CARD_BY(robotName)).find(EDIT_BUTTON).click();
     }
 
+    /// Warning: this method does NOT wait!
+    public final String getTheNameOfTheRobotsOwner(String robotName) {
+        return element(ROBOT_CARD_BY(robotName)).find(LINK_TO_OWNER).getText();
+    }
+
+    /// Warning: this method does NOT wait!
+    public final String getTheRobotsOwnerHref(String robotName) {
+        return element(ROBOT_CARD_BY(robotName)).find(LINK_TO_OWNER).getAttribute("href");
+    }
+
     // ********** //
     // Info modal //
     // ********** //
@@ -164,6 +175,47 @@ public class HomePage extends AbstractPage {
 
     public final String getRobotOnlineStatusFromInfoModal() {
         return robotInfoModal.getRobotOnlineStatus();
+    }
+
+    public final void pressHideShowSharedWithButtonInInfoModal() {
+        robotInfoModal.pressHideShowSharedWithButton();
+    }
+
+    /// Warning: this method does NOT wait!
+    public final boolean hideShowSharedWithButtonIsDisplayedInInfoModal() {
+        return robotInfoModal.hideShowSharedWithButtonIsDisplayed();
+    }
+
+    public final void pressAddUserButtonInInfoModal() {
+        robotInfoModal.pressAddUserButton();
+    }
+
+    public final String getSharedUserLinkUsernameInInfoModal(int rowIndex) {
+        return robotInfoModal.getSharedUserLinkText(rowIndex);
+    }
+
+    public final String getSharedUserLinkHrefInInfoModal(int rowIndex) {
+        return robotInfoModal.getSharedUserLinkHref(rowIndex);
+    }
+
+    public final void enterUsernameToShareWith(String username, int rowIndex) {
+        robotInfoModal.enterUsernameToShareTheRobotWith(username, rowIndex);
+    }
+
+    public final void pressShareUserButton(int rowIndex) {
+        robotInfoModal.pressShareUserButton(rowIndex);
+    }
+
+    public final void pressUnshareUserButtonFor(String username) {
+        robotInfoModal.pressUnshareUserButtonFor(username);
+    }
+
+    public final boolean sharedUserRowHasDisappearedFor(String username) {
+        return robotInfoModal.sharedUserRowHasDisappearedFor(username);
+    }
+
+    public final int getAmountOfUserRows() {
+        return robotInfoModal.getAmountOfUserRows();
     }
 
     // ************ //

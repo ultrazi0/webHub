@@ -14,7 +14,6 @@ type RobotCardProps = {
 
 export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, setDeleteRobotId }: RobotCardProps) {
     const navigate = useNavigate();
-    const createdAt = new Date(robot.createdAt);
 
     return (
         <div onClick={() => navigate("control-panel/" + robot.id)} role="button">
@@ -40,7 +39,7 @@ export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, s
                 <CardBody>
                     <CardTitle>{robot.name}</CardTitle>
                     <CardText>
-                        Created at: {createdAt.toString()}
+                        Created at: {new Date(robot.createdAt).toLocaleString()}
                         {user && user.id !== robot.owner.id && robot.owner.username && (
                             <>
                                 <br />

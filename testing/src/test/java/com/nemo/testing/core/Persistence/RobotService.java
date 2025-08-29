@@ -118,6 +118,10 @@ public class RobotService implements WithPersistence<RobotEntity> {
         return customCommandsRecordStream.map(CustomCommandType::of).toList();
     }
 
+    public List<String> getSharedUsersUsernames(RobotEntity robot) {
+        return getSharedUsersUsernames(robot.getId(), robot.getOwner().getId());
+    }
+
     public List<String> getSharedUsersUsernames(int robotId, int ownerId) {
         return robotRepository.getSharedUsers(robotId, ownerId)
             .map(Record2::value2).toList();

@@ -43,9 +43,10 @@ export default function RobotInfoModal({ robot, setRobot, user, csrfToken }: Rob
                     <RobotInfo robot={robot} />
                     {userIsOwner && (
                         <Button
+                            id="robot-info-modal-hide-show-shared-users-button"
                             variant="outline-secondary"
-                            onClick={() => setModalExpanded(value => !value)
-                            }>
+                            onClick={() => setModalExpanded(value => !value)}
+                        >
                             {modalExpanded ? "Hide" : "Show"} shared
                         </Button>
                     )}
@@ -114,12 +115,13 @@ function SharedUsers({ robot, expandedClass, csrfToken }: SharedUsersProps) {
         setUsersToShare(prevUsers => prevUsers.filter(userId => userId !== id));
 
     const sharedUsers = fetcher.data === undefined ? robot?.sharedUsers : fetcher.data;
+    console.log(sharedUsers);
 
     return (
         <div className={`shared-users-block ${expandedClass}`}>
             <span id="shared-users-header">
                 <span>Shared with:</span>
-                <Button variant="outline-primary" size="sm" onClick={addUserToShare}>
+                <Button id="robot-info-shared-users-add-user" variant="outline-primary" size="sm" onClick={addUserToShare}>
                     <UserPlus size={18} />
                 </Button>
             </span>
@@ -183,7 +185,10 @@ function NewUser({ userId, removeUser, fetcher, actionUri, csrfToken }: WithFetc
     };
 
     return (
-        <fetcher.Form>
+        <fetcher.Form onSubmit={(event) => {
+            event.preventDefault();
+            onSubmit();
+        }}>
             <FormControl
                 type="text"
                 name="username"

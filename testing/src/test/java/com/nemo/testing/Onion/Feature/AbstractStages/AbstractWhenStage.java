@@ -1,6 +1,5 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
-import com.nemo.testing.APrivateInvestigator.Model.TestRequest;
 import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
@@ -14,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Set;
 
 /**
  * AbstractWhenStage serves as a base class for defining "When" stages in JGiven testing scenarios.
@@ -64,5 +65,10 @@ public abstract class AbstractWhenStage<T extends AbstractWhenStage<T>> extends 
      * */
     protected AbstractBooleanAssert<?> assertTakingScreenshotThat(boolean condition, String description, Object... args) {
         return Assertions.assertThat(condition).as(addScreenshotToDescription(description, args));
+    }
+
+    @Override
+    void verifyCreatedUsersSetContains(Set<UserEntity> users, String... usernames) {
+        throw new UnsupportedOperationException("This method is not supported in this stage");
     }
 }

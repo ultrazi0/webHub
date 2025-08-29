@@ -5,6 +5,7 @@ import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
+import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -94,6 +95,43 @@ class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
     public HomeWhenStage change_robot_name_to(@Quoted String newRobotName) {
         homePage.enterNewRobotNameInEditModal(newRobotName);
         homePage.pressSaveButtonInEditModal();
+
+        return self();
+    }
+
+    public HomeWhenStage open_the_shared_with_side_panel() {
+        homePage.pressHideShowSharedWithButtonInInfoModal();
+
+        return self();
+    }
+
+    @NestedSteps
+    public HomeWhenStage share_the_robot_with(String username) {
+        return I().press_add_user_button()
+            .and().I().enter_username_of_the_user_I_want_to_share_the_robot_with(username, 0)
+            .and().I().press_share_user_button(0);
+    }
+
+    public HomeWhenStage press_add_user_button() {
+        homePage.pressAddUserButtonInInfoModal();
+
+        return self();
+    }
+
+    public HomeWhenStage enter_username_of_the_user_I_want_to_share_the_robot_with(@Hidden String username, @Hidden int rowIndex) {
+        homePage.enterUsernameToShareWith(username, rowIndex);
+
+        return self();
+    }
+
+    public HomeWhenStage press_share_user_button(@Hidden int rowIndex) {
+        homePage.pressShareUserButton(rowIndex);
+
+        return self();
+    }
+
+    public HomeWhenStage stop_sharing_the_robot_with(String username) {
+        homePage.pressUnshareUserButtonFor(username);
 
         return self();
     }

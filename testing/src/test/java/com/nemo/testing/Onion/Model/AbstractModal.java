@@ -1,5 +1,6 @@
 package com.nemo.testing.Onion.Model;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
@@ -25,6 +26,10 @@ public abstract class AbstractModal extends AbstractFragment {
 
     protected final SelenideElement modalElement(By selector) {
         return element(MODAL_DIALOG).find(selector);
+    }
+
+    protected final ElementsCollection modalElements(By selector) {
+        return element(MODAL_DIALOG).findAll(selector);
     }
 
     public final String getModalTitle() {

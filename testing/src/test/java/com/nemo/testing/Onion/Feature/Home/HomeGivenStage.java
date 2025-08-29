@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Set;
 
 @JGivenStage
@@ -61,9 +62,19 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription(RESOLVED_IN_DATABASE)
     public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
+        return robotIsCreatedWithOwner(robotName, CURRENT_USER.getId());
+    }
+
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage robot_$_is_owned_by(@Quoted String robotName, String ownerName) {
+        return robotIsCreatedWithOwner(robotName, getCreatedUserId(ownerName));
+    }
+
+    @Hidden
+    public HomeGivenStage robotIsCreatedWithOwner(String robotName, int ownerId) {
         RobotsRecord robotsRecord = new RobotsRecord();
         robotsRecord.setName(robotName);
-        robotsRecord.setOwnerId(CURRENT_USER.getId());
+        robotsRecord.setOwnerId(ownerId);
 
         assumeThatCode(() -> createEntity(RobotEntity.class, robotsRecord))
             .as("Create robot with name \"%s\"", robotName)
@@ -97,12 +108,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage its_owner() {
-        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
-        assumeThat(createdRobots)
-            .as("Assume that only one robot has been created")
-            .hasSize(1);
-
-        assumeThat(robotService.getRobotOwnerIdByRobotId(createdRobots.iterator().next().getId()))
+        assumeThat(robotService.getRobotOwnerIdByRobotId(getCreatedRobot().getId()))
             .as("Check if current user is the owner of the robot")
             .isEqualTo(CURRENT_USER.getId());
 
@@ -114,6 +120,22 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
             .and().assumeSeeRobotAsCard(robotName);
     }
 
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage it_is_shared_with_me() {
+        return it_is_shared_with(CURRENT_USER.getUsername());
+    }
+
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage it_is_shared_with(String... usernames) {
+        RobotEntity robot = getCreatedRobot();
+
+        assumeThat(robotService.shareRobotWithUser(robot.getId(), robot.getOwner().getId(), List.of(usernames)))
+            .as("Assume that the robot is shared with me")
+            .isTrue();
+
+        return self();
+    }
+
     @Hidden
     private HomeGivenStage assumeSeeRobotAsCard(String robotName) {
         assumeTakingScreenshotThat(homePage.thereIsARobotCardWithName(robotName),
@@ -122,5 +144,14 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
             .isTrue();
 
         return self();
+    }
+
+    private RobotEntity getCreatedRobot() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        assumeThat(createdRobots)
+            .as("Assume that only one robot has been created")
+            .hasSize(1);
+
+        return createdRobots.iterator().next();
     }
 }

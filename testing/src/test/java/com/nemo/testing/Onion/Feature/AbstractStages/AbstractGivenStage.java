@@ -9,6 +9,9 @@ import com.nemo.testing.core.TypedClassInstanceMap;
 import com.nemo.webHub.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.BeforeScenario;
+import com.tngtech.jgiven.annotation.ExtendedDescription;
+import com.tngtech.jgiven.annotation.Hidden;
+import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.AbstractBooleanAssert;
@@ -19,6 +22,8 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Set;
 
 import static com.codeborne.selenide.WebDriverRunner.driver;
 import static com.codeborne.selenide.WebDriverRunner.url;
@@ -197,6 +202,32 @@ public abstract class AbstractGivenStage<T extends AbstractGivenStage<T>> extend
         logInAs(TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
         return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public T user_$_exists(@Quoted String username) {
+        return user_$_exists(username, username);
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public T user_$_exists(@Quoted String username, @Hidden String password) {
+        UsersRecord usersRecord = new UsersRecord();
+        usersRecord.setUsername(username);
+        usersRecord.setPassword(password);
+
+        createEntity(UserEntity.class, usersRecord);
+
+        return self();
+    }
+
+    @Override
+    void verifyCreatedUsersSetContains(Set<UserEntity> users, String... usernames) {
+        assumeThat(users)
+            .as("Assume that users have been created")
+            .isNotEmpty()
+            .as("Assume that specified users exist")
+            .extracting(UserEntity::getUsername)
+            .contains(usernames);
     }
 
     protected void logInAs(String username, String password) {

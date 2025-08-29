@@ -1,9 +1,12 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
+import com.nemo.webHub.Decibel.UserEntity;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.WithAssertions;
+
+import java.util.Set;
 
 import static com.codeborne.selenide.WebDriverRunner.url;
 
@@ -62,10 +65,11 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
      *                    if you really wish to add one!
+     * @param args arguments to format the description
      * @return {@code AbstractStringAssert<?>}, allowing chaining of further checks and conditions
      */
-    protected AbstractStringAssert<?> assertTakingScreenshotThat(String string, String description) {
-        return assertThat(string).as(addScreenshotToDescription(description));
+    protected AbstractStringAssert<?> assertTakingScreenshotThat(String string, String description, Object... args) {
+        return assertThat(string).as(addScreenshotToDescription(description, args));
     }
 
     /**
@@ -75,6 +79,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
      *                    if you really wish to add one!
+     * @param args arguments to format the description
      * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
      * */
     protected AbstractBooleanAssert<?> assertTakingScreenshotThat(boolean condition, String description, Object... args) {
@@ -95,4 +100,13 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
         return assertThat(integer).as(addScreenshotToDescription(description, args));
     }
 
+    @Override
+    void verifyCreatedUsersSetContains(Set<UserEntity> users, String... usernames) {
+        assertThat(users)
+            .as("Assert that users have been created")
+            .isNotEmpty()
+            .as("Assert that specified users exist")
+            .extracting(UserEntity::getUsername)
+            .contains(usernames);
+    }
 }

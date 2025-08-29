@@ -5,7 +5,6 @@ import com.tngtech.jgiven.integration.spring.junit5.SpringScenarioTest;
 import org.junit.jupiter.api.Test;
 
 @OnionTest
-@SuppressWarnings("ResultOfMethodCallIgnored")
 class HomeTests extends SpringScenarioTest<HomeGivenStage, HomeWhenStage, HomeThenStage> {
 
     String DEFAULT_ROBOT_NAME = "myTestRobot";

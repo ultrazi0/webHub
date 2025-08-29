@@ -150,8 +150,20 @@ public class HomePage extends AbstractPage {
         return Integer.parseInt(robotInfoModal.getRobotId());
     }
 
+    public final String getRobotPasswordFromInfoModal() {
+        return robotInfoModal.getRobotPassword();
+    }
+
     public final String getRobotOwnedByFromInfoModal() {
         return robotInfoModal.getRobotOwnedBy();
+    }
+
+    public final String getRobotCreatedAtFromInfoModal() {
+        return robotInfoModal.getRobotCreatedAt();
+    }
+
+    public final String getRobotOnlineStatusFromInfoModal() {
+        return robotInfoModal.getRobotOnlineStatus();
     }
 
     // ************ //

@@ -64,7 +64,10 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     public HomeThenStage all_the_data_is_correct(@Hidden String robotName) {
         return the_names_match(robotName)
             .and().the_ids_match()
-            .and().the_owner_is_correct();
+            .and().the_passwords_match()
+            .and().the_owner_is_correct()
+            .and().the_creation_date_is_not_blank()
+            .and().the_online_status_is_correct();
     }
 
     public HomeThenStage the_names_match(@Hidden String robotName) {
@@ -76,14 +79,16 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage the_ids_match() {
-        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
-        assertThat(createdRobots)
-            .as("Assert that only one robot has been created in this test")
-            .hasSize(1);
-
         assertTakingScreenshotThat(homePage.getRobotIdFromInfoModal(),
             "Check if the ids match")
-            .isEqualTo(createdRobots.iterator().next().getId());
+            .isEqualTo(getCreatedRobot().getId());
+
+        return self();
+    }
+
+    public HomeThenStage the_passwords_match() {
+        assertTakingScreenshotThat(homePage.getRobotPasswordFromInfoModal(), "Check if the passwords match")
+            .isEqualTo(getCreatedRobot().getPasswordWithoutEncoding());
 
         return self();
     }
@@ -92,6 +97,20 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         assertTakingScreenshotThat(homePage.getRobotOwnedByFromInfoModal(),
             "Check if the owner is correct")
             .isEqualTo(CURRENT_USER.getUsername());
+
+        return self();
+    }
+
+    public HomeThenStage the_creation_date_is_not_blank() {
+        assertTakingScreenshotThat(homePage.getRobotCreatedAtFromInfoModal(), "Check creation date is not blank")
+            .isNotBlank();
+
+        return self();
+    }
+
+    public HomeThenStage the_online_status_is_correct() {
+        assertTakingScreenshotThat(homePage.getRobotOnlineStatusFromInfoModal(), "Check if online status is matches")
+            .isEqualTo(getCreatedRobot().isOnline() ? "online" : "offline");
 
         return self();
     }
@@ -135,5 +154,14 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
             .isTrue();
 
         return self();
+    }
+
+    private RobotEntity getCreatedRobot() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        assertThat(createdRobots)
+            .as("Assert that only one robot has been created in this test")
+            .hasSize(1);
+
+        return createdRobots.iterator().next();
     }
 }

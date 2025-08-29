@@ -69,22 +69,28 @@ function RobotInfo({ robot }: Pick<RobotInfoModalProps, "robot">) {
                 </span>
                 <br />
                 <br />
-                <b>Name:</b> <span>{robot?.name}</span>
+                <b>Name:</b> <span id="robot-info-modal-robot-name-span">{robot?.name}</span>
                 <br />
-                <b>ID:</b> <span>{robot?.id}</span>
+                <b>ID:</b> <span id="robot-info-modal-robot-id-span">{robot?.id}</span>
                 <br />
-                <b>Password:</b> <span>{robot?.password}</span>
+                <b>Password:</b> <span id="robot-info-modal-robot-password-span">{robot?.password}</span>
                 <br />
-                <b>Owned by:</b> <span>{robot?.owner.username}</span>
+                <b>Owned by:</b> <span id="robot-info-modal-robot-owner-username-span">{robot?.owner.username}</span>
                 <br />
                 {robot && (
                     <>
                         <b>Robot was created at: </b>
-                        <span>{new Date(robot.createdAt).toLocaleString()}</span>
+                        <span id="robot-info-modal-robot-created-at-span">{new Date(robot.createdAt).toLocaleString()}</span>
                         <br />
                     </>
                 )}
-                <i>This robot is currently {robot?.online ? <span className="text-success">online</span> : <span className="text-danger">offline</span>}</i>
+                <i>
+                    This robot is currently {robot?.online ? (
+                        <span id="robot-info-modal-robot-online-status-span" className="text-success">online</span>
+                    ) : (
+                        <span id="robot-info-modal-robot-online-status-span" className="text-danger">offline</span>
+                    )}
+                </i>
             </p>
         </div>
     );

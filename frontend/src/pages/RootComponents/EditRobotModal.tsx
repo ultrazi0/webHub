@@ -292,6 +292,7 @@ function RobotCommandForm({ command, clearSelectedCommand, updateCommand, comman
                     <div>Keys:</div>
                     {!isStandardCommand && (
                         <Button
+                            id="robot-command-edit-form-add-key-button"
                             variant="outline-primary"
                             size="sm"
                             onClick={() => {

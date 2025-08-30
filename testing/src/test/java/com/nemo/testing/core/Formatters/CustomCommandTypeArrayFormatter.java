@@ -1,4 +1,4 @@
-package com.nemo.testing.APrivateInvestigator.Model.Formatters;
+package com.nemo.testing.core.Formatters;
 
 import com.nemo.webHub.Commands.CustomCommandType;
 import com.tngtech.jgiven.format.ArgumentFormatter;

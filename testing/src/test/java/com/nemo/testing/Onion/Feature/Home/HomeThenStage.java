@@ -4,15 +4,28 @@ import com.nemo.testing.Onion.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
 import com.nemo.testing.Onion.Model.User.UserPage;
+import com.nemo.testing.core.Formatters.CustomCommandTypeArrayFormatter;
+import com.nemo.testing.core.Formatters.CustomCommandTypeFormatter;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.CustomCommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
-import com.tngtech.jgiven.annotation.*;
+import com.tngtech.jgiven.annotation.As;
+import com.tngtech.jgiven.annotation.ExtendedDescription;
+import com.tngtech.jgiven.annotation.Format;
+import com.tngtech.jgiven.annotation.Hidden;
+import com.tngtech.jgiven.annotation.NestedSteps;
+import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
@@ -258,6 +271,136 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
             homePage.getTheRobotsOwnerHref(robot.getName()),
             "The link is pointing to the correct user"
         ).isEqualTo(fullUrlOf(UserPage.getUri(getCreatedUserId(username))));
+
+        return self();
+    }
+
+    public HomeThenStage see_the_list_of_standard_commands() {
+        String[] expectedCommands = Arrays.stream(StandardCommandType.values())
+            .map(CommandType::getCommandType)
+            .toArray(String[]::new);
+
+        assertTakingScreenshotThat(
+            homePage.getCommandsInEditModal(),
+            "Assert that only standard commands are present")
+            .containsExactlyInAnyOrder(expectedCommands);
+
+        for (StandardCommandType standardCommand : StandardCommandType.values()) {
+            see_the_correct_command_details(standardCommand);
+        }
+
+        return self();
+    }
+
+    public HomeThenStage see_standard_commands_as_well_as_the_custom_ones(@Hidden CustomCommandType... customCommands) {
+        String[] expectedCommands = Stream.concat(
+            Arrays.stream(StandardCommandType.values()), Arrays.stream(customCommands)
+            ).map(CommandType::getCommandType)
+            .toArray(String[]::new);
+
+        currentStep.setExtendedDescription("Expected custom commands: " + Arrays.stream(customCommands)
+            .map(CustomCommandTypeFormatter::formatCustomCommandType)
+            .collect(Collectors.joining(", ")));
+
+        assertTakingScreenshotThat(
+            homePage.getCommandsInEditModal(),
+            "Assert that only standard commands are present")
+            .containsExactlyInAnyOrder(expectedCommands);
+
+        for (StandardCommandType standardCommand : StandardCommandType.values()) {
+            see_the_correct_command_details(standardCommand);
+        }
+
+        for (CustomCommandType customCommand : customCommands) {
+            see_the_correct_command_details(customCommand);
+        }
+
+        return self();
+    }
+
+    public HomeThenStage see_the_correct_command_details(CommandType customCommand) {
+        homePage.openCommandForm(customCommand.getCommandType());
+
+        assertTakingScreenshotThat(
+            homePage.commandNameInputFieldIsVisible(),
+            "Assert command name input field is visible"
+        ).isTrue();
+
+        assertTakingScreenshotThat(
+            homePage.getTextFromTheCommandInputField(),
+            "Assert command name input field has correct value"
+        ).isEqualTo(customCommand.getCommandType());
+
+        assertTakingScreenshotThat(
+            homePage.getKeysFromTheCommandForm(),
+            "Assert command keys are correct"
+        ).containsExactlyInAnyOrder(customCommand.getKeys());
+
+        return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_has_the_following_custom_commands(@Format(CustomCommandTypeArrayFormatter.class) CustomCommandType... customCommands) {
+        RobotEntity robot = getCreatedRobot();
+
+        assertThat(robotService.getCustomRobotCommands(robot.getId()))
+            .as("Assert exactly %s custom commands have been created", customCommands.length)
+            .hasSize(customCommands.length)
+            .as("Assert the robot has exactly the provided commands")
+            .containsExactlyInAnyOrder(customCommands);
+
+        return self();
+    }
+
+    public HomeThenStage cannot_press_the_save_button_in_the_edit_modal() {
+
+        assertTakingScreenshotThat(
+            homePage.saveButtonInEditModalIsDisabled(),
+            "Assert that the save button is disabled"
+        ).isTrue();
+
+        return self();
+    }
+
+    public HomeThenStage the_reason_should_be(@Quoted String reason) {
+
+        assertTakingScreenshotThat(
+            homePage.getCommandInputFieldErrorMessage(),
+            "Assert that the command input field error message is correct"
+        ).isEqualTo(reason);
+
+        return self();
+    }
+
+    public HomeThenStage should_not_see_the_delete_button_for_standard_commands() {
+
+        for (CommandType standardCommand : StandardCommandType.values()) {
+            assertTakingScreenshotThat(
+                homePage.removeButtonIsHiddenFor(standardCommand.getCommandType()),
+                "Assert that the delete button is hidden for \"%s\"",
+                standardCommand.getCommandType()
+            ).isTrue();
+        }
+
+        return self();
+    }
+
+    public HomeThenStage the_command_input_field_is_disabled() {
+
+        assertTakingScreenshotThat(
+            homePage.enterCommandNameIsDisabled(),
+            "Assert that the command input field is disabled"
+        ).isTrue();
+
+        return self();
+    }
+
+    public HomeThenStage the_add_key_button_is_not_displayed() {
+
+        assertTakingScreenshotThat(
+            homePage.addKeyButtonIsHidden(),
+            "Assert that the add key button is not displayed"
+        ).isTrue();
 
         return self();
     }

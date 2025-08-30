@@ -2,7 +2,9 @@ package com.nemo.testing.Onion.Feature.Home;
 
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
+import com.nemo.testing.core.Formatters.CustomCommandTypeArrayFormatter;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.*;
@@ -132,6 +134,27 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
         assumeThat(robotService.shareRobotWithUser(robot.getId(), robot.getOwner().getId(), List.of(usernames)))
             .as("Assume that the robot is shared with me")
             .isTrue();
+
+        return self();
+    }
+
+    public HomeGivenStage it_has_no_custom_commands() {
+        RobotEntity robot = getCreatedRobot();
+
+        assumeThat(robotService.getCustomRobotCommands(robot.getId()))
+            .as("Assume robot has no custom commands")
+            .isEmpty();
+
+        return self();
+    }
+
+    public HomeGivenStage it_has_custom_commands(@Format(CustomCommandTypeArrayFormatter.class) CustomCommandType... customCommands) {
+        int robotId = getCreatedRobot().getId();
+        robotService.createCustomCommands(robotId, List.of(customCommands));
+
+        assumeThat(robotService.getCustomRobotCommands(robotId))
+            .as("Assume commands are created")
+            .containsExactlyInAnyOrder(customCommands);
 
         return self();
     }

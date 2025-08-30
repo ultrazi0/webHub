@@ -1,9 +1,12 @@
 package com.nemo.testing.Onion.Model.Home;
 
 import com.nemo.testing.Onion.Model.AbstractPage;
+import jakarta.annotation.Nullable;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
@@ -242,4 +245,75 @@ public class HomePage extends AbstractPage {
         editRobotModal.pressSaveRobotButton();
         editRobotModal.waitUntilModalIsClosed();
     }
+
+    public final boolean saveButtonInEditModalIsDisabled() {
+        return editRobotModal.saveRobotButtonIsDisabled();
+    }
+
+    @Nullable
+    public final List<String> getCommandsInEditModal() {
+        return editRobotModal.getCommands();
+    }
+
+    public final void removeCommandByName(String commandName) {
+        editRobotModal.pressRemoveCommandButton(commandName);
+    }
+
+    public final void openCommandForm(String commandName) {
+        editRobotModal.clickCommandByName(commandName);
+    }
+
+    public final boolean commandNameInputFieldIsVisible() {
+        return editRobotModal.commandByNameIsDisplayed();
+    }
+
+    public final boolean enterCommandNameIsDisabled() {
+        return editRobotModal.enterCommandNameIsDisabled();
+    }
+
+    public final String getTextFromTheCommandInputField() {
+        return editRobotModal.getTextFromTheCommandInputField();
+    }
+
+    public final List<String> getKeysFromTheCommandForm() {
+        return editRobotModal.getKeys();
+    }
+
+    public final void pressAddCommandButtonInEditModal() {
+        editRobotModal.pressAddCommandButton();
+    }
+
+    public final void enterCommandNameInEditModal(String commandName) {
+        editRobotModal.enterCommandName(commandName);
+    }
+
+    public final String getCommandInputFieldErrorMessage() {
+        return editRobotModal.getCommandInputFieldErrorMessage();
+    }
+
+    public final void pressAddKeyButtonInEditModal() {
+        editRobotModal.pressAddKeyButton();
+    }
+
+    public final boolean addKeyButtonIsHidden() {
+        return editRobotModal.addKeyButtonIsHidden();
+    }
+
+    public final void enterLastAddedKey(String key) {
+        editRobotModal.enterLastAddedKey(key);
+    }
+
+    public final void changeValueForKey(String oldKey, String newKey) {
+        editRobotModal.changeValueForKey(oldKey, newKey);
+    }
+
+    public final void clickOnTheRemoveKeyButton(String key) {
+        editRobotModal.clickOnTheRemoveKeyButton(key);
+    }
+
+    @Nullable
+    public final Boolean removeButtonIsHiddenFor(String commandName) {
+        return editRobotModal.removeButtonIsHiddenFor(commandName);
+    }
+
 }

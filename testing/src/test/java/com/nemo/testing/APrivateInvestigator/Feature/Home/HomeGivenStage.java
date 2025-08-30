@@ -1,8 +1,8 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGivenStage;
-import com.nemo.testing.APrivateInvestigator.Model.Formatters.CustomCommandTypeArrayFormatter;
-import com.nemo.testing.APrivateInvestigator.Model.Formatters.CustomCommandTypeFormatter;
+import com.nemo.testing.core.Formatters.CustomCommandTypeArrayFormatter;
+import com.nemo.testing.core.Formatters.CustomCommandTypeFormatter;
 import com.nemo.testing.core.Persistence.RobotService;
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.webHub.Commands.CustomCommandType;

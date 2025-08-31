@@ -9,7 +9,7 @@ COPY settings.gradle.kts gradle.properties build.gradle $APP_HOME
 COPY /webapp $APP_HOME/webapp
 RUN ./gradlew webapp:assemble
 
-FROM gradle:8.5 AS db-processor
+FROM gradle:8.10.2 AS db-processor
 WORKDIR /app
 
 COPY settings.gradle.kts gradle.properties build.gradle /app/

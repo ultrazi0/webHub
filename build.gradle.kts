@@ -29,3 +29,8 @@ subprojects {
         }
     }
 }
+
+tasks.wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = "8.10.2"
+}

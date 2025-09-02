@@ -10,6 +10,7 @@ import DeleteRobotModal from "./RootComponents/DeleteRobotModal";
 import { AuthenticationContext } from "../contexts";
 import RobotInfoModal from "./RootComponents/RobotInfoModal";
 import { CsrfResponse, RestListResponse, Robot } from "../types";
+import { RefreshCcw } from "lucide-react";
 
 type LoadedRobots = {
     robots: RestListResponse<Robot, "robotEntityList"> | null;
@@ -205,8 +206,8 @@ export default function Root() {
                             </Col>
                             <Col md="auto">
                                 <Button onClick={() => revalidator.revalidate()}>
-                                    <div style={{ rotate: "30deg" }}>
-                                        <i className="bi bi-arrow-repeat"></i>
+                                    <div>
+                                        <RefreshCcw size={16} />
                                     </div>
                                 </Button>
                             </Col>

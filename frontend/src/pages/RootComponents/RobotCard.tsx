@@ -1,8 +1,9 @@
 import { Button, Card, CardBody, CardFooter, CardImg, CardText, CardTitle, CloseButton } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
-import "../../css/RobotCard.css";
+import "../../css/RobotCard.scss";
 import { Robot, User } from "../../types";
+import { Info } from "lucide-react";
 
 type RobotCardProps = {
     user: User | null,
@@ -20,13 +21,13 @@ export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, s
             <Card style={{ width: "18rem" }} className="robotCard">
                     <Button
                         variant="link"
-                        className="robotCard-infoButton p-3"
+                        className="robotCard-infoButton"
                         onClick={event => {
                             event.stopPropagation();
                             setRobotInfo(robot);
                         }}
                     >
-                        <i className="bi bi-info-circle"></i>
+                        <Info size={20} />
                     </Button>
                     <CloseButton
                         className="robotCard-closeButton p-3"

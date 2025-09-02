@@ -22,7 +22,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_STATIC_RESOURCES = {
-        "/asset-manifest.json", "/favicon.ico", "/index.html", "/manifest.json", "/robots.txt", "/static/**", "/logo192.png", "/logo512.png"
+        "/favicon.ico", "/index.html", "/manifest.json", "/robots.txt", "/assets/**", "/logo192.png", "/logo512.png"
     };
 
     @Bean

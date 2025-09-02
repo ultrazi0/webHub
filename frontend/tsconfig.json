@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "module": "system",
+    "module": "NodeNext",
+    "target": "ESNext",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "nodenext",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "isolatedModules": true
   },
-  "include": ["src/**/*"],
+  "include": ["vite.config.ts", "src/**/*"],
   "exclude": ["**/*.spec.ts"]
 }

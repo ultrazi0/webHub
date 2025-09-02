@@ -13,6 +13,8 @@ import EditUserPage, { editUserAction } from "./pages/EditUserPage";
 import { deleteUserAction } from "./components/DeleteUserModal";
 import { sendShareRobotRequest, sendUnshareRobotRequery } from "./pages/RootComponents/RobotInfoModal";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const router = createBrowserRouter([
   {
     path: "/",

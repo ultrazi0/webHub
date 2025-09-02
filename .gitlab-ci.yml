@@ -121,8 +121,7 @@ release-test-frontend-image:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # Move this to separate stage (job above has the same before_script)
   script:
-    - cd frontend
-    - docker build --pull -t ${TEST_IMAGE}-frontend .
+    - docker build --pull -t ${TEST_IMAGE}-frontend frontend
     - docker push ${TEST_IMAGE}-frontend
 
 system-test:

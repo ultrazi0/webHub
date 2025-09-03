@@ -4,7 +4,7 @@ WORKDIR $APP_HOME
 
 COPY gradle $APP_HOME/gradle
 COPY gradlew $APP_HOME
-COPY settings.gradle.kts gradle.properties build.gradle $APP_HOME
+COPY settings.gradle.kts gradle.properties build.gradle.kts $APP_HOME
 
 COPY /webapp $APP_HOME/webapp
 RUN ./gradlew webapp:assemble
@@ -23,6 +23,22 @@ FROM postgres AS db
 
 COPY --from=db-processor /app/webapp/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
 
+FROM node:24-alpine AS frontend
+WORKDIR /app
+
+COPY frontend/package.json /app/package.json
+COPY frontend/package-lock.json /app/package-lock.json
+COPY frontend/tsconfig.json /app/tsconfig.json
+COPY frontend/vite.config.ts /app/vite.config.ts
+COPY frontend/index.html /app/index.html
+
+RUN npm ci
+
+COPY frontend/public /app/public
+COPY frontend/src /app/src
+
+RUN npm run build
+
 FROM eclipse-temurin:21 AS jar
 WORKDIR /app
 
@@ -38,5 +54,6 @@ WORKDIR /app
 EXPOSE 8080
 
 COPY --from=builder /app/webapp/build/libs/*.jar /app/jars/*.jar
+COPY --from=frontend /app/dist/ /app/frontend/
 
 ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]

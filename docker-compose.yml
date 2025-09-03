@@ -38,20 +38,6 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
 
-  frontend:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
-      target: dev
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    networks:
-      - hub
-    environment:
-      - REACT_APP_PROXY_HOST=http://backend:8080
-
 volumes:
   db-data:
 networks:

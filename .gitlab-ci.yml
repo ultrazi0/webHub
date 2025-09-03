@@ -152,7 +152,7 @@ system-test:
       - .gradle
   script:
     - chmod +x gradlew
-    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application:8080/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
   artifacts:
     when: always
     reports:
@@ -168,6 +168,7 @@ deploy-test-report:
   image: busybox
   needs:
     - system-test
+  when: always
   dependencies:
     - system-test
   script:

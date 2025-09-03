@@ -39,12 +39,13 @@ COPY frontend/src /app/src
 
 RUN npm run build
 
-FROM eclipse-temurin:21 AS jar
+FROM eclipse-temurin:21 AS pre-built
 WORKDIR /app
 
 EXPOSE 8080
 
 COPY webapp/build/libs/*.jar /app/jars/*.jar
+COPY frontend/dist/ /app/frontend/
 
 ENTRYPOINT ["java", "-jar", "/app/jars/*.jar"]
 

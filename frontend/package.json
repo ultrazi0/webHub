@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "vite build",
     "check": "tsc --noEmit",
     "preview": "vite preview"
   },

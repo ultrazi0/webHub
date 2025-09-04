@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 
 @EnableJGiven
 @Configuration
-@ComponentScan(value = {"com.nemo.testing.APrivateInvestigator", "com.nemo.testing.core"})
+@ComponentScan({"com.nemo.testing.APrivateInvestigator", "com.nemo.testing.core"})
 @Profile("PrivateInvestigator")
 public class PrivateInvestigatorConfig {
 }

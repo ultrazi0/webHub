@@ -1,11 +1,13 @@
 package com.nemo.testing.Onion.Model;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.element;
 
 /**
@@ -27,6 +29,10 @@ public abstract class AbstractModal extends AbstractFragment {
         return element(MODAL_DIALOG).find(selector);
     }
 
+    protected final ElementsCollection modalElements(By selector) {
+        return element(MODAL_DIALOG).findAll(selector);
+    }
+
     public final String getModalTitle() {
         return modalElement(MODAL_TITLE).getText();
     }
@@ -39,18 +45,8 @@ public abstract class AbstractModal extends AbstractFragment {
         modalElement(CANCEL_BUTTON).click();
     }
 
-    /**
-     * Warning: this method does NOT wait!
-     * */
     public boolean isVisible() {
-        return element(MODAL_DIALOG).exists() && Objects.equals(getModalTitle(), modalTitle());
-    }
-
-    /**
-     * Warning: this method does NOT wait!
-     * */
-    public boolean anyModalIsVisible() {
-        return element(MODAL_DIALOG).exists();
+        return waitAndSeeIf(element(MODAL_DIALOG)).becomes(visible) && Objects.equals(getModalTitle(), modalTitle());
     }
 
     public final void waitUntilModalIsClosed() {

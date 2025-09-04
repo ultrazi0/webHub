@@ -36,6 +36,10 @@ public abstract class AbstractComponent {
         return new WaitAndSeeIfElement(locator);
     }
 
+    protected WaitAndSeeIfElement waitAndSeeIf(SelenideElement element) {
+        return new WaitAndSeeIfElement(element);
+    }
+
     /**
      * Class for checks with built-in implicit waits, which is intended to replace Selenide's should methods
      * with methods that return booleans so that custom assertions and assumptions could be written.
@@ -54,6 +58,10 @@ public abstract class AbstractComponent {
             this.element = element(locator);
         }
 
+        private WaitAndSeeIfElement(SelenideElement element) {
+            this.element = element;
+        }
+
         /**
          * <p>
          *     WARNING: utmost care should be used with this method!
@@ -68,6 +76,8 @@ public abstract class AbstractComponent {
          * Do <b><u>NOT</u></b> use this method to negate its result, as it will wait the whole timeout!
          * */
         public boolean becomes(WebElementCondition condition) {
+            // TODO: Workaround to wait for the elements to obtain a certain condition (I really don't want to use the should methods :/)
+            //  I probably should think of a way to integrate them with JGiven, though
             return element.is(condition, Duration.ofMillis(Configuration.timeout));
         }
     }

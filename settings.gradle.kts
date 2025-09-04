@@ -1,0 +1,3 @@
+rootProject.name = "webHub"
+include("webapp")
+include("testing")

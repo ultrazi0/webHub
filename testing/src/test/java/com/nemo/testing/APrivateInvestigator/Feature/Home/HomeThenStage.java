@@ -1,11 +1,15 @@
 package com.nemo.testing.APrivateInvestigator.Feature.Home;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractThenStage;
 import com.nemo.testing.core.Persistence.RobotService;
-import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.CustomCommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
+import com.nemo.webHub.User.User;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
+import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -15,7 +19,9 @@ import org.hamcrest.Matchers;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @JGivenStage
 @SuppressWarnings("UnusedReturnValue")
@@ -28,37 +34,27 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         this.robotService = robotService;
     }
 
-    public HomeThenStage get_all_commands() {
-        List<String> expectedList = Arrays.stream(CommandType.values()).map(CommandType::toString).toList();
+    public HomeThenStage get_a_list_of_only_standard_commands() {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        validatableResponse.body("", Matchers.equalTo(expectedList));
+        Map<?, ?>[] expectedCommandTypes = Arrays.stream(StandardCommandType.values())
+            .map(commandType -> objectMapper.convertValue(commandType, Map.class))
+            .toArray(Map[]::new);
 
-        return self();
-    }
-
-    public HomeThenStage get_values_for_command(@Quoted String command) {
-        List<String> expectedValues = Arrays.stream(CommandType.valueOf(command).getKeys()).toList();
-
-        // TODO: find a way to show the expected values in the report
-        validatableResponse.body("", Matchers.equalTo(expectedValues));
+        validatableResponse.body("", Matchers.containsInAnyOrder(expectedCommandTypes));
 
         return self();
     }
 
     @NestedSteps
     public HomeThenStage get_the_correct_robot() {
-        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
-        Assertions.assertThat(createdRobots)
-            .as("Only one robot should have been created")
-            .hasSize(1);
-
-        RobotEntity robot = createdRobots.iterator().next();
+        RobotEntity robot = retrieveCreatedRobotEntity();
 
         return id_is(robot.getId())
             .and().name_is(robot.getName())
             .and().password_is(robot.getPassword().replaceFirst("\\{noop}", ""))
             .and().created_at_is(robot.getCreatedAt())
-            .and().owner_id_is(robot.getOwnerId())
+            .and().owner_id_is(robot.getOwner().getId())
             .and().online_status_is(robot.isOnline());
     }
 
@@ -81,19 +77,36 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
     }
 
     public HomeThenStage created_at_is(@Quoted OffsetDateTime created_at) {
-        validatableResponse.body("createdAt.with { java.time.OffsetDateTime.parse(it) }", Matchers.equalTo(created_at));
+        validatableResponse.body(
+            "createdAt.with { java.time.OffsetDateTime.parse(it).toInstant() }",
+            Matchers.equalTo(created_at.toInstant())
+        );
 
         return self();
     }
 
     public HomeThenStage owner_id_is(@Quoted int owner_id) {
-        validatableResponse.body("ownerId", Matchers.equalTo(owner_id));
+        validatableResponse.body("owner.id", Matchers.equalTo(owner_id));
 
         return self();
     }
 
     public HomeThenStage online_status_is(@Quoted boolean isOnline) {
         validatableResponse.body("online", Matchers.equalTo(isOnline));
+
+        return self();
+    }
+
+    public HomeThenStage the_retrieved_robot_has_standard_commands_as_well_as_custom_ones(@Hidden CustomCommandType[] customRobotCommands) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<?, ?>[] expectedCommandTypes = Stream.concat(
+            Arrays.stream(StandardCommandType.values()),
+            Arrays.stream(customRobotCommands)
+        ).map(commandType -> objectMapper.convertValue(commandType, Map.class))
+            .toArray(Map[]::new);
+
+        validatableResponse.body("commands", Matchers.containsInAnyOrder(expectedCommandTypes));
 
         return self();
     }
@@ -128,6 +141,21 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         return self();
     }
 
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_has_correct_custom_commands(@Hidden CustomCommandType... customCommands) {
+        RobotEntity robot = retrieveCreatedRobotEntity();
+
+        List<CustomCommandType> customRobotCommands = robotService.getCustomRobotCommands(robot.getId());
+
+        assertThat(customRobotCommands)
+            .as("Assert exactly %s custom commands have been created", customCommands.length)
+            .hasSize(customCommands.length)
+            .as("Assert the robot has exactly the provided commands")
+            .containsExactlyInAnyOrder(customCommands);
+
+        return self();
+    }
+
     public HomeThenStage get_all_my_robots(List<String> robotNames) {
         int size = robotNames.size();
 
@@ -143,5 +171,32 @@ class HomeThenStage extends AbstractThenStage<HomeThenStage> {
         validatableResponse.body("robotEntityList.with { it.name }", Matchers.containsInAnyOrder(robotNames.toArray()));
 
         return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_is_shared_with(String... usernames) {
+        RobotEntity robot = retrieveCreatedRobotEntity();
+
+        assertThat(robotService.getSharedUsersUsernames(robot.getId(), robot.getOwner().getId()))
+            .as("Assert exactly %s users have been shared with the robot", usernames.length)
+            .hasSize(usernames.length)
+            .as("Assert the shared users are exactly the provided users")
+            .containsExactlyInAnyOrder(usernames);
+
+        return self();
+    }
+
+    @ExtendedDescription(CHECKED_IN_DATABASE)
+    public HomeThenStage the_robot_is_not_shared_with_anyone() {
+        return the_robot_is_shared_with();
+    }
+
+    private RobotEntity retrieveCreatedRobotEntity() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        Assertions.assertThat(createdRobots)
+            .as("Only one robot should have been created")
+            .hasSize(1);
+
+        return createdRobots.iterator().next();
     }
 }

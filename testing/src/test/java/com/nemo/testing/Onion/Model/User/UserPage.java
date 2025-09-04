@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Selenide.element;
 import static com.codeborne.selenide.Selenide.open;
@@ -23,13 +25,14 @@ public class UserPage extends AbstractPage {
 
     private Integer currentUserId = null;
 
+    public static String getUri(int userId) {
+        return uri.replace("{userId}", String.valueOf(userId));
+    }
+
     @Override
     public String uri() {
-        if (currentUserId == null) {
-            // If redirected to this page, in which case CURRENT_USER should not be null
-            return uri.replace("{userId}", String.valueOf(currentStage.getCURRENT_USER().getId()));
-        }
-        return uri.replace("{userId}", currentUserId.toString());
+        // If redirected to this page, `currentUserId` will be `null`, but `currentStage.CURRENT_USER` should not
+        return getUri(Objects.requireNonNullElseGet(currentUserId, () -> currentStage.getCURRENT_USER().getId()));
     }
 
     @Override

@@ -55,4 +55,9 @@ public abstract class AbstractStage<T extends AbstractStage<T>> extends Stage<T>
     public T a() {
         return self();
     }
+
+    @FillerWord
+    public T the() {
+        return self();
+    }
 }

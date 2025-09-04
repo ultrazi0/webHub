@@ -10,15 +10,13 @@ import lombok.experimental.Delegate;
 /**
  * The main class for creating requests. It is a wrapper that delegates most calls to
  * {@link io.restassured.internal.RequestSpecificationImpl}, while providing some additional functionality,
- * such as the {@code uri} filed. It is more tightly integrated with {@link APIService}
+ * such as the {@code uri} filled. It is more tightly integrated with {@link APIService}
  *
  * @see APIService
  * @see RestAssured
  * @see io.restassured.internal.RequestSpecificationImpl
  * */
 public class Request implements RequestSpecification {
-
-    private static final String BASE_PATH = "/api";
 
     @Delegate
     private final RequestSpecification delegate;
@@ -27,7 +25,11 @@ public class Request implements RequestSpecification {
     private Endpoint endpoint = null;
 
     protected Request() {
-        this.delegate = RestAssured.with().basePath(BASE_PATH);
+        this.delegate = RestAssured.with()
+            .baseUri(APIService.getBaseUri())
+            .and().port(APIService.getDefaultPort())
+            .and().basePath(APIService.getBasePath());
+
         this.config(RestAssuredConfig.config().logConfig(
             LogConfig.logConfig().enableLoggingOfRequestAndResponseIfValidationFails()));
     }

@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - hub
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/webHubDB?currentSchema=bot
+    depends_on:
+      db:
+        condition: service_healthy
+        required: true
+    develop:
+      watch:
+        - action: rebuild
+          path: webapp
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - hub
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "psql", "-U", "server", "-d", "webHubDB", "-c", "SELECT 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  db-data:
+networks:
+  hub:

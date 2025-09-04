@@ -2,7 +2,9 @@ package com.nemo.testing.Onion.Feature.Home;
 
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
+import com.nemo.testing.core.Formatters.CustomCommandTypeArrayFormatter;
 import com.nemo.testing.core.Persistence.RobotService;
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotNotFoundException;
 import com.tngtech.jgiven.annotation.*;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Set;
 
 @JGivenStage
@@ -61,9 +64,19 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription(RESOLVED_IN_DATABASE)
     public HomeGivenStage robot_with_name_$_is_created(@Quoted String robotName) {
+        return robotIsCreatedWithOwner(robotName, CURRENT_USER.getId());
+    }
+
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage robot_$_is_owned_by(@Quoted String robotName, String ownerName) {
+        return robotIsCreatedWithOwner(robotName, getCreatedUserId(ownerName));
+    }
+
+    @Hidden
+    public HomeGivenStage robotIsCreatedWithOwner(String robotName, int ownerId) {
         RobotsRecord robotsRecord = new RobotsRecord();
         robotsRecord.setName(robotName);
-        robotsRecord.setOwnerId(CURRENT_USER.getId());
+        robotsRecord.setOwnerId(ownerId);
 
         assumeThatCode(() -> createEntity(RobotEntity.class, robotsRecord))
             .as("Create robot with name \"%s\"", robotName)
@@ -97,12 +110,7 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
 
     @ExtendedDescription(CHECKED_IN_DATABASE)
     public HomeGivenStage its_owner() {
-        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
-        assumeThat(createdRobots)
-            .as("Assume that only one robot has been created")
-            .hasSize(1);
-
-        assumeThat(robotService.getRobotOwnerIdByRobotId(createdRobots.iterator().next().getId()))
+        assumeThat(robotService.getRobotOwnerIdByRobotId(getCreatedRobot().getId()))
             .as("Check if current user is the owner of the robot")
             .isEqualTo(CURRENT_USER.getId());
 
@@ -114,6 +122,43 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
             .and().assumeSeeRobotAsCard(robotName);
     }
 
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage it_is_shared_with_me() {
+        return it_is_shared_with(CURRENT_USER.getUsername());
+    }
+
+    @ExtendedDescription(RESOLVED_IN_DATABASE)
+    public HomeGivenStage it_is_shared_with(String... usernames) {
+        RobotEntity robot = getCreatedRobot();
+
+        assumeThat(robotService.shareRobotWithUser(robot.getId(), robot.getOwner().getId(), List.of(usernames)))
+            .as("Assume that the robot is shared with me")
+            .isTrue();
+
+        return self();
+    }
+
+    public HomeGivenStage it_has_no_custom_commands() {
+        RobotEntity robot = getCreatedRobot();
+
+        assumeThat(robotService.getCustomRobotCommands(robot.getId()))
+            .as("Assume robot has no custom commands")
+            .isEmpty();
+
+        return self();
+    }
+
+    public HomeGivenStage it_has_custom_commands(@Format(CustomCommandTypeArrayFormatter.class) CustomCommandType... customCommands) {
+        int robotId = getCreatedRobot().getId();
+        robotService.createCustomCommands(robotId, List.of(customCommands));
+
+        assumeThat(robotService.getCustomRobotCommands(robotId))
+            .as("Assume commands are created")
+            .containsExactlyInAnyOrder(customCommands);
+
+        return self();
+    }
+
     @Hidden
     private HomeGivenStage assumeSeeRobotAsCard(String robotName) {
         assumeTakingScreenshotThat(homePage.thereIsARobotCardWithName(robotName),
@@ -122,5 +167,14 @@ class HomeGivenStage extends AbstractGivenStage<HomeGivenStage> {
             .isTrue();
 
         return self();
+    }
+
+    private RobotEntity getCreatedRobot() {
+        Set<RobotEntity> createdRobots = createdEntities.getInstances(RobotEntity.class);
+        assumeThat(createdRobots)
+            .as("Assume that only one robot has been created")
+            .hasSize(1);
+
+        return createdRobots.iterator().next();
     }
 }

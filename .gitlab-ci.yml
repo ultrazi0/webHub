@@ -104,7 +104,6 @@ integration-test:
 release-test-image:
   stage: test-release
   image: docker
-  #when: manual
   services:
     - name: docker:dind
       alias: docker
@@ -181,7 +180,20 @@ deploy:
   inherit:
     default: false
   stage: deploy
-  script: echo "Define your deployment script!"
-  environment: production
+  image: docker
+  services:
+    - name: docker:dind
+      alias: docker
+  variables:
+    IMAGE: $CI_REGISTRY_IMAGE/webhub
+  dependencies:
+    - build
+    - build-frontend
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build --pull --target pre-built -t $IMAGE:$CI_COMMIT_SHORT_SHA -t $IMAGE:latest .
+    - docker push $IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $IMAGE:latest
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

@@ -56,8 +56,8 @@ tasks {
 
     jgivenTestReport {
         reports {
-            html.customJsFile = File("src/test/resources/jgiven/custom.js")
-            html.customCssFile = File("src/test/resources/jgiven/custom.css")
+            html.customJsFile = projectDir.resolve("src/test/resources/jgiven/custom.js")
+            html.customCssFile = projectDir.resolve("src/test/resources/jgiven/custom.css")
         }
 
         doLast {

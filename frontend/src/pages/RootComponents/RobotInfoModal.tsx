@@ -10,12 +10,13 @@ import {
 } from "react-bootstrap";
 import { CsrfResponse, Robot, User } from "../../types";
 import { useState } from "react";
-
-import "../../css/Button.scss";
-import "../../css/RobotInfoModal.scss";
 import { ActionFunctionArgs, FetcherWithComponents, Link, useFetcher } from "react-router-dom";
 import { Check, UserPlus } from "lucide-react";
 import DeleteButton from "../../components/DeleteButton";
+import { v4 as randomUUID } from "uuid";
+
+import "../../css/Button.scss";
+import "../../css/RobotInfoModal.scss";
 
 type RobotInfoModalProps = {
     robot: Robot | null,
@@ -98,7 +99,7 @@ function RobotInfo({ robot }: Pick<RobotInfoModalProps, "robot">) {
 }
 
 type SharedUsersProps = Pick<RobotInfoModalProps, "robot" | "csrfToken"> & { expandedClass: "expanded" | "" }
-type UserToShareIdType = ReturnType<Crypto["randomUUID"]>
+type UserToShareIdType = string;
 
 function SharedUsers({ robot, expandedClass, csrfToken }: SharedUsersProps) {
 
@@ -107,7 +108,7 @@ function SharedUsers({ robot, expandedClass, csrfToken }: SharedUsersProps) {
     const fetcher = useFetcher<User[]>();
 
     const addUserToShare = () => setUsersToShare(prevIds => [
-        self.crypto.randomUUID(),
+        randomUUID(),
         ...prevIds,
     ]);
 

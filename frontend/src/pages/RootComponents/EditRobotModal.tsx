@@ -21,10 +21,11 @@ import { CommandType, StandardCommandTypeEnum } from "../ControlPanelComponents"
 import DeleteButton from "../../components/DeleteButton";
 import { ChevronRight, Plus } from "lucide-react";
 import { setError } from "../../utils/validationUtils";
+import { v4 as randomUUID } from "uuid";
 
 import "../../css/EditRobotModal.scss";
 
-type CommandIdType = ReturnType<Crypto["randomUUID"]>;
+type CommandIdType = string;
 
 type CommandWithId = Pick<CommandType, "commandType"> & {
     id: CommandIdType,
@@ -226,7 +227,7 @@ function RobotCommandsBlock({ robot, commands, setCommands, errors }: {
                     ))}
                 </ListGroup>
                 <Button variant="outline-success" size="sm" className="add-command-type-button mt-2" onClick={() => {
-                    const id = self.crypto.randomUUID();
+                    const id = randomUUID();
                     setCommands([ ...commands, {
                         id: id,
                         commandType: "",
@@ -299,7 +300,7 @@ function RobotCommandForm({ command, clearSelectedCommand, updateCommand, comman
                                 if (command) {
                                     updateCommand({
                                         ...command,
-                                        keys: [ ...command.keys, { id: self.crypto.randomUUID(), key: "" } ],
+                                        keys: [ ...command.keys, { id: randomUUID(), key: "" } ],
                                     });
                                 }
                             }}
@@ -381,7 +382,7 @@ const getDefaultCommands = (robot: Robot | null): CommandWithId[] =>
         return a.commandType.localeCompare(b.commandType);
     }).map(command => ({
         ...command,
-        id: self.crypto.randomUUID(),
-        keys: command.keys.map(key => ({ id: self.crypto.randomUUID(), key: key })),
+        id: randomUUID(),
+        keys: command.keys.map(key => ({ id: randomUUID(), key: key })),
         isSaved: true,
     }));

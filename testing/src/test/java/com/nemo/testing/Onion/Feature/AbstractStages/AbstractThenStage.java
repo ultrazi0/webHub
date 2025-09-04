@@ -1,9 +1,15 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
+import com.nemo.webHub.Decibel.UserEntity;
 import org.assertj.core.api.AbstractBooleanAssert;
+import org.assertj.core.api.AbstractCollectionAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractStringAssert;
+import org.assertj.core.api.ObjectAssert;
 import org.assertj.core.api.WithAssertions;
+
+import java.util.Collection;
+import java.util.Set;
 
 import static com.codeborne.selenide.WebDriverRunner.url;
 
@@ -62,37 +68,65 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
      *                    if you really wish to add one!
-     * @return {@code AbstractStringAssert<?>}, allowing chaining of further checks and conditions
+     * @param args arguments to format the description
+     * @return {@link AbstractStringAssert}, allowing chaining of further checks and conditions
      */
-    protected AbstractStringAssert<?> assertTakingScreenshotThat(String string, String description) {
-        return assertThat(string).as(addScreenshotToDescription(description));
+    protected AbstractStringAssert<?> assertTakingScreenshotThat(String string, String description, Object... args) {
+        return assertThat(string).as(addScreenshotToDescription(description, args));
     }
 
     /**
      * A wrapper around AssertJ {@code assertThat()} that adds screenshot to a JGiven report
      *
-     * @param condition boolean condition to assert
+     * @param condition boolean condition to assert (can be {@code null})
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
      *                    if you really wish to add one!
-     * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
+     * @param args arguments to format the description
+     * @return {@link AbstractBooleanAssert>}, so that you can chain all the following checks and conditions
      * */
-    protected AbstractBooleanAssert<?> assertTakingScreenshotThat(boolean condition, String description, Object... args) {
+    protected AbstractBooleanAssert<?> assertTakingScreenshotThat(Boolean condition, String description, Object... args) {
         return assertThat(condition).as(addScreenshotToDescription(description, args));
     }
 
     /**
      * A wrapper around AssertJ {@code assertThat()} that adds screenshot to a JGiven report
      *
-     * @param integer boolean condition to assert
+     * @param integer integer to assert
      * @param description the <b>description</b> of the assertion,
      *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
      *                    if you really wish to add one!
      * @param args arguments to format the description
-     * @return {@code AbstractBooleanAssert<?>}, so that you can chain all the following checks and conditions
+     * @return {@link AbstractIntegerAssert}, so that you can chain all the following checks and conditions
      * */
     protected AbstractIntegerAssert<?> assertTakingScreenshotThat(Integer integer, String description, Object... args) {
         return assertThat(integer).as(addScreenshotToDescription(description, args));
     }
 
+    /**
+     * A wrapper around AssertJ {@code assertThat()} that adds screenshot to a JGiven report
+     *
+     * @param collection collection to assert
+     * @param description the <b>description</b> of the assertion,
+     *                    do <u>NOT</u> write your error message here - use {@code withFailMessage(String)}
+     *                    if you really wish to add one!
+     * @param args arguments to format the description
+     * @param <E> the type of elements in the collection
+     * @return {@link  AbstractCollectionAssert}, so that you can chain all the following checks and conditions
+     * */
+    public <E> AbstractCollectionAssert<?, Collection<? extends E>, E, ObjectAssert<E>> assertTakingScreenshotThat(
+        Collection<E> collection, String description, Object... args
+    ) {
+        return assertThat(collection).as(addScreenshotToDescription(description, args));
+    }
+
+    @Override
+    void verifyCreatedUsersSetContains(Set<UserEntity> users, String... usernames) {
+        assertThat(users)
+            .as("Assert that users have been created")
+            .isNotEmpty()
+            .as("Assert that specified users exist")
+            .extracting(UserEntity::getUsername)
+            .contains(usernames);
+    }
 }

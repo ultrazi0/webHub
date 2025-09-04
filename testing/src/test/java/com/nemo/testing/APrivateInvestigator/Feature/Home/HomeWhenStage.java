@@ -8,14 +8,20 @@ import com.tngtech.jgiven.integration.spring.JGivenStage;
 @SuppressWarnings("UnusedReturnValue")
 class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> implements WithHomeEndpoints {
 
-    public HomeWhenStage get_all_commands_endpoint() {
+    public HomeWhenStage get_robot_commands_endpoint() {
         request.to(COMMANDS_ENDPOINT);
 
         return sendAndReturnSelf();
     }
 
-    public HomeWhenStage command_values_endpoint() {
-        request.to(COMMAND_VALUES_ENDPOINT);
+    public HomeWhenStage insert_command_endpoint() {
+        request.to(INSERT_COMMANDS_ENDPOINT);
+
+        return sendAndReturnSelf();
+    }
+
+    public HomeWhenStage delete_command_endpoint() {
+        request.to(DELETE_COMMANDS_ENDPOINT);
 
         return sendAndReturnSelf();
     }
@@ -46,6 +52,18 @@ class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> implements WithHome
 
     public HomeWhenStage get_user_robots_endpoint() {
         request.to(GET_USER_ROBOTS_ENDPOINT);
+
+        return sendAndReturnSelf();
+    }
+
+    public HomeWhenStage share_robot_endpoint() {
+        request.to(SHARE_ROBOT_ENDPOINT);
+
+        return sendAndReturnSelf();
+    }
+
+    public HomeWhenStage unshare_robot_endpoint() {
+        request.to(UNSHARE_ROBOT_ENDPOINT);
 
         return sendAndReturnSelf();
     }

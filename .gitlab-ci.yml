@@ -2,42 +2,60 @@ stages:
   - build
   - test
   - integration-test
-  - deploy
+  - test-release
   - system-test
+  - deploy
 
 image: eclipse-temurin:21
 
+default:
+  interruptible: true
+
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 build:
   stage: build
   script:
     - chmod +x gradlew
-    - ./gradlew --build-cache assemble
+    - ./gradlew --build-cache webapp:assemble
   needs: []
   dependencies: []
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
     paths:
-      - build
+      - webapp/build
       - .gradle
   artifacts:
     when: on_success
     name: webHub-backend
     paths:
-      - build/libs/*.jar
-    exclude:
-      - build/libs/*plain.jar
+      - webapp/build/libs/*.jar
+
+build-frontend:
+  stage: build
+  image: node:24-alpine
+  script:
+    - cd frontend
+    - npm ci
+    - npm run check
+    - npm run build
+  needs: []
+  dependencies: []
+  artifacts:
+    when: on_success
+    name: webHub-frontend
+    paths:
+      - frontend/dist/
 
 test:
   stage: test
   script:
     - chmod +x gradlew
-    - ./gradlew test
+    - ./gradlew webapp:test
   needs:
     - build
   dependencies: []
@@ -45,12 +63,12 @@ test:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
-      - build
+      - webapp/build
       - .gradle
   artifacts:
     when: always
     reports:
-      junit: build/test-results/**/*.xml
+      junit: webapp/build/test-results/**/*.xml
 
 integration-test:
   stage: integration-test
@@ -68,7 +86,7 @@ integration-test:
         POSTGRES_PASSWORD: $DB_PASSWORD
   script:
     - chmod +x gradlew
-    - ./gradlew integrationTest
+    - ./gradlew webapp:integrationTest
   needs:
     - build
   dependencies: []
@@ -76,19 +94,15 @@ integration-test:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
-      - build
+      - webapp/build
       - .gradle
   artifacts:
     when: always
     reports:
-      junit: build/test-results/**/*.xml
-
-.docker-variables:
-  variables:
-    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+      junit: webapp/build/test-results/**/*.xml
 
 release-test-image:
-  stage: deploy
+  stage: test-release
   image: docker
   #when: manual
   services:
@@ -98,12 +112,14 @@ release-test-image:
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
   dependencies:
     - build
+    - build-frontend
   needs:
     - build
+    - build-frontend
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
-    - docker build --pull --target jar -t $TEST_IMAGE .
+    - docker build --pull --target pre-built -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
 system-test:
@@ -123,17 +139,43 @@ system-test:
         POSTGRES_USER: $DB_USERNAME
         POSTGRES_PASSWORD: $DB_PASSWORD
     - name: $TEST_IMAGE
-      alias: backend
+      alias: application
+    - name: selenium/standalone-chrome:latest
+      alias: chrome
   needs:
     - release-test-image
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - webapp/build
+      - .gradle
   script:
     - chmod +x gradlew
-    - ./gradlew apiTest -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend --project-dir testing
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application:8080/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
   artifacts:
     when: always
     reports:
       junit: testing/build/test-results/**/*.xml
+    paths:
+      - testing/build/reports/jgiven
 
+deploy-test-report:
+  pages: true
+  stage: deploy
+  inherit:
+    default: false
+  image: busybox
+  needs:
+    - system-test
+  when: always
+  dependencies:
+    - system-test
+  script:
+    - mv testing/build/reports/jgiven/test/html/ public/
+  artifacts:
+    paths:
+      - "public/"
 
 deploy:
   inherit:

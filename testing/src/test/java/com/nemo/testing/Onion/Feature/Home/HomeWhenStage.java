@@ -3,8 +3,12 @@ package com.nemo.testing.Onion.Feature.Home;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractWhenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Home.HomePage;
+import com.nemo.testing.core.Formatters.CustomCommandTypeFormatter;
+import com.nemo.webHub.Commands.CustomCommandType;
 import com.nemo.webHub.Decibel.RobotEntity;
 import com.tngtech.jgiven.annotation.ExtendedDescription;
+import com.tngtech.jgiven.annotation.Format;
+import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.NestedSteps;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
@@ -93,7 +97,101 @@ class HomeWhenStage extends AbstractWhenStage<HomeWhenStage> {
 
     public HomeWhenStage change_robot_name_to(@Quoted String newRobotName) {
         homePage.enterNewRobotNameInEditModal(newRobotName);
+
+        return press_save_button_in_edit_modal();
+    }
+
+    public HomeWhenStage press_save_button_in_edit_modal() {
         homePage.pressSaveButtonInEditModal();
+
+        return self();
+    }
+
+    public HomeWhenStage open_the_shared_with_side_panel() {
+        homePage.pressHideShowSharedWithButtonInInfoModal();
+
+        return self();
+    }
+
+    @NestedSteps
+    public HomeWhenStage share_the_robot_with(String username) {
+        return I().press_add_user_button()
+            .and().I().enter_username_of_the_user_I_want_to_share_the_robot_with(username, 0)
+            .and().I().press_share_user_button(0);
+    }
+
+    public HomeWhenStage press_add_user_button() {
+        homePage.pressAddUserButtonInInfoModal();
+
+        return self();
+    }
+
+    public HomeWhenStage enter_username_of_the_user_I_want_to_share_the_robot_with(@Hidden String username, @Hidden int rowIndex) {
+        homePage.enterUsernameToShareWith(username, rowIndex);
+
+        return self();
+    }
+
+    public HomeWhenStage press_share_user_button(@Hidden int rowIndex) {
+        homePage.pressShareUserButton(rowIndex);
+
+        return self();
+    }
+
+    public HomeWhenStage stop_sharing_the_robot_with(String username) {
+        homePage.pressUnshareUserButtonFor(username);
+
+        return self();
+    }
+
+    @NestedSteps
+    public HomeWhenStage add_$_as_a_custom_command(@Format(CustomCommandTypeFormatter.class) CustomCommandType customCommand) {
+        return I().press_the_add_a_custom_command_button()
+            .and().I().enter_the_command_name_as(customCommand.getCommandType())
+            .and().I().add_$_as_command_keys(customCommand.getKeys());
+    }
+
+    public HomeWhenStage press_the_add_a_custom_command_button() {
+        homePage.pressAddCommandButtonInEditModal();
+
+        return self();
+    }
+
+    public HomeWhenStage enter_the_command_name_as(@Quoted String commandName) {
+        homePage.enterCommandNameInEditModal(commandName);
+
+        return self();
+    }
+
+    public HomeWhenStage add_$_as_command_keys(String... keys) {
+        for (String key : keys) {
+            homePage.pressAddKeyButtonInEditModal();
+            homePage.enterLastAddedKey(key);
+        }
+
+        return self();
+    }
+
+    public HomeWhenStage select_the_$_command(@Quoted String commandName) {
+        homePage.openCommandForm(commandName);
+
+        return self();
+    }
+
+    public HomeWhenStage rename_the_$_key_to(@Quoted String oldKey, @Quoted String newKey) {
+        homePage.changeValueForKey(oldKey, newKey);
+
+        return self();
+    }
+
+    public HomeWhenStage remove_the_$_key(@Quoted String key) {
+        homePage.clickOnTheRemoveKeyButton(key);
+
+        return self();
+    }
+
+    public HomeWhenStage delete_the_$_command(@Quoted String commandName) {
+        homePage.removeCommandByName(commandName);
 
         return self();
     }

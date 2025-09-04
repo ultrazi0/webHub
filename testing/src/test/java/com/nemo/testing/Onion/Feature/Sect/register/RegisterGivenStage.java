@@ -1,6 +1,6 @@
 package com.nemo.testing.Onion.Feature.Sect.register;
 
-import com.nemo.testing.Onion.Feature.Sect.AbstractSecurityGivenStage;
+import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
 import com.nemo.testing.core.Persistence.UserService;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @JGivenStage
 @Slf4j
 @SuppressWarnings("UnusedReturnValue")
-class RegisterGivenStage extends AbstractSecurityGivenStage<RegisterGivenStage> {
+class RegisterGivenStage extends AbstractGivenStage<RegisterGivenStage> {
 
     @Autowired
     private RegisterPage registerPage;

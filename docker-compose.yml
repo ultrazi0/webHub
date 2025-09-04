@@ -16,7 +16,7 @@ services:
     develop:
       watch:
         - action: rebuild
-          path: /src
+          path: webapp
 
   db:
     build:
@@ -28,16 +28,15 @@ services:
     networks:
       - hub
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "server", "-d", "webHubDB" ]
+      test: [ "CMD", "psql", "-U", "server", "-d", "webHubDB", "-c", "SELECT 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
-        
 
 volumes:
   db-data:

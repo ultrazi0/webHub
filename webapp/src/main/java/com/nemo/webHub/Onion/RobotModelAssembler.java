@@ -23,6 +23,6 @@ public class RobotModelAssembler implements RepresentationModelAssembler<RobotEn
         return EntityModel.of(robot,
                 linkTo(methodOn(RobotAPIController.class).getRobotById(robot.getId(), null)).withSelfRel(),
                 linkTo(methodOn(RobotAPIController.class).getUserRobots(null)).withRel("robots"),
-                linkTo(methodOn(UserApiController.class).getUserById(robot.getOwnerId())).withRel("owner"));
+                linkTo(methodOn(UserApiController.class).getUserById(robot.getOwner().getId())).withRel("owner"));
     }
 }

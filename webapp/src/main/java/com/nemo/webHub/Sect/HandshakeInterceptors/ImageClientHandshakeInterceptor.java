@@ -1,8 +1,8 @@
 package com.nemo.webHub.Sect.HandshakeInterceptors;
 
-import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @see AbstractHandshakeInterceptor
  * */
-public class ImageClientHandshakeInterceptor extends AbstractHandshakeInterceptor{
+public class ImageClientHandshakeInterceptor extends AbstractHandshakeInterceptor {
 
     public ImageClientHandshakeInterceptor(RobotRepository robotRepository) {
         super(robotRepository);
@@ -33,8 +33,7 @@ public class ImageClientHandshakeInterceptor extends AbstractHandshakeIntercepto
 
     @Override
     public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes)
-            throws Exception {
+                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
 
         Integer robotId = getRobotIdFromRequestOrElseNull(request);
 
@@ -47,11 +46,11 @@ public class ImageClientHandshakeInterceptor extends AbstractHandshakeIntercepto
         // Web browsers send cookies even with websocket connect requests
         UserEntity user = getCurrentUser();
 
-        // If robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
-        RobotEntity robot = robotRepository.findRobotByIdIfAllowed(robotId, user.getId());
-        Assert.isTrue(robotId == robot.getId(), "IDs do not match");
+        // If the robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
+        RobotsRecord robot = robotRepository.findRobotsRecordByIdIfAllowed(robotId, user.getId());
+        Assert.isTrue(robotId.equals(robot.getRobotId()), "IDs do not match");
 
-        // Add ID to the attributes map so that it is easier to access
+        // Add ID to the attribute map so that it is easier to access
         attributes.put("robotId", robotId);
 
         // Allow multiple users to connect to the stream

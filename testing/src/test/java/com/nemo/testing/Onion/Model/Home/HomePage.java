@@ -1,9 +1,12 @@
 package com.nemo.testing.Onion.Model.Home;
 
 import com.nemo.testing.Onion.Model.AbstractPage;
+import jakarta.annotation.Nullable;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
@@ -34,6 +37,7 @@ public class HomePage extends AbstractPage {
     private final By INFO_BUTTON = By.className("robotCard-infoButton");
     private final By DELETE_BUTTON = By.className("robotCard-closeButton");
     private final By EDIT_BUTTON = By.xpath("./div[contains(@class, 'card-footer')]/button");
+    private final By LINK_TO_OWNER = By.xpath(".//p[@class='card-text']/a");
 
     private By ROBOT_CARD_BY(String robotName) {
         return By.xpath(String.format(
@@ -131,6 +135,16 @@ public class HomePage extends AbstractPage {
         element(ROBOT_CARD_BY(robotName)).find(EDIT_BUTTON).click();
     }
 
+    /// Warning: this method does NOT wait!
+    public final String getTheNameOfTheRobotsOwner(String robotName) {
+        return element(ROBOT_CARD_BY(robotName)).find(LINK_TO_OWNER).getText();
+    }
+
+    /// Warning: this method does NOT wait!
+    public final String getTheRobotsOwnerHref(String robotName) {
+        return element(ROBOT_CARD_BY(robotName)).find(LINK_TO_OWNER).getAttribute("href");
+    }
+
     // ********** //
     // Info modal //
     // ********** //
@@ -150,8 +164,61 @@ public class HomePage extends AbstractPage {
         return Integer.parseInt(robotInfoModal.getRobotId());
     }
 
+    public final String getRobotPasswordFromInfoModal() {
+        return robotInfoModal.getRobotPassword();
+    }
+
     public final String getRobotOwnedByFromInfoModal() {
         return robotInfoModal.getRobotOwnedBy();
+    }
+
+    public final String getRobotCreatedAtFromInfoModal() {
+        return robotInfoModal.getRobotCreatedAt();
+    }
+
+    public final String getRobotOnlineStatusFromInfoModal() {
+        return robotInfoModal.getRobotOnlineStatus();
+    }
+
+    public final void pressHideShowSharedWithButtonInInfoModal() {
+        robotInfoModal.pressHideShowSharedWithButton();
+    }
+
+    /// Warning: this method does NOT wait!
+    public final boolean hideShowSharedWithButtonIsDisplayedInInfoModal() {
+        return robotInfoModal.hideShowSharedWithButtonIsDisplayed();
+    }
+
+    public final void pressAddUserButtonInInfoModal() {
+        robotInfoModal.pressAddUserButton();
+    }
+
+    public final String getSharedUserLinkUsernameInInfoModal(int rowIndex) {
+        return robotInfoModal.getSharedUserLinkText(rowIndex);
+    }
+
+    public final String getSharedUserLinkHrefInInfoModal(int rowIndex) {
+        return robotInfoModal.getSharedUserLinkHref(rowIndex);
+    }
+
+    public final void enterUsernameToShareWith(String username, int rowIndex) {
+        robotInfoModal.enterUsernameToShareTheRobotWith(username, rowIndex);
+    }
+
+    public final void pressShareUserButton(int rowIndex) {
+        robotInfoModal.pressShareUserButton(rowIndex);
+    }
+
+    public final void pressUnshareUserButtonFor(String username) {
+        robotInfoModal.pressUnshareUserButtonFor(username);
+    }
+
+    public final boolean sharedUserRowHasDisappearedFor(String username) {
+        return robotInfoModal.sharedUserRowHasDisappearedFor(username);
+    }
+
+    public final int getAmountOfUserRows() {
+        return robotInfoModal.getAmountOfUserRows();
     }
 
     // ************ //
@@ -178,4 +245,75 @@ public class HomePage extends AbstractPage {
         editRobotModal.pressSaveRobotButton();
         editRobotModal.waitUntilModalIsClosed();
     }
+
+    public final boolean saveButtonInEditModalIsDisabled() {
+        return editRobotModal.saveRobotButtonIsDisabled();
+    }
+
+    @Nullable
+    public final List<String> getCommandsInEditModal() {
+        return editRobotModal.getCommands();
+    }
+
+    public final void removeCommandByName(String commandName) {
+        editRobotModal.pressRemoveCommandButton(commandName);
+    }
+
+    public final void openCommandForm(String commandName) {
+        editRobotModal.clickCommandByName(commandName);
+    }
+
+    public final boolean commandNameInputFieldIsVisible() {
+        return editRobotModal.commandByNameIsDisplayed();
+    }
+
+    public final boolean enterCommandNameIsDisabled() {
+        return editRobotModal.enterCommandNameIsDisabled();
+    }
+
+    public final String getTextFromTheCommandInputField() {
+        return editRobotModal.getTextFromTheCommandInputField();
+    }
+
+    public final List<String> getKeysFromTheCommandForm() {
+        return editRobotModal.getKeys();
+    }
+
+    public final void pressAddCommandButtonInEditModal() {
+        editRobotModal.pressAddCommandButton();
+    }
+
+    public final void enterCommandNameInEditModal(String commandName) {
+        editRobotModal.enterCommandName(commandName);
+    }
+
+    public final String getCommandInputFieldErrorMessage() {
+        return editRobotModal.getCommandInputFieldErrorMessage();
+    }
+
+    public final void pressAddKeyButtonInEditModal() {
+        editRobotModal.pressAddKeyButton();
+    }
+
+    public final boolean addKeyButtonIsHidden() {
+        return editRobotModal.addKeyButtonIsHidden();
+    }
+
+    public final void enterLastAddedKey(String key) {
+        editRobotModal.enterLastAddedKey(key);
+    }
+
+    public final void changeValueForKey(String oldKey, String newKey) {
+        editRobotModal.changeValueForKey(oldKey, newKey);
+    }
+
+    public final void clickOnTheRemoveKeyButton(String key) {
+        editRobotModal.clickOnTheRemoveKeyButton(key);
+    }
+
+    @Nullable
+    public final Boolean removeButtonIsHiddenFor(String commandName) {
+        return editRobotModal.removeButtonIsHiddenFor(commandName);
+    }
+
 }

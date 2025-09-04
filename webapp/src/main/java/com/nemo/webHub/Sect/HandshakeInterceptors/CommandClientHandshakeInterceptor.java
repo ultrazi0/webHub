@@ -1,9 +1,9 @@
 package com.nemo.webHub.Sect.HandshakeInterceptors;
 
-import com.nemo.webHub.Decibel.RobotEntity;
 import com.nemo.webHub.Decibel.RobotRepository;
 import com.nemo.webHub.Decibel.UserEntity;
-import com.nemo.webHub.Sock.Operators;
+import com.nemo.webHub.Sock.OperatorController;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.socket.WebSocketHandler;
 
 import java.util.Map;
-
 
 /**
  * Handshake Interceptor for connection requests sent from a user to connect to their robot
@@ -27,18 +26,17 @@ import java.util.Map;
  * */
 public class CommandClientHandshakeInterceptor extends AbstractHandshakeInterceptor{
 
-    private final Operators operators;
+    private final OperatorController operatorController;
 
-    public CommandClientHandshakeInterceptor(RobotRepository robotRepository, Operators operators) {
+    public CommandClientHandshakeInterceptor(RobotRepository robotRepository, OperatorController operatorController) {
         super(robotRepository);
         Assert.notNull(robotRepository, "database access is necessary - RobotRepository cannot be null");
-        this.operators = operators;
+        this.operatorController = operatorController;
     }
 
     @Override
     public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes)
-            throws Exception {
+                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
 
         Integer robotId = getRobotIdFromRequestOrElseNull(request);
 
@@ -51,17 +49,17 @@ public class CommandClientHandshakeInterceptor extends AbstractHandshakeIntercep
         // Web browsers send cookies even with websocket connect requests
         UserEntity user = getCurrentUser();
 
-        // If robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
-        RobotEntity robot = robotRepository.findRobotByIdIfAllowed(robotId, user.getId());
-        Assert.isTrue(robotId == robot.getId(), "IDs do not match");
+        // If the robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
+        RobotsRecord robot = robotRepository.findRobotsRecordByIdIfAllowed(robotId, user.getId());
+        Assert.isTrue(robotId.equals(robot.getRobotId()), "IDs do not match");
 
-        if (operators.getOperatorSessionId(robotId) != null) {
-            // Deny request if someone else is already controlling this robot
+        if (operatorController.getOperatorSessionId(robotId) != null) {
+            // Deny the request if someone else is already controlling this robot
             response.setStatusCode(HttpStatus.CONFLICT);
             return false;
         }
 
-        // Add ID to the attributes map so that it is easier to access
+        // Add ID to the attribute map so that it is easier to access
         attributes.put("robotId", robotId);
 
         return true;

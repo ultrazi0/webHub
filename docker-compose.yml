@@ -28,29 +28,15 @@ services:
     networks:
       - hub
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "server", "-d", "webHubDB" ]
+      test: [ "CMD", "psql", "-U", "server", "-d", "webHubDB", "-c", "SELECT 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
-
-  frontend:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
-      target: dev
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    networks:
-      - hub
-    environment:
-      - REACT_APP_PROXY_HOST=http://backend:8080
 
 volumes:
   db-data:

@@ -1,72 +1,75 @@
 package com.nemo.webHub.Sock.Image;
 
 import com.fasterxml.jackson.core.*;
+import com.nemo.webHub.Sock.Messages.JsonMessage;
+import com.nemo.webHub.Sock.Messages.MessageType;
 import jakarta.annotation.Nullable;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public record JsonImage(Mat image) {
+@Getter
+@RequiredArgsConstructor
+public class JsonImage implements JsonMessage {
 
     private static final Map<Integer, JsonImage> lastImageMap = new HashMap<>();
+
+    private final Mat image;
+    private boolean aimImage = false;
 
     @Nullable
     public static JsonImage createFromJson(String json) throws IOException {
         JsonFactory jsonFactory = new JsonFactory();
-        JsonParser jsonParser = jsonFactory.createParser(json);
 
-        String image = null;
+        try (JsonParser jsonParser = jsonFactory.createParser(json)) {
 
-        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-            String fieldName = jsonParser.currentName();
+            String image = null;
 
-            if ("messageType".equals(fieldName)) {
-                jsonParser.nextToken();
-                if (!jsonParser.getText().equals("image")) {
-                    // If messageType says message is not an image, no need to parse further
-                    return null;
+            while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                String fieldName = jsonParser.currentName();
+
+                if (JsonMessage.getMessageTypeFieldName().equals(fieldName)) {
+                    jsonParser.nextToken();
+                    if (!MessageType.IMAGE.toString().equals(jsonParser.getText())) {
+                        // If messageType says a message is not an image, no need to parse further
+                        return null;
+                    }
+                }
+
+                if ("image".equals(fieldName)) {
+                    jsonParser.nextToken();
+                    image = jsonParser.getText();
                 }
             }
 
-            if ("image".equals(fieldName)) {
-                jsonParser.nextToken();
-                image = jsonParser.getText();
+            if (image == null) {
+                return null;
             }
+
+            return new JsonImage(decode(image));
         }
-        jsonParser.close();
-
-        if (image == null) {
-            return null;
-        }
-
-        return new JsonImage(decode(image));
-
     }
 
-    public String jsonify(String messageType) throws IOException {
-        // See https://www.baeldung.com/jackson-streaming-api
+    public JsonImage asAimImage() {
+        this.aimImage = true;
+        return this;
+    }
 
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    @Override
+    public MessageType getMessageType() {
+        return aimImage ? MessageType.AIM_IMAGE : MessageType.IMAGE;
+    }
 
-        JsonFactory jsonFactory = new JsonFactory();
-        JsonGenerator jsonGenerator = jsonFactory.createGenerator(stream, JsonEncoding.UTF8);
-
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("messageType", messageType);
+    @Override
+    public void addImplementationSpecificFields(JsonGenerator jsonGenerator) throws IOException {
         jsonGenerator.writeStringField("image", encode(image));
-        jsonGenerator.writeEndObject();
-
-        jsonGenerator.close();
-
-        return stream.toString(StandardCharsets.UTF_8);
-
     }
 
     private static Mat decode(String encodedString) {
@@ -86,7 +89,6 @@ public record JsonImage(Mat image) {
 
     @Nullable
     public static JsonImage getLastImage(int robotId) {
-        System.out.println("Last image map: " + lastImageMap);
         return lastImageMap.get(robotId);
     }
 
@@ -101,7 +103,8 @@ public record JsonImage(Mat image) {
     @Override
     public String toString() {
         return "JsonImage{" +
-                "image='" + image + '\'' +
-                '}';
+            "image='" + image + '\'' +
+            ", lastImage=" + aimImage +
+            '}';
     }
 }

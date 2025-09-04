@@ -1,19 +1,9 @@
 package com.nemo.webHub.Commands;
 
-public enum CommandType {
-    MOVE (new String[] {"Speed", "Turn"}),
-    TURRET (new String[] {"Tilt", "Turn"}),
-    AIM (new String[] {}),
-    SHOOT (new String[] {}),
-    STOP (new String[] {});
+public interface CommandType {
 
-    private final String[] keys;
+    String getCommandType();
 
-    CommandType(String[] keys) {
-        this.keys = keys;
-    }
+    String[] getKeys();
 
-    public String[] getKeys() {
-        return keys;
-    }
 }

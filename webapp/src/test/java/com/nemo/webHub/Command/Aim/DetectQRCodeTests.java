@@ -1,6 +1,5 @@
 package com.nemo.webHub.Command.Aim;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.nemo.webHub.Commands.Aim.Math.Matrix;
 import com.nemo.webHub.Commands.Aim.Math.Point3D;
 import com.nemo.webHub.Commands.Aim.Math.PointInImage;

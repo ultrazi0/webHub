@@ -2,6 +2,7 @@ package com.nemo.webHub.Commands.Aim;
 
 import com.nemo.webHub.Commands.Aim.Math.PointInImage;
 import jakarta.annotation.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -10,6 +11,7 @@ import org.opencv.objdetect.QRCodeDetector;
 import java.util.LinkedList;
 import java.util.List;
 
+@Slf4j
 public class DetectQRCode {
 
     @Nullable
@@ -18,7 +20,7 @@ public class DetectQRCode {
         Mat points = new Mat();
 
         if (!qrCodeDetector.detect(img, points)) {
-            System.out.println("DetectQRCode>>> Unable to find QR-code");
+            log.trace("Unable to find QR-code");
 
             return null;
         }

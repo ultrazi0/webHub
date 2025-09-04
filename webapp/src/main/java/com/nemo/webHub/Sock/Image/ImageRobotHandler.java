@@ -1,6 +1,7 @@
 package com.nemo.webHub.Sock.Image;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -9,7 +10,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 
-import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
+import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 /**
  * Endpoint: /api/image/robot/
@@ -17,11 +18,11 @@ import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
  * This handler manages images sent from the robot.
  * Upon saving the last image, it retransmits it to the client.
  */
+@Slf4j
+@RequiredArgsConstructor
 public class ImageRobotHandler extends TextWebSocketHandler {
 
-
-    @Autowired
-    private ImageSubscribers imageSubscribers;
+    private final ImageSubscribers imageSubscribers;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -41,33 +42,25 @@ public class ImageRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) {
         int robotId = (int) session.getAttributes().get("robotId");
 
         imageSubscribers.removeRobot(robotId);
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        int robotId = (int) session.getAttributes().get("robotId");
+        JsonImage image = JsonImage.createFromJson(message.getPayload());
 
-        try {
-
-            int robotId = (int) session.getAttributes().get("robotId");
-            JsonImage image = JsonImage.createFromJson(message.getPayload());
-
-            if (image != null) {
-                JsonImage.setLastImage(robotId, image);
-            } else {
-                message = createRegularJsonTextMessage(
-                        "Server>>> Provided JSON has no image field and/or is not messageType \"image\""
-                );
-            }
-            // System.out.println("Server>>> Got image: " + message);
-
-            imageSubscribers.sendMessageToAllSessions(robotId, message);
-        } catch (IOException e) {
-            System.out.println("!>> Supplied file is incorrect");
-            throw e;
+        if (image != null) {
+            JsonImage.setLastImage(robotId, image);
+        } else {
+            message = createRegularJsonTextMessage(
+                    "Server>>> Provided JSON has no image field and/or is not messageType \"IMAGE\""
+            );
         }
+
+        imageSubscribers.sendMessageToAllSessions(robotId, message);
     }
 }

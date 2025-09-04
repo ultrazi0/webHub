@@ -1,0 +1,13 @@
+.webHub-button {
+  transition: opacity 0.5s ease-in-out;
+  user-select: none;
+
+  >:hover {
+    cursor: pointer;
+    opacity: 0.66;
+  }
+}
+
+.delete-button {
+  color: var(--bs-danger);
+}

@@ -13,7 +13,7 @@ default:
 
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 build:
@@ -34,6 +34,22 @@ build:
     name: webHub-backend
     paths:
       - webapp/build/libs/*.jar
+
+build-frontend:
+  stage: build
+  image: node:24-alpine
+  script:
+    - cd frontend
+    - npm ci
+    - npm run check
+    - npm run build
+  needs: []
+  dependencies: []
+  artifacts:
+    when: on_success
+    name: webHub-frontend
+    paths:
+      - frontend/dist/
 
 test:
   stage: test
@@ -85,11 +101,7 @@ integration-test:
     reports:
       junit: webapp/build/test-results/**/*.xml
 
-.docker-variables:
-  variables:
-    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
-
-release-test-backend-image:
+release-test-image:
   stage: test-release
   image: docker
   #when: manual
@@ -100,29 +112,15 @@ release-test-backend-image:
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
   dependencies:
     - build
+    - build-frontend
   needs:
     - build
+    - build-frontend
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
-    - docker build --pull --target jar -t $TEST_IMAGE .
+    - docker build --pull --target pre-built -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
-
-release-test-frontend-image:
-  stage: test-release
-  image: docker
-  services:
-    - name: docker:dind
-      alias: docker
-  variables:
-    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
-  dependencies: []
-  needs: [] # should be removed, this job should be run manually
-  before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # Move this to separate stage (job above has the same before_script)
-  script:
-    - docker build --pull -t ${TEST_IMAGE}-frontend frontend
-    - docker push ${TEST_IMAGE}-frontend
 
 system-test:
   stage: system-test
@@ -141,14 +139,11 @@ system-test:
         POSTGRES_USER: $DB_USERNAME
         POSTGRES_PASSWORD: $DB_PASSWORD
     - name: $TEST_IMAGE
-      alias: backend
-    - name: ${TEST_IMAGE}-frontend
-      alias: frontend
+      alias: application
     - name: selenium/standalone-chrome:latest
       alias: chrome
   needs:
-    - release-test-frontend-image
-    - release-test-backend-image
+    - release-test-image
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
@@ -157,7 +152,7 @@ system-test:
       - .gradle
   script:
     - chmod +x gradlew
-    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://backend -Dselenide.base-url=http://frontend/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
+    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application:8080/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
   artifacts:
     when: always
     reports:
@@ -173,6 +168,7 @@ deploy-test-report:
   image: busybox
   needs:
     - system-test
+  when: always
   dependencies:
     - system-test
   script:

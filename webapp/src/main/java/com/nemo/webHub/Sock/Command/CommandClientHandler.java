@@ -1,11 +1,11 @@
 package com.nemo.webHub.Sock.Command;
 
-import com.nemo.webHub.Commands.JsonCommand;
-import com.nemo.webHub.Robot.RobotService;
-import com.nemo.webHub.Sock.Image.ImageSubscribers;
-import com.nemo.webHub.Sock.Image.JsonImage;
-import com.nemo.webHub.Sock.Operators;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nemo.webHub.Commands.CommandService;
+import com.nemo.webHub.Sock.Messages.JsonCommand;
+import com.nemo.webHub.Robot.RobotConnectionService;
+import com.nemo.webHub.Sock.OperatorController;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,8 +14,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
-import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
+import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 
 /**
@@ -26,13 +27,13 @@ import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
  * <p>
  * Message must be a parsable JSON, otherwise an exception is thrown.
  */
+@Slf4j
+@RequiredArgsConstructor
 public class CommandClientHandler extends TextWebSocketHandler {
-    @Autowired
-    private RobotService robotService;
-    @Autowired
-    private Operators operators;
-    @Autowired
-    ImageSubscribers imageSubscribers;
+
+    private final RobotConnectionService robotConnectionService;
+    private final OperatorController operatorController;
+    private final CommandService commandService;
 
     private static final HashMap<String, WebSocketSession> sessionIdToSessionMap = new HashMap<>();
 
@@ -48,33 +49,33 @@ public class CommandClientHandler extends TextWebSocketHandler {
             );
         }
 
-        operators.addOperator(session.getId(), (int) robotId);
+        operatorController.addOperator(session.getId(), (int) robotId);
         sessionIdToSessionMap.put(session.getId(), session);
 
         // Greet the subscriber
         session.sendMessage(createRegularJsonTextMessage("Server>>> Connected to websocket at /api/command/client"));
 
-        if (!robotService.robotIsConnected((int) robotId)) {
+        if (!robotConnectionService.robotIsConnected((int) robotId)) {
             return;
         }
 
-        robotService.getRobotById((int) robotId).sendMessage(createRegularJsonTextMessage(
+        robotConnectionService.getRobotById((int) robotId).sendMessage(createRegularJsonTextMessage(
                 "Operator has just been connected"
         ));
-        robotService.sendStopToRobot((int) robotId);  // Ensures that the robot is not doing anything
+        robotConnectionService.sendStopToRobot((int) robotId);  // Ensures that the robot is not doing anything
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws RuntimeException, IOException {
 
-        Integer robotId = operators.getRobotId(session.getId());
+        Integer robotId = operatorController.getRobotId(session.getId());
 
-        operators.removeOperator(session.getId());
+        operatorController.removeOperator(session.getId());
         sessionIdToSessionMap.remove(session.getId(), session);
 
-        if (robotService.robotIsConnected(robotId)) {
-            robotService.sendStopToRobot(robotId);
-            robotService.getRobotById(robotId).sendMessage(createRegularJsonTextMessage(
+        if (robotConnectionService.robotIsConnected(robotId)) {
+            robotConnectionService.sendStopToRobot(robotId);
+            robotConnectionService.getRobotById(robotId).sendMessage(createRegularJsonTextMessage(
                     "Operator has just disconnected"
             ));
         }
@@ -82,52 +83,26 @@ public class CommandClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("Transmitting message from client: " + message.getPayload());
+    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws IOException {
+        log.trace("Transmitting message from client: {}", message.getPayload());
 
-        JsonCommand command = JsonCommand.createFromJson(message.getPayload());
+        int robotId = operatorController.getRobotId(session.getId());
 
-        if (command == null) {
-            throw new NoSuchFieldException("Provided JSON has no field \"command\"");
+        List<JsonCommand> commands = JsonCommand.createFromJson(message.getPayload(), commandService, robotId);
+
+        if (commands.isEmpty()) {
+            throw new IllegalArgumentException("Provided JSON has no commands");
         }
 
-        System.out.println("Created command: " + command);
+        log.trace("Created commands: {}", commands);
 
-        int robotId = operators.getRobotId(session.getId());
-
-        if (!robotService.robotIsConnected(robotId)) {
-            System.out.println("Received a command, but robot with ID #" + robotId + " has not connected yet");
+        if (!robotConnectionService.robotIsConnected(robotId)) {
+            log.debug("Received a command, but robot with ID #{} has not connected yet", robotId);
             session.sendMessage(createRegularJsonTextMessage("Robot with this ID is not connected yet"));
             return;
         }
 
-        switch (command.command()) {
-            case MOVE, TURRET -> robotService.updateAndSendRobotState(robotId, command);
-            case STOP -> robotService.sendStopToRobot(robotId);
-            case AIM -> {
-                JsonImage lastImage = JsonImage.getLastImage(robotId);
-
-                if (lastImage == null) {
-                    session.sendMessage(createRegularJsonTextMessage("Uhm... no image, check the connection"));
-                    break;
-                }
-
-                boolean success = robotService.startAimAndSendResult(robotId, lastImage);
-
-                imageSubscribers.sendMessageToAllSessions(robotId, new TextMessage(lastImage.jsonify("lastImage")));
-
-                if (success) {
-                    session.sendMessage(createRegularJsonTextMessage("Fire 'er up, sir!"));
-                } else {
-                    session.sendMessage(createRegularJsonTextMessage("No QR-code found, better luck next time!"));
-                }
-            }
-            case SHOOT -> session.sendMessage(createRegularJsonTextMessage(
-                    // TODO: this is obviously a placeholder
-                    "I hear you, but you have to use use your imagination for now :("
-            ));
-        }
-
+        robotConnectionService.handleCommands(robotId, commands, session);
     }
 
     static WebSocketSession getSession(String sessionId) {

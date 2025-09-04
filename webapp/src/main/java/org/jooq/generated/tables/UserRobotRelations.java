@@ -156,19 +156,7 @@ public class UserRobotRelations extends TableImpl<UserRobotRelationsRecord> {
 
     @Override
     public List<ForeignKey<UserRobotRelationsRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_USER_ID_FKEY, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_ROBOT_ID_FKEY);
-    }
-
-    private transient UsersPath _users;
-
-    /**
-     * Get the implicit join path to the <code>bot.users</code> table.
-     */
-    public UsersPath users() {
-        if (_users == null)
-            _users = new UsersPath(this, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_USER_ID_FKEY, null);
-
-        return _users;
+        return Arrays.asList(Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_ROBOT_ID_FKEY, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_USER_ID_FKEY);
     }
 
     private transient RobotsPath _robots;
@@ -181,6 +169,18 @@ public class UserRobotRelations extends TableImpl<UserRobotRelationsRecord> {
             _robots = new RobotsPath(this, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_ROBOT_ID_FKEY, null);
 
         return _robots;
+    }
+
+    private transient UsersPath _users;
+
+    /**
+     * Get the implicit join path to the <code>bot.users</code> table.
+     */
+    public UsersPath users() {
+        if (_users == null)
+            _users = new UsersPath(this, Keys.USER_ROBOT_RELATIONS__USER_ROBOT_RELATIONS_USER_ID_FKEY, null);
+
+        return _users;
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 @OnionTest
-@SuppressWarnings("ResultOfMethodCallIgnored")
 class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenStage, LoginPageThenStage> {
 
     @ParameterizedTest
@@ -15,7 +14,7 @@ class LoginTests extends SpringScenarioTest<LoginPageGivenStage, LoginPageWhenSt
     void when_correct_credentials_I_should_be_able_to_log_in(String username, String password) {
 
         given()
-            .account_$_already_exists(username, password)
+            .user_$_exists(username, password)
             .and().I_am().on_login_page()
             .and().I_am().not_logged_in();
 

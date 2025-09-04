@@ -1,66 +1,56 @@
 package com.nemo.webHub.Decibel;
 
-import com.nemo.webHub.Robot.RobotService;
-import jakarta.validation.constraints.NotNull;
+import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.CustomCommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
+import com.nemo.webHub.User.User;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.*;
+import org.jooq.generated.tables.records.CustomCommandsRecord;
 import org.jooq.generated.tables.records.RobotsRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.UUID;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.jooq.generated.Tables.*;
+import static org.jooq.impl.DSL.multiset;
+import static org.jooq.impl.DSL.select;
 
 @Repository
+@RequiredArgsConstructor
 public class RobotRepository {
 
-    @Autowired
-    private DSLContext db;
-    @Autowired
-    private RobotService robotService;
+    private final DSLContext db;
 
     @NotNull
-    public RobotEntity findRobotById(int id) {
-        RobotsRecord robotsRecord = db
-                .selectFrom(ROBOTS)
-                .where(ROBOTS.ROBOT_ID.equal(id))
-                .fetchOne();
-
-        if (robotsRecord == null) {
-            throw new RobotNotFoundException(id);
-        }
-
-        return new RobotEntity(robotsRecord);
+    public RobotsRecord findRobotById(int id) {
+        return db
+            .selectFrom(ROBOTS)
+            .where(ROBOTS.ROBOT_ID.equal(id))
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
     }
 
     @NotNull
-    public RobotEntity findRobotByIdIfAllowed(int id, int userId) {
-        Record6<Integer, String, UUID, OffsetDateTime, Integer, String> robot =
-                db.select(ROBOTS.ROBOT_ID,
-                                ROBOTS.NAME,
-                                ROBOTS.PASSWORD,
-                                ROBOTS.CREATED_AT,
-                                ROBOTS.OWNER_ID,
-                                USERS.USERNAME)
-                        .from(ROBOTS)
-                        .innerJoin(USER_ROBOT_RELATIONS).using(ROBOTS.ROBOT_ID)
-                        .innerJoin(USERS).on(ROBOTS.OWNER_ID.equal(USERS.USER_ID))
-                        .where(ROBOTS.ROBOT_ID.equal(id).and(USER_ROBOT_RELATIONS.USER_ID.equal(userId)))
-                        .fetchOne();
+    public Record4<RobotsRecord, String, List<User>, List<CustomCommandType>> findRobotDetailedByIdIfAllowed(int id, int userId) {
+        return createSelectRobotQuery(userId)
+            .where(ROBOTS.ROBOT_ID.equal(id).and(USER_ROBOT_RELATIONS.USER_ID.equal(userId)))
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
+    }
 
-        if (robot == null) {
-            throw new RobotNotFoundException(id);
-        }
-
-        return new RobotEntity(
-                robot.component1(),
-                robot.component2(),
-                robot.component3(),
-                robot.component4(),
-                robot.component5()
-        ).setOwnerName(robot.component6()).setIsOnline(checkAvailability(robot.component1()));
+    @NotNull
+    public RobotsRecord findRobotsRecordByIdIfAllowed(int id, int userId) {
+        return db
+            .selectFrom(ROBOTS)
+            .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
     }
 
     @Deprecated
@@ -78,19 +68,15 @@ public class RobotRepository {
         return new RobotEntity(robotsRecord);
     }
 
-    public RobotEntity insertNewRobot(String name, int userId) {
-        RobotsRecord newRobot = db
-                .insertInto(ROBOTS)
-                .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
-                .values(name, userId)
-                .returning()
-                .fetchOne();
-
-        if (newRobot == null) {
-            throw new RuntimeException("Newly inserted robot is null");
-        }
-
-        return new RobotEntity(newRobot);
+    @NotNull
+    public RobotsRecord insertNewRobot(String name, int userId) {
+        return db
+            .insertInto(ROBOTS)
+            .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
+            .values(name, userId)
+            .returning()
+            .fetchOptional()
+            .orElseThrow(() -> new RuntimeException("Newly inserted robot is null"));
     }
 
     @Deprecated
@@ -109,23 +95,38 @@ public class RobotRepository {
         return new RobotEntity(robot);
     }
 
-    public RobotEntity updateRobot(int id, String name, int userId) {
-        // This method updates the robot only when the user is its owner
-        RobotsRecord robot = db.update(ROBOTS)
-                .set(ROBOTS.NAME, name)
-                .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
-                .returning()
-                .fetchOne();
+    /// Updates the robot only when the user is its owner
+    @NotNull
+    public RobotsRecord updateRobot(int id, String name, int userId) {
+        return db.update(ROBOTS)
+            .set(ROBOTS.NAME, name)
+            .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
+            .returning()
+            .fetchOptional()
+            .orElseThrow(() -> new RobotNotFoundException(id));
+    }
 
-        if (robot == null) {
-            throw new RobotNotFoundException(id);
+    /// Completely replaces the custom commands of the robot (i.e., deletes old ones and inserts new ones)
+    @NotNull
+    @Transactional
+    public Stream<CustomCommandsRecord> replaceCustomCommands(int robotId, Collection<CommandType> commandTypes) {
+        db.deleteFrom(CUSTOM_COMMANDS).where(CUSTOM_COMMANDS.ROBOT_ID.equal(robotId)).execute();
+
+        InsertValuesStep3<CustomCommandsRecord, Integer, String, String[]> insertQuery = db.insertInto(CUSTOM_COMMANDS)
+            .columns(CUSTOM_COMMANDS.ROBOT_ID, CUSTOM_COMMANDS.COMMAND_TYPE, CUSTOM_COMMANDS.COMMAND_KEYS);
+
+        for (CommandType commandType : commandTypes) {
+            if (commandType instanceof StandardCommandType) {
+                continue;
+            }
+            insertQuery = insertQuery.values(robotId, commandType.getCommandType(), commandType.getKeys());
         }
 
-        return new RobotEntity(robot);
+        return insertQuery.returning().fetchStream();
     }
 
     /**
-     * Deletes the robot no matter what, <u>NOT SAFE</u> - use {@code deleteRobot(int id, int userId)}
+     * @deprecated deletes the robot no matter what, <u>NOT SAFE</u> - use {@link RobotRepository#deleteRobot(int id, int userId)}
      * */
     @Deprecated
     public void deleteRobot(int id) {
@@ -136,42 +137,62 @@ public class RobotRepository {
         }
     }
 
-    public void deleteRobot(int id, int userId) {
-        // This method deletes the robot only when the user is its owner
+    /**
+     * Removes user-robot relation.
+     * If the user is also the robot's owner, the latter is deleted as well, thanks to a trigger.
+     * */
+    public void deleteRobot(int robotId, int userId) {
         int deleted = db
-                .deleteFrom(ROBOTS)
-                .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
-                .execute();
+            .deleteFrom(USER_ROBOT_RELATIONS)
+            .where(USER_ROBOT_RELATIONS.USER_ID.equal(userId).and(USER_ROBOT_RELATIONS.ROBOT_ID.equal(robotId)))
+            .execute();
 
         if (deleted < 1) {
-            throw new RobotNotFoundException(id);
+            throw new RobotNotFoundException(robotId);
         }
     }
 
-    public RobotEntity[] getUserRobots(int userId) {
-        Record6<Integer, String, UUID, OffsetDateTime, Integer, String>[] records = db.select(ROBOTS.ROBOT_ID,
-                        ROBOTS.NAME,
-                        ROBOTS.PASSWORD,
-                        ROBOTS.CREATED_AT,
-                        ROBOTS.OWNER_ID,
-                        USERS.USERNAME
-                )
-                .from(ROBOTS)
-                .innerJoin(USER_ROBOT_RELATIONS).using(ROBOTS.ROBOT_ID)
-                .innerJoin(USERS).on(ROBOTS.OWNER_ID.equal(USERS.USER_ID))
-                .where(USER_ROBOT_RELATIONS.USER_ID.equal(userId))
-                .fetchArray();
-
-        return Arrays.stream(records)
-                .map(record -> new RobotEntity(record.component1(),
-                        record.component2(),
-                        record.component3(),
-                        record.component4(),
-                        record.component5()
-                ).setOwnerName(record.component6()).setIsOnline(checkAvailability(record.component1()))
-                ).toArray(RobotEntity[]::new);
+    @NotNull
+    public Stream<Record4<RobotsRecord, String, List<User>, List<CustomCommandType>>> getUserRobots(int userId) {
+        return createSelectRobotQuery(userId)
+            .where(USER_ROBOT_RELATIONS.USER_ID.equal(userId))
+            .fetchStream();
     }
 
+    public boolean shareRobot(int robotId, int robotOwnerId, Collection<String> usernames) {
+        return db
+            .insertInto(USER_ROBOT_RELATIONS)
+            .columns(USER_ROBOT_RELATIONS.ROBOT_ID, USER_ROBOT_RELATIONS.USER_ID)
+            .select(
+                select(ROBOTS.ROBOT_ID, USERS.USER_ID)
+                    .from(ROBOTS, USERS)
+                    .where(ROBOTS.ROBOT_ID.equal(robotId))
+                    .and(ROBOTS.OWNER_ID.equal(robotOwnerId))
+                    .and(USERS.USERNAME.in(usernames))
+            ).onConflictDoNothing().execute() > 0;
+    }
+
+    public boolean unshareRobot(int robotId, int robotOwnerId, Collection<Integer> userIds) {
+        return db.deleteFrom(USER_ROBOT_RELATIONS)
+            .where(USER_ROBOT_RELATIONS.RELATION_ID.in(
+                select(USER_ROBOT_RELATIONS.RELATION_ID)
+                    .from(USER_ROBOT_RELATIONS)
+                    .innerJoin(ROBOTS).on(ROBOTS.ROBOT_ID.equal(USER_ROBOT_RELATIONS.ROBOT_ID).and(ROBOTS.OWNER_ID.equal(robotOwnerId)))
+                    .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(robotId).and(USER_ROBOT_RELATIONS.USER_ID.in(userIds)))
+            )).execute() > 0;
+    }
+
+    @NotNull
+    public Stream<Record2<Integer, String>> getSharedUsers(int robotId, int ownerId) {
+        return db.select(USERS.USER_ID, USERS.USERNAME)
+            .from(USERS)
+            .innerJoin(USER_ROBOT_RELATIONS).using(USERS.USER_ID)
+            .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(robotId))
+            .and(USERS.USER_ID.notEqual(ownerId))
+            .fetchStream();
+    }
+
+    @Deprecated
     public RobotEntity[] getAllRobots() {
         RobotsRecord[] robotsRecords = db.selectFrom(ROBOTS).fetchArray();
         return Arrays.stream(robotsRecords)
@@ -180,7 +201,27 @@ public class RobotRepository {
 
     }
 
-    public boolean checkAvailability(int robotId) {
-        return robotService.robotIsConnected(robotId);
+    @NotNull
+    private SelectOnConditionStep<Record4<RobotsRecord, String, List<User>, List<CustomCommandType>>> createSelectRobotQuery(int userId) {
+        return db.select(
+                ROBOTS,
+                USERS.USERNAME,
+                multiset(
+                    select(USERS.USER_ID, USERS.USERNAME)
+                        .from(USER_ROBOT_RELATIONS)
+                        .innerJoin(USERS).using(USERS.USER_ID)
+                        .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(ROBOTS.ROBOT_ID))
+                        .and(USER_ROBOT_RELATIONS.USER_ID.notEqual(ROBOTS.OWNER_ID))
+                        .and(ROBOTS.OWNER_ID.equal(userId))
+                ).convertFrom(result -> result.map(Records.mapping(User::new))),
+                multiset(
+                    select(CUSTOM_COMMANDS.COMMAND_TYPE, CUSTOM_COMMANDS.COMMAND_KEYS)
+                        .from(CUSTOM_COMMANDS)
+                        .where(CUSTOM_COMMANDS.ROBOT_ID.equal(ROBOTS.ROBOT_ID))
+                ).convertFrom(result -> result.map(Records.mapping(CustomCommandType::new)))
+            )
+            .from(ROBOTS)
+            .innerJoin(USER_ROBOT_RELATIONS).using(ROBOTS.ROBOT_ID)
+            .innerJoin(USERS).on(ROBOTS.OWNER_ID.equal(USERS.USER_ID));
     }
 }

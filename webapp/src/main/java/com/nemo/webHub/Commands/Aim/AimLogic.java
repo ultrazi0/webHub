@@ -4,8 +4,8 @@ import com.nemo.webHub.Commands.Aim.Math.Matrix;
 import com.nemo.webHub.Commands.Aim.Math.Point3D;
 import com.nemo.webHub.Commands.Aim.Math.PointInImage;
 import com.nemo.webHub.Commands.Aim.Math.PointM;
-import com.nemo.webHub.Commands.CommandType;
-import com.nemo.webHub.Commands.JsonCommand;
+import com.nemo.webHub.Commands.StandardCommandType;
+import com.nemo.webHub.Sock.Messages.JsonCommand;
 import com.nemo.webHub.Config;
 import com.nemo.webHub.Sock.Image.JsonImage;
 import jakarta.annotation.Nullable;
@@ -20,7 +20,7 @@ public class AimLogic {
 
     @Nullable
     public static double[] aim(JsonImage jsonImage, Config config) {
-        Mat image = jsonImage.image();
+        Mat image = jsonImage.getImage();
 
         // Get image resolution
         int imageWidth = image.width();
@@ -58,10 +58,10 @@ public class AimLogic {
     public static JsonCommand createCommand(double[] angles) {
 
         HashMap<String, Double> values = new HashMap<>();
-        values.put(CommandType.TURRET.getKeys()[0].toLowerCase(), angles[1]); // Tilt - angleY
-        values.put(CommandType.TURRET.getKeys()[1].toLowerCase(), angles[0]); // Turn - angleX
+        values.put(StandardCommandType.TURRET.getKeys()[0].toLowerCase(), angles[1]); // Tilt - angleY
+        values.put(StandardCommandType.TURRET.getKeys()[1].toLowerCase(), angles[0]); // Turn - angleX
 
-        return new JsonCommand(CommandType.TURRET, values);
+        return new JsonCommand(StandardCommandType.TURRET, values);
 
     }
 }

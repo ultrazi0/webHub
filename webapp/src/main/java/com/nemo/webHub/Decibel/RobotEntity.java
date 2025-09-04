@@ -3,41 +3,52 @@ package com.nemo.webHub.Decibel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
+import com.nemo.webHub.Commands.CommandType;
+import com.nemo.webHub.Commands.StandardCommandType;
+import com.nemo.webHub.User.User;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.generated.tables.records.RobotsRecord;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RobotEntity {
-    private final int id;  // int cannot be null
+
+    private final int id;
+    @Setter
     @NotNull
     private String name;
+    @Setter
     @JsonIgnore
     private String password;
     private final OffsetDateTime createdAt;
-    @NotNull
-    private final int ownerId;
-    private String ownerName = null;
+    private final User owner;
+    @ToString.Exclude
     private boolean isOnline = false;
+    @NotNull
+    private final Set<User> sharedUsers = new HashSet<>();
+    @Nullable
+    private Set<CommandType> commands;
 
     public RobotEntity(int id, String name, UUID password, OffsetDateTime createdAt, int ownerId) {
-        this.id = id;
-        this.name = name;
-        this.password = "{noop}" + password;
-        this.createdAt = createdAt;
-        this.ownerId = ownerId;
+        this(id, name, "{noop}" + password, createdAt, ownerId);
     }
 
-    public RobotEntity(int id, String name, String password, OffsetDateTime createdAt, int ownerId) {
+    public RobotEntity(int id, @NotNull String name, String password, OffsetDateTime createdAt, int ownerId) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.createdAt = createdAt;
-        this.ownerId = ownerId;
+        this.owner = new User(ownerId, null);
     }
 
     public RobotEntity(RobotsRecord robotsRecord) {
@@ -45,56 +56,33 @@ public class RobotEntity {
         this.name = robotsRecord.getName();
         this.password = "{noop}" + robotsRecord.getPassword();
         this.createdAt = robotsRecord.getCreatedAt();
-        this.ownerId = robotsRecord.getOwnerId();
+        this.owner = new User(robotsRecord.getOwnerId(), null);
     }
 
     public static RobotEntity of(RobotsRecord robotsRecord) {
         return new RobotEntity(robotsRecord);
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public int getOwnerId() {
-        return ownerId;
-    }
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public boolean isOnline() {
-        return isOnline;
-    }
-
-    public RobotEntity setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public RobotEntity withOwnerName(String ownerName) {
+        this.owner.setUsername(ownerName);
         return this;
     }
 
-    public RobotEntity setIsOnline(boolean isOnline) {
+    public RobotEntity withIsOnline(boolean isOnline) {
         this.isOnline = isOnline;
+        return this;
+    }
+
+    public RobotEntity withSharedUsers(Collection<User> sharedUsers) {
+        this.sharedUsers.addAll(sharedUsers);
+        return this;
+    }
+
+    public RobotEntity withCommands(Collection<? extends CommandType> commands) {
+        StandardCommandType[] defaultCommands = StandardCommandType.values();
+        this.commands = new HashSet<>(defaultCommands.length + commands.size());
+        this.commands.addAll(List.of(defaultCommands));
+        this.commands.addAll(commands);
         return this;
     }
 
@@ -109,17 +97,5 @@ public class RobotEntity {
             throw new IllegalArgumentException("Provided password does not match the regular expression");
         }
         return matcher.group("password");
-    }
-
-    @Override
-    public String toString() {
-        return "RobotEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password=" + password +
-                ", createdAt=" + createdAt +
-                ", ownerId=" + ownerId +
-                ", ownerName=" + ownerName +
-                '}';
     }
 }

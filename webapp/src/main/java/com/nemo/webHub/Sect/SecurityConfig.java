@@ -21,15 +21,20 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String[] PUBLIC_STATIC_RESOURCES = {
+        "/favicon.ico", "/index.html", "/manifest.json", "/robots.txt", "/assets/**", "/logo192.png", "/logo512.png"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(Customizer.withDefaults())  // to disable use AbstractHttpConfigurer::disable
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/error", "/api/register", "/api/csrf").permitAll()
-                        .requestMatchers("/api/command/robot", "/api/image/robot").hasRole("ROBOT")
-                        .requestMatchers("/", "/swagger-ui/*", "v3/api-docs/*", "v3/api-docs").permitAll()
-                        .anyRequest().hasRole("USER"))
+                    .requestMatchers(PUBLIC_STATIC_RESOURCES).permitAll()
+                    .requestMatchers("/", "/error", "/api/register", "/api/csrf").permitAll()
+                    .requestMatchers("/api/command/robot", "/api/image/robot").hasRole("ROBOT")
+                    .requestMatchers("/api", "/swagger-ui/*", "/v3/api-docs/*", "/v3/api-docs").permitAll()
+                    .anyRequest().hasRole("USER"))
                 .formLogin(form -> form
                         .loginPage("/api/login").permitAll()
                         .successHandler((request, response, authentication) -> {
@@ -72,11 +77,10 @@ public class SecurityConfig {
          *  This happens in InitializeUserDetailsManagerConfigurer#configure
          */
 
-        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
-        userAuthenticationProvider.setUserDetailsService(userRepositoryUserDetailsService);
+        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider(userRepositoryUserDetailsService);
+        userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
-        DaoAuthenticationProvider robotAuthenticationProvider = new DaoAuthenticationProvider();
-        robotAuthenticationProvider.setUserDetailsService(robotRepositoryUserDetailsService);
+        DaoAuthenticationProvider robotAuthenticationProvider = new DaoAuthenticationProvider(robotRepositoryUserDetailsService);
 
         return new ProviderManager(robotAuthenticationProvider, userAuthenticationProvider);
     }

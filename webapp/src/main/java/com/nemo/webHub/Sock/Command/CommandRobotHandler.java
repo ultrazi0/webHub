@@ -3,9 +3,12 @@ package com.nemo.webHub.Sock.Command;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.webHub.Robot.Robot;
-import com.nemo.webHub.Robot.RobotService;
-import com.nemo.webHub.Sock.Operators;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nemo.webHub.Robot.RobotConnectionService;
+import com.nemo.webHub.Sock.Messages.JsonMessage;
+import com.nemo.webHub.Sock.Messages.MessageType;
+import com.nemo.webHub.Sock.OperatorController;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,7 +17,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 
-import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
+import static com.nemo.webHub.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 /**
  *
@@ -26,12 +29,12 @@ import static com.nemo.webHub.Sock.WebSockConfig.createRegularJsonTextMessage;
  * Message must be a parsable JSON, otherwise an exception is thrown.
  *
  */
+@Slf4j
+@RequiredArgsConstructor
 public class CommandRobotHandler extends TextWebSocketHandler {
 
-    @Autowired
-    private RobotService robotService;
-    @Autowired
-    private Operators operators;
+    private final RobotConnectionService robotConnectionService;
+    private final OperatorController operatorController;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -44,11 +47,11 @@ public class CommandRobotHandler extends TextWebSocketHandler {
             );
         }
 
-        robotService.addConnectedRobot(new Robot((int) robotId, session));
+        robotConnectionService.addConnectedRobot(new Robot((int) robotId, session));
 
         session.sendMessage(createRegularJsonTextMessage("Server>>> Connected to websocket at /api/command/robot"));
 
-        String operatorSessionId = operators.getOperatorSessionId((int) robotId);
+        String operatorSessionId = operatorController.getOperatorSessionId((int) robotId);
 
         if (operatorSessionId == null) {
             return;
@@ -65,9 +68,9 @@ public class CommandRobotHandler extends TextWebSocketHandler {
         // because otherwise an exception would have been thrown in afterConnectionEstablished
 
         int robotId = (int) session.getAttributes().get("robotId");
-        robotService.removeConnectedRobot(robotId);
+        robotConnectionService.removeConnectedRobot(robotId);
 
-        String operatorSessionId = operators.getOperatorSessionId(robotId);
+        String operatorSessionId = operatorController.getOperatorSessionId(robotId);
 
         if (operatorSessionId == null) {
             return;
@@ -80,13 +83,13 @@ public class CommandRobotHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, @NonNull TextMessage message) throws Exception {
-        // Upon checking if message is a JSON, redirects it to all subscribers
+        // Upon checking if a message is a JSON, redirects it to all subscribers
 
         int robotId = (int) session.getAttributes().get("robotId");
-        String operatorSessionId = operators.getOperatorSessionId(robotId);
+        String operatorSessionId = operatorController.getOperatorSessionId(robotId);
 
         if (operatorSessionId == null) {
-            System.out.println("Operator for robot with ID #" + robotId + " is not connected yet");
+            log.trace("Operator for robot with ID #{} is not connected yet", robotId);
             session.sendMessage(createRegularJsonTextMessage("Operator is not connected yet"));
             return;
         }
@@ -94,11 +97,11 @@ public class CommandRobotHandler extends TextWebSocketHandler {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode messageNode = objectMapper.readTree(message.getPayload());
-        JsonNode messageType = messageNode.get("messageType");
+        JsonNode messageType = messageNode.get(JsonMessage.getMessageTypeFieldName());
 
         if (messageType == null) {
             throw new NoSuchFieldException("Message type not provided, revise your JSON");
-        } else if (messageType.asText().equals("feedback")) {
+        } else if (messageType.asText().equals(MessageType.FEEDBACK.toString())) {
 
             if (!messageNode.has("feedback")) {
                 throw new NoSuchFieldException(

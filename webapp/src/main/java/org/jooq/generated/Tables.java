@@ -4,6 +4,7 @@
 package org.jooq.generated;
 
 
+import org.jooq.generated.tables.CustomCommands;
 import org.jooq.generated.tables.Robots;
 import org.jooq.generated.tables.UserRobotRelations;
 import org.jooq.generated.tables.Users;
@@ -14,6 +15,11 @@ import org.jooq.generated.tables.Users;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * The table <code>bot.custom_commands</code>.
+     */
+    public static final CustomCommands CUSTOM_COMMANDS = CustomCommands.CUSTOM_COMMANDS;
 
     /**
      * The table <code>bot.robots</code>.

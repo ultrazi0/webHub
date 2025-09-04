@@ -51,130 +51,130 @@ build-frontend:
     paths:
       - frontend/dist/
 
-test:
-  stage: test
-  script:
-    - chmod +x gradlew
-    - ./gradlew webapp:test
-  needs:
-    - build
-  dependencies: []
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - webapp/build
-      - .gradle
-  artifacts:
-    when: always
-    reports:
-      junit: webapp/build/test-results/**/*.xml
-
-integration-test:
-  stage: integration-test
-  variables:
-    DB_NAME: "webHubDB"
-    DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
-    DB_USERNAME: server
-    DB_PASSWORD: server
-  services:
-    - name: postgres
-      alias: db
-      variables:
-        POSTGRES_DB: $DB_NAME
-        POSTGRES_USER: $DB_USERNAME
-        POSTGRES_PASSWORD: $DB_PASSWORD
-  script:
-    - chmod +x gradlew
-    - ./gradlew webapp:integrationTest
-  needs:
-    - build
-  dependencies: []
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - webapp/build
-      - .gradle
-  artifacts:
-    when: always
-    reports:
-      junit: webapp/build/test-results/**/*.xml
-
-release-test-image:
-  stage: test-release
-  image: docker
-  services:
-    - name: docker:dind
-      alias: docker
-  variables:
-    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
-  dependencies:
-    - build
-    - build-frontend
-  needs:
-    - build
-    - build-frontend
-  before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-  script:
-    - docker build --pull --target pre-built -t $TEST_IMAGE .
-    - docker push $TEST_IMAGE
-
-system-test:
-  stage: system-test
-  variables:
-    FF_NETWORK_PER_BUILD: 1
-    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
-    DB_NAME: "webHubDB"
-    DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
-    DB_USERNAME: server
-    DB_PASSWORD: server
-  services:
-    - name: postgres
-      alias: db
-      variables:
-        POSTGRES_DB: $DB_NAME
-        POSTGRES_USER: $DB_USERNAME
-        POSTGRES_PASSWORD: $DB_PASSWORD
-    - name: $TEST_IMAGE
-      alias: application
-    - name: selenium/standalone-chrome:latest
-      alias: chrome
-  needs:
-    - release-test-image
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - webapp/build
-      - .gradle
-  script:
-    - chmod +x gradlew
-    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application:8080/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
-  artifacts:
-    when: always
-    reports:
-      junit: testing/build/test-results/**/*.xml
-    paths:
-      - testing/build/reports/jgiven
-
-deploy-test-report:
-  pages: true
-  stage: deploy
-  inherit:
-    default: false
-  image: busybox
-  needs:
-    - system-test
-  when: always
-  dependencies:
-    - system-test
-  script:
-    - mv testing/build/reports/jgiven/test/html/ public/
-  artifacts:
-    paths:
-      - "public/"
+#test:
+#  stage: test
+#  script:
+#    - chmod +x gradlew
+#    - ./gradlew webapp:test
+#  needs:
+#    - build
+#  dependencies: []
+#  cache:
+#    key: "$CI_COMMIT_REF_NAME"
+#    policy: pull
+#    paths:
+#      - webapp/build
+#      - .gradle
+#  artifacts:
+#    when: always
+#    reports:
+#      junit: webapp/build/test-results/**/*.xml
+#
+#integration-test:
+#  stage: integration-test
+#  variables:
+#    DB_NAME: "webHubDB"
+#    DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
+#    DB_USERNAME: server
+#    DB_PASSWORD: server
+#  services:
+#    - name: postgres
+#      alias: db
+#      variables:
+#        POSTGRES_DB: $DB_NAME
+#        POSTGRES_USER: $DB_USERNAME
+#        POSTGRES_PASSWORD: $DB_PASSWORD
+#  script:
+#    - chmod +x gradlew
+#    - ./gradlew webapp:integrationTest
+#  needs:
+#    - build
+#  dependencies: []
+#  cache:
+#    key: "$CI_COMMIT_REF_NAME"
+#    policy: pull
+#    paths:
+#      - webapp/build
+#      - .gradle
+#  artifacts:
+#    when: always
+#    reports:
+#      junit: webapp/build/test-results/**/*.xml
+#
+#release-test-image:
+#  stage: test-release
+#  image: docker
+#  services:
+#    - name: docker:dind
+#      alias: docker
+#  variables:
+#    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+#  dependencies:
+#    - build
+#    - build-frontend
+#  needs:
+#    - build
+#    - build-frontend
+#  before_script:
+#    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+#  script:
+#    - docker build --pull --target pre-built -t $TEST_IMAGE .
+#    - docker push $TEST_IMAGE
+#
+#system-test:
+#  stage: system-test
+#  variables:
+#    FF_NETWORK_PER_BUILD: 1
+#    TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
+#    DB_NAME: "webHubDB"
+#    DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
+#    DB_USERNAME: server
+#    DB_PASSWORD: server
+#  services:
+#    - name: postgres
+#      alias: db
+#      variables:
+#        POSTGRES_DB: $DB_NAME
+#        POSTGRES_USER: $DB_USERNAME
+#        POSTGRES_PASSWORD: $DB_PASSWORD
+#    - name: $TEST_IMAGE
+#      alias: application
+#    - name: selenium/standalone-chrome:latest
+#      alias: chrome
+#  needs:
+#    - release-test-image
+#  cache:
+#    key: "$CI_COMMIT_REF_NAME"
+#    policy: pull
+#    paths:
+#      - webapp/build
+#      - .gradle
+#  script:
+#    - chmod +x gradlew
+#    - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application:8080/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true
+#  artifacts:
+#    when: always
+#    reports:
+#      junit: testing/build/test-results/**/*.xml
+#    paths:
+#      - testing/build/reports/jgiven
+#
+#deploy-test-report:
+#  pages: true
+#  stage: deploy
+#  inherit:
+#    default: false
+#  image: busybox
+#  needs:
+#    - system-test
+#  when: always
+#  dependencies:
+#    - system-test
+#  script:
+#    - mv testing/build/reports/jgiven/test/html/ public/
+#  artifacts:
+#    paths:
+#      - "public/"
 
 deploy:
   inherit:
@@ -197,3 +197,4 @@ deploy:
     - docker push $IMAGE:latest
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"

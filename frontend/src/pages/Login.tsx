@@ -1,9 +1,11 @@
 import logo from "../logo.svg";
 
-import { Button, Container, FormControl, FormGroup, FormLabel, FormText, Row, Col, Image } from "react-bootstrap";
+import { Container, FormControl, FormGroup, FormLabel, FormText, Row, Col, Image } from "react-bootstrap";
 import { ActionFunctionArgs, Form, redirect, useActionData, useLoaderData } from "react-router-dom";
 import CsrfHiddenInput from "../components/CsrfHiddenInput";
 import { CsrfResponse } from "../types";
+import FormButton from "../components/FormButton";
+import { useNavigation } from "react-router";
 
 export type LoginLoaderData = {
     csrfToken: CsrfResponse;
@@ -46,6 +48,7 @@ export async function loginAction({ request }: ActionFunctionArgs): Promise<Acti
 export default function LoginPage() {
     const { csrfToken } = useLoaderData<LoginLoaderData>();
     const user = useActionData<ActionData>();
+    const { state } = useNavigation();
 
     return (
         <Container>
@@ -72,7 +75,7 @@ export default function LoginPage() {
                                 <CsrfHiddenInput csrfToken={csrfToken} />
                             </FormGroup>
                         )}
-                        <Button type="submit" variant="primary">Log in</Button>
+                        <FormButton isLoading={state !== "idle"}>Log in</FormButton>
                     </Form>
                 </Col>
             </Row>

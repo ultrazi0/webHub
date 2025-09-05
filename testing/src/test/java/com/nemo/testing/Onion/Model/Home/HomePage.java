@@ -29,19 +29,19 @@ public class HomePage extends AbstractPage {
     private final By USERNAME_GREETING = By.xpath("//div[@id=\"root\"]/div/div[1]/div/h1");
 
     // Add robot
-    private final By ADD_ROBOT_BUTTON = By.xpath("//div[@id=\"root\"]/div/div[2]/div[1]/button");
-    private final By REFRESH_ROBOTS_BUTTON = By.xpath("//div[@id=\"root\"]/div/div[2]/div[2]/button");
+    private final By ADD_ROBOT_BUTTON = By.className("robot-card-add");
+    private final By REFRESH_ROBOTS_BUTTON = By.id("home-refresh-robots-button");
 
     // Robot cards (RELATIVE TO PARENT, THAT IS CARD)
-    private final By ROBOT_CARDS = By.className("robotCard");
-    private final By INFO_BUTTON = By.className("robotCard-infoButton");
-    private final By DELETE_BUTTON = By.className("robotCard-closeButton");
+    private final By ROBOT_CARDS = By.className("robot-card");
+    private final By INFO_BUTTON = By.className("robot-card-infoButton");
+    private final By DELETE_BUTTON = By.className("robot-card-closeButton");
     private final By EDIT_BUTTON = By.xpath("./div[contains(@class, 'card-footer')]/button");
     private final By LINK_TO_OWNER = By.xpath(".//p[@class='card-text']/a");
 
     private By ROBOT_CARD_BY(String robotName) {
         return By.xpath(String.format(
-            "//div[contains(@class, 'robotCard') and ./div[@class='card-body']/div[contains(text(), '%s')]]", robotName
+            "//div[contains(@class, 'robot-card') and ./div[@class='card-body']/div[contains(text(), '%s')]]", robotName
         ));
     }
 

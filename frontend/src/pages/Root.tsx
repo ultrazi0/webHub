@@ -12,6 +12,8 @@ import RobotInfoModal from "./RootComponents/RobotInfoModal";
 import { CsrfResponse, RestListResponse, Robot } from "../types";
 import { RefreshCcw } from "lucide-react";
 
+import "../css/Root.scss";
+
 type LoadedRobots = {
     robots: RestListResponse<Robot, "robotEntityList"> | null;
     csrfToken: CsrfResponse;
@@ -205,10 +207,8 @@ export default function Root() {
                                 <Button onClick={() => setShowAddModal(true)}>Add robot</Button>
                             </Col>
                             <Col md="auto">
-                                <Button onClick={() => revalidator.revalidate()}>
-                                    <div>
-                                        <RefreshCcw size={16} />
-                                    </div>
+                                <Button disabled={revalidator.state !== "idle"} onClick={() => revalidator.revalidate()}>
+                                    <RefreshCcw className={`home-refresh-button-icon ${revalidator.state !== "idle" ? "loading" : ""}`} size={16} />
                                 </Button>
                             </Col>
                         </Row>

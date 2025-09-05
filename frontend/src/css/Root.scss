@@ -1,0 +1,12 @@
+.home-refresh-button-icon.loading {
+    animation: refresh-button-spin infinite 2s linear;
+}
+
+@keyframes refresh-button-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}

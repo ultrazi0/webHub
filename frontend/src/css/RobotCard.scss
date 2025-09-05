@@ -1,15 +1,19 @@
-.robotCard:hover{
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(214, 77, 180, 0.562), 0 4px 8px rgba(119, 76, 235, 0.76);
+.robot-card {
+    width: 18rem;
 }
 
-.robotCard-closeButton {
+.robot-card:hover{
+    transform: scale(1.05);
+    box-shadow: 0 2px 20px rgba(214, 77, 180, 0.562), 0 4px 8px rgba(119, 76, 235, 0.76);
+}
+
+.robot-card-closeButton {
     position: absolute;
     top: 0;
     right: 0;
 }
 
-.robotCard-infoButton {
+.robot-card-infoButton {
     position: absolute;
     top: 0;
     left: 0;
@@ -18,6 +22,6 @@
     padding: 14px !important;
 }
 
-.robotCard-infoButton:hover {
+.robot-card-infoButton:hover {
     opacity: 0.66;
 }

@@ -11,7 +11,6 @@ import {
     ModalHeader,
     ModalTitle,
     OverlayTrigger,
-    Spinner,
     Tooltip,
 } from "react-bootstrap";
 import { Dispatch, Ref, SetStateAction, useEffect, useRef, useState } from "react";
@@ -24,6 +23,7 @@ import { setError } from "../../utils/validationUtils";
 import { v4 as randomUUID } from "uuid";
 
 import "../../css/EditRobotModal.scss";
+import FormButton from "../../components/FormButton";
 
 type CommandIdType = string;
 
@@ -75,8 +75,6 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
     };
 
     const errors = validateForm();
-
-    const isLoading = fetcher.state !== "idle";
 
     const handleCloseModal = () => {
         setRobotId(null);
@@ -166,17 +164,7 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        disabled={isLoading || Object.keys(errors).length > 0}
-                    >
-                        {isLoading ? (
-                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden>
-                                <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                        ) : "Save"}
-                    </Button>
+                    <FormButton isLoading={fetcher.state !== "idle"} disabled={Object.keys(errors).length > 0}>Save</FormButton>
                 </ModalFooter>
             </fetcher.Form>
         </Modal>

@@ -2,6 +2,7 @@ import { Button, FormGroup, FormText, Modal, ModalBody, ModalFooter, ModalHeader
 import CsrfHiddenInput from "../../components/CsrfHiddenInput";
 import { FetcherWithReset } from "../../hooks/useFetcherWithReset";
 import { CsrfResponse } from "../../types";
+import FormButton from "../../components/FormButton";
 
 type DeleteRobotModalProps = {
     fetcher: FetcherWithReset<boolean>,
@@ -31,7 +32,7 @@ export default function DeleteRobotModal({ fetcher, robotId, setRobotId, csrfTok
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-                    <Button type="submit" variant="danger">Delete</Button>
+                    <FormButton isLoading={fetcher.state !== "idle"} variant="danger">Delete</FormButton>
                 </ModalFooter>
             </fetcher.Form>
         </Modal>

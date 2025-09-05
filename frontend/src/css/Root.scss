@@ -1,0 +1,34 @@
+.home-refresh-button-icon.loading {
+    animation: refresh-button-spin infinite 2s linear;
+}
+
+@keyframes refresh-button-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.robot-card-add {
+    height: 100% !important;
+    border-style: dashed !important;
+    background: transparent !important;
+
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+        opacity: 0.10;
+        height: 10rem;
+        width: 10rem;
+    }
+}
+
+.robot-card-add:hover {
+    svg {
+        opacity: 0.20;
+    }
+}

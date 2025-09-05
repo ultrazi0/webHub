@@ -11,7 +11,7 @@ import { FeedbackMessage, MessageType, RegularMessage } from "./index";
 export default function ControlRow({ robotId }: { robotId: string | null }) {
     const feedbackArea = useRef<HTMLTextAreaElement | null>(null); // ref that controls textarea for feedback
 
-    const WS_URL = robotId ? "ws://localhost:8080/api/command/client/" + robotId : null;
+    const WS_URL = robotId ? `ws://${window.location.host}/api/command/client/${robotId}` : null;
 
     const { sendJsonMessage, lastJsonMessage } = useWebSocket<RegularMessage | FeedbackMessage>(WS_URL, {
         shouldReconnect: () => false,

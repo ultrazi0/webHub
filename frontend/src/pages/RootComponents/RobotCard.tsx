@@ -18,10 +18,10 @@ export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, s
 
     return (
         <div onClick={() => navigate("control-panel/" + robot.id)} role="button">
-            <Card style={{ width: "18rem" }} className="robotCard">
+            <Card className="robot-card">
                     <Button
                         variant="link"
-                        className="robotCard-infoButton"
+                        className="robot-card-infoButton"
                         onClick={event => {
                             event.stopPropagation();
                             setRobotInfo(robot);
@@ -30,7 +30,7 @@ export default function RobotCard({ user, robot, setRobotInfo, setEditRobotId, s
                         <Info size={20} />
                     </Button>
                     <CloseButton
-                        className="robotCard-closeButton p-3"
+                        className="robot-card-closeButton p-3"
                         onClick={(event) => {
                             event.stopPropagation();
                             setDeleteRobotId(robot.id);

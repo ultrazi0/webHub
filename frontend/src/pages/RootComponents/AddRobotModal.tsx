@@ -13,6 +13,7 @@ import {
 import CsrfHiddenInput from "../../components/CsrfHiddenInput";
 import { FetcherWithReset } from "../../hooks/useFetcherWithReset";
 import { CsrfResponse } from "../../types";
+import FormButton from "../../components/FormButton";
 
 type AddRobotModalProps = {
     fetcher: FetcherWithReset<boolean>,
@@ -46,7 +47,7 @@ export default function AddRobotModal({ fetcher, showModal, setShowModal, csrfTo
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-                    <Button type="submit" variant="primary">Add</Button>
+                    <FormButton isLoading={fetcher.state !== "idle"}>Add</FormButton>
                 </ModalFooter>
             </fetcher.Form>
         </Modal>

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { ActionFunctionArgs, useLoaderData, useRevalidator } from "react-router-dom";
 import RootAlert, { AlertMessage } from "./RootComponents/RootAlert";
 import AddRobotModal from "./RootComponents/AddRobotModal";
@@ -10,7 +10,9 @@ import DeleteRobotModal from "./RootComponents/DeleteRobotModal";
 import { AuthenticationContext } from "../contexts";
 import RobotInfoModal from "./RootComponents/RobotInfoModal";
 import { CsrfResponse, RestListResponse, Robot } from "../types";
-import { RefreshCcw } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
+
+import "../css/Root.scss";
 
 type LoadedRobots = {
     robots: RestListResponse<Robot, "robotEntityList"> | null;
@@ -183,7 +185,7 @@ export default function Root() {
             <EditRobotModal fetcher={editRobotFetcher} robotId={editRobotId} setRobotId={setEditRobotId} csrfToken={csrfToken} />
             <DeleteRobotModal fetcher={deleteRobotFetcher} robotId={deleteRobotId} setRobotId={setDeleteRobotId} csrfToken={csrfToken} />
             <RobotInfoModal robot={robotInfo} setRobot={setRobotInfo} user={user} csrfToken={csrfToken} />
-            <Container>
+            <Container className="mt-3">
                 {
                     messages.map(message => (
                         <Row key={message.id}>
@@ -202,19 +204,14 @@ export default function Root() {
                     <>
                         <Row>
                             <Col md="auto">
-                                <Button onClick={() => setShowAddModal(true)}>Add robot</Button>
-                            </Col>
-                            <Col md="auto">
-                                <Button onClick={() => revalidator.revalidate()}>
-                                    <div>
-                                        <RefreshCcw size={16} />
-                                    </div>
+                                <Button id="home-refresh-robots-button" disabled={revalidator.state !== "idle"} onClick={() => revalidator.revalidate()}>
+                                    <RefreshCcw className={`home-refresh-button-icon ${revalidator.state !== "idle" ? "loading" : ""}`} size={16} />
                                 </Button>
                             </Col>
                         </Row>
                         <Row className="g-4 my-1" xs={1} sm={1} md={2} lg={3} xl={3} xxl={4}>
                             {robots && robots._embedded?.robotEntityList?.length
-                                ? robots._embedded.robotEntityList.map((robot) => (
+                                && robots._embedded.robotEntityList.map((robot) => (
                                     <Col key={robot.id}>
                                         <RobotCard
                                             user={user}
@@ -224,11 +221,13 @@ export default function Root() {
                                             setDeleteRobotId={setDeleteRobotId}
                                         />
                                     </Col>
-                                )) : (
-                                    <Col>
-                                        <p><i>No robots</i></p>
-                                    </Col>
-                                )}
+                                ))
+                            }
+                            <Col>
+                                <Card className="robot-card robot-card-add" onClick={() => setShowAddModal(true)}>
+                                    <Plus />
+                                </Card>
+                            </Col>
                         </Row>
                     </>
                 ) : (

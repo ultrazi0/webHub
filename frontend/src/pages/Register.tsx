@@ -1,10 +1,12 @@
-import { Button, Col, Container, FormControl, FormGroup, FormLabel, FormText, Image, Row } from "react-bootstrap";
+import { Col, Container, FormControl, FormGroup, FormLabel, FormText, Image, Row } from "react-bootstrap";
 import { ActionFunctionArgs, Form, redirect, useActionData, useLoaderData } from "react-router-dom";
 
 import logo from "../logo.svg";
 import CsrfHiddenInput from "../components/CsrfHiddenInput";
 import { useState } from "react";
 import { LoginLoaderData } from "./Login";
+import FormButton from "../components/FormButton";
+import { useNavigation } from "react-router";
 
 export async function registerAction({ request }: ActionFunctionArgs) {
     const response = await fetch("/api/register", {
@@ -18,6 +20,7 @@ export async function registerAction({ request }: ActionFunctionArgs) {
 export default function RegisterPage() {
     const { csrfToken } = useLoaderData<LoginLoaderData>();
     const response = useActionData<{ error?: string }>();
+    const { state } = useNavigation();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -51,7 +54,7 @@ export default function RegisterPage() {
                             {passwordsDoNotMatch && <FormText className="text-danger-emphasis">Passwords do not match</FormText>}
                         </FormGroup>
                         {csrfToken && <FormGroup className="mb-3" controlId="formRegisterCsrfToken"><CsrfHiddenInput csrfToken={csrfToken} /></FormGroup>}
-                        <Button type="submit" variant="primary" disabled={!allowSubmit}>Register</Button>
+                        <FormButton isLoading={state !== "idle"} disabled={!allowSubmit}>Register</FormButton>
                     </Form>
                 </Col>
             </Row>

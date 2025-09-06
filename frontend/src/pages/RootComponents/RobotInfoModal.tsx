@@ -198,7 +198,7 @@ function NewUser({ userId, removeUser, fetcher, actionUri, csrfToken }: WithFetc
                 onChange={event => setUsername(event.target.value)}
             />
             <div className="share-user-actions">
-                <span className="webHub-button share-button" onClick={onSubmit}>
+                <span className="rexus-button share-button" onClick={onSubmit}>
                     <Check size={18} />
                 </span>
                 <DeleteButton onClick={() => removeUser(userId)} />

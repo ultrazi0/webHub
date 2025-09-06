@@ -6,6 +6,8 @@ import LogoutModal from "./LogoutModal";
 import { AuthenticationContext } from "../contexts";
 import { User } from "../types";
 
+import logoNoText from "../images/logo-no-text.png";
+
 type UserLoaderData = {
     user: User | null;
 }
@@ -59,8 +61,9 @@ export default function NavigationBar() {
             <LogoutModal fetcher={logoutFetcher} showModal={showLogoutModal} setShowModal={setShowLogoutModal} />
             <Navbar className="bg-body-tertiary">
                 <Container>
-                    <Link to="/" className="navbar-brand">
-                        webHub
+                    <Link to="/" className="navbar-brand d-flex align-items-center">
+                        <Image src={logoNoText} width={32} height={32} className="mx-2" fluid />
+                        Rexus
                     </Link>
                     <Nav>
                         {user ? <Dropdown as={ButtonGroup} align="end">

@@ -1,7 +1,7 @@
 import { Col, Container, FormControl, FormGroup, FormLabel, FormText, Image, Row } from "react-bootstrap";
 import { ActionFunctionArgs, Form, redirect, useActionData, useLoaderData } from "react-router-dom";
 
-import logo from "../logo.svg";
+import logo from "../images/logo-complete.png";
 import CsrfHiddenInput from "../components/CsrfHiddenInput";
 import { useState } from "react";
 import { LoginLoaderData } from "./Login";
@@ -34,7 +34,6 @@ export default function RegisterPage() {
             <Row>
                 <Col className="text-center">
                     <Image src={logo} fluid />
-                    <p>Welcome to webHub!</p>
                 </Col>
                 <Col>
                     <Form method="post">

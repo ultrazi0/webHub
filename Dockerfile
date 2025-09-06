@@ -12,8 +12,8 @@ RUN ./gradlew webapp:assemble
 FROM gradle:8.10.2 AS db-processor
 WORKDIR /app
 
-COPY settings.gradle.kts gradle.properties build.gradle /app/
-COPY webapp/build.gradle /app/webapp/build.gradle
+COPY settings.gradle.kts gradle.properties build.gradle.kts /app/
+COPY webapp/build.gradle.kts /app/webapp/build.gradle.kts
 
 COPY webapp/src/main/resources/db/initDB.sql /app/webapp/src/main/resources/db/initDB.sql
 

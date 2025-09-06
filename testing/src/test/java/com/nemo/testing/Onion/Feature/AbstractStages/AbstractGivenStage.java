@@ -6,7 +6,7 @@ import com.nemo.testing.core.Persistence.PersistenceServiceMapper;
 import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.testing.core.Persistence.WithPersistence;
 import com.nemo.testing.core.TypedClassInstanceMap;
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.BeforeScenario;
 import com.tngtech.jgiven.annotation.ExtendedDescription;

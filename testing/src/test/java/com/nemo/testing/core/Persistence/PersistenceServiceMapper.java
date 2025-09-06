@@ -1,7 +1,7 @@
 package com.nemo.testing.core.Persistence;
 
-import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.RobotEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,0 +1,66 @@
+package com.nemo.rexus.Sock.Image;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import java.io.IOException;
+
+import static com.nemo.rexus.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
+
+/**
+ * Endpoint: /api/image/robot/
+ * <p>
+ * This handler manages images sent from the robot.
+ * Upon saving the last image, it retransmits it to the client.
+ */
+@Slf4j
+@RequiredArgsConstructor
+public class ImageRobotHandler extends TextWebSocketHandler {
+
+    private final ImageSubscribers imageSubscribers;
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        Object robotId = session.getAttributes().get("robotId");
+
+        if (!(robotId instanceof Integer)) {
+            // Should never happen because of the previous checks
+            throw new IllegalArgumentException(
+                    "Expected an Integer for robotId, but received: " + robotId.getClass().getSimpleName()
+            );
+        }
+
+        imageSubscribers.addRobot((int) robotId);
+
+        // Greet the robot
+        session.sendMessage(createRegularJsonTextMessage("Server>>> Welcome to websocket at /api/image/robot"));
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) {
+        int robotId = (int) session.getAttributes().get("robotId");
+
+        imageSubscribers.removeRobot(robotId);
+    }
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        int robotId = (int) session.getAttributes().get("robotId");
+        JsonImage image = JsonImage.createFromJson(message.getPayload());
+
+        if (image != null) {
+            JsonImage.setLastImage(robotId, image);
+        } else {
+            message = createRegularJsonTextMessage(
+                    "Server>>> Provided JSON has no image field and/or is not messageType \"IMAGE\""
+            );
+        }
+
+        imageSubscribers.sendMessageToAllSessions(robotId, message);
+    }
+}

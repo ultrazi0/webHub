@@ -1,6 +1,6 @@
 package com.nemo.testing.Onion.Feature.AbstractStages;
 
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCollectionAssert;
 import org.assertj.core.api.AbstractIntegerAssert;

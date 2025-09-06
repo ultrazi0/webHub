@@ -2,9 +2,9 @@ package com.nemo.testing.core.Persistence;
 
 import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UniqueAttributes.UserUniqueAttributes;
-import com.nemo.webHub.Decibel.UserEntity;
-import com.nemo.webHub.Decibel.UserNotFoundException;
-import com.nemo.webHub.Decibel.UserRepository;
+import com.nemo.rexus.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.UserNotFoundException;
+import com.nemo.rexus.Decibel.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record;

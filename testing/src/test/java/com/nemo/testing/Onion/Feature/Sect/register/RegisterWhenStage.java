@@ -3,7 +3,7 @@ package com.nemo.testing.Onion.Feature.Sect.register;
 import com.nemo.testing.Onion.Feature.AbstractStages.AbstractWhenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;

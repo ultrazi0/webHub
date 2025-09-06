@@ -1,6 +1,6 @@
 package com.nemo.testing.core.Formatters;
 
-import com.nemo.webHub.Commands.CustomCommandType;
+import com.nemo.rexus.Commands.CustomCommandType;
 import com.tngtech.jgiven.format.ArgumentFormatter;
 
 public class CustomCommandTypeFormatter implements ArgumentFormatter<CustomCommandType> {

@@ -9,7 +9,7 @@ import com.nemo.testing.core.API.APIService;
 import com.nemo.testing.core.API.Request;
 import com.nemo.testing.core.TypedClassInstanceMap;
 import com.nemo.testing.core.WithExtendedDescriptions;
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import com.tngtech.jgiven.CurrentStep;
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.BeforeStage;

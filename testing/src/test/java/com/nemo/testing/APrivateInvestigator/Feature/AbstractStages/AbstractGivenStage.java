@@ -8,7 +8,7 @@ import com.nemo.testing.core.Persistence.UserService;
 import com.nemo.testing.core.Persistence.WithPersistence;
 import com.nemo.testing.core.TypedClassInstanceMap;
 import com.nemo.testing.core.WithExtendedDescriptions;
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;

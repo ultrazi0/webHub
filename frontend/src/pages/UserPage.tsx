@@ -56,8 +56,7 @@ export default function UserPage() {
                     <Col>
                         <h1 className="mt-4">{currentUser?.id === user.id ? "Hi there, " + user.username + "!" : user.username}</h1>
                         <hr />
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit at, repellat tenetur voluptatibus ratione quas minima reprehenderit? Beatae, voluptatibus praesentium eaque nam sed voluptatem, dolor optio ratione magni eos ex?</p>
-                        {currentUser?.id === user.id && 
+                        {currentUser?.id === user.id &&
                             <span className="d-flex justify-content-between">
                                 <Button onClick={() => navigate("/user/edit")}>Edit</Button>
                                 <Button variant="danger" onClick={() => setShowDeleteModal(true)}>Delete</Button>

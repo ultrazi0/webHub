@@ -10,7 +10,7 @@ java {
 
 allprojects {
     group = "com.nemo"
-    version = "0.0.1-SNAPSHOT"
+    version = "1.0.0"
 
     repositories {
         mavenCentral()

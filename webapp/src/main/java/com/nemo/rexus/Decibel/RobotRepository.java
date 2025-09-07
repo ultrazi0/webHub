@@ -44,13 +44,14 @@ public class RobotRepository {
             .orElseThrow(() -> new RobotNotFoundException(id));
     }
 
-    @NotNull
-    public RobotsRecord findRobotsRecordByIdIfAllowed(int id, int userId) {
+    public int findRobotIdByRobotIdAndUserIdIfAllowed(int id, int userId) {
         return db
-            .selectFrom(ROBOTS)
-            .where(ROBOTS.ROBOT_ID.equal(id).and(ROBOTS.OWNER_ID.equal(userId)))
+            .select(USER_ROBOT_RELATIONS.ROBOT_ID)
+            .from(USER_ROBOT_RELATIONS)
+            .where(USER_ROBOT_RELATIONS.ROBOT_ID.equal(id).and(USER_ROBOT_RELATIONS.USER_ID.equal(userId)))
             .fetchOptional()
-            .orElseThrow(() -> new RobotNotFoundException(id));
+            .orElseThrow(() -> new RobotNotFoundException(id))
+            .value1();
     }
 
     @Deprecated

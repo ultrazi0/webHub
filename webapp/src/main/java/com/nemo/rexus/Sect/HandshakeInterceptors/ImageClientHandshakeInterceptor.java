@@ -2,7 +2,6 @@ package com.nemo.rexus.Sect.HandshakeInterceptors;
 
 import com.nemo.rexus.Decibel.RobotRepository;
 import com.nemo.rexus.Decibel.UserEntity;
-import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -47,8 +46,8 @@ public class ImageClientHandshakeInterceptor extends AbstractHandshakeIntercepto
         UserEntity user = getCurrentUser();
 
         // If the robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
-        RobotsRecord robot = robotRepository.findRobotsRecordByIdIfAllowed(robotId, user.getId());
-        Assert.isTrue(robotId.equals(robot.getRobotId()), "IDs do not match");
+        int allowedRobotId = robotRepository.findRobotIdByRobotIdAndUserIdIfAllowed(robotId, user.getId());
+        Assert.isTrue(robotId.equals(allowedRobotId), "IDs must match");
 
         // Add ID to the attribute map so that it is easier to access
         attributes.put("robotId", robotId);

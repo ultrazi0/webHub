@@ -3,7 +3,6 @@ package com.nemo.rexus.Sect.HandshakeInterceptors;
 import com.nemo.rexus.Decibel.RobotRepository;
 import com.nemo.rexus.Decibel.UserEntity;
 import com.nemo.rexus.Sock.OperatorController;
-import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -24,7 +23,7 @@ import java.util.Map;
  * 
  * @see AbstractHandshakeInterceptor
  * */
-public class CommandClientHandshakeInterceptor extends AbstractHandshakeInterceptor{
+public class CommandClientHandshakeInterceptor extends AbstractHandshakeInterceptor {
 
     private final OperatorController operatorController;
 
@@ -50,8 +49,8 @@ public class CommandClientHandshakeInterceptor extends AbstractHandshakeIntercep
         UserEntity user = getCurrentUser();
 
         // If the robot is not found, 404 is returned thanks to the @ResponseStatus annotation on the exception
-        RobotsRecord robot = robotRepository.findRobotsRecordByIdIfAllowed(robotId, user.getId());
-        Assert.isTrue(robotId.equals(robot.getRobotId()), "IDs do not match");
+        int allowedRobotId = robotRepository.findRobotIdByRobotIdAndUserIdIfAllowed(robotId, user.getId());
+        Assert.isTrue(robotId.equals(allowedRobotId), "IDs must match");
 
         if (operatorController.getOperatorSessionId(robotId) != null) {
             // Deny the request if someone else is already controlling this robot

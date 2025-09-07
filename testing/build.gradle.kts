@@ -56,6 +56,7 @@ tasks {
 
     jgivenTestReport {
         reports {
+            html.title = "Rexus System Report"
             html.customJsFile = projectDir.resolve("src/test/resources/jgiven/custom.js")
             html.customCssFile = projectDir.resolve("src/test/resources/jgiven/custom.css")
         }

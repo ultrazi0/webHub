@@ -1,7 +1,7 @@
 package com.nemo.testing.core;
 
-import com.nemo.webHub.Decibel.RobotRepository;
-import com.nemo.webHub.Decibel.UserRepository;
+import com.nemo.rexus.Decibel.RobotRepository;
+import com.nemo.rexus.Decibel.UserRepository;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

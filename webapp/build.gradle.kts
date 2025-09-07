@@ -88,6 +88,9 @@ tasks {
     withType<ProcessResources> {
         filesMatching(listOf("**/application.properties", "**/initDB.sql")) {
             expand(project.properties)
+            expand(mapOf(
+                "version" to project.version,
+            ))
 
             //Replace "#[" with "${" and "]#" with "}", to resolve conflicts between Spring and Gradle
             filter { it.replace(Regex("#\\[(.*)]#"), "\\\${$1}") }

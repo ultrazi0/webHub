@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CommandType, CustomCommandType, MessageType, StandardCommand } from "./index";
 import { Button, FormSelect, Table } from "react-bootstrap";
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
+import { useNavigate } from "react-router-dom";
 
 import "../../css/Controls.scss";
 
@@ -13,21 +14,33 @@ type CommandSelectorProps = {
 
 function CommandSelector({ robotId, selectedCommand, onSelect }: CommandSelectorProps) {
     const [commands, setCommands] = useState<readonly CommandType[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let ignore = false;
         fetch(`/api/robots/${robotId}/commands`)
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 401) {
+                    navigate("/login");
+                } else {
+                    throw new Error(response.statusText);
+                }
+            })
             .then((json: readonly CommandType[]) => {
                 if (!ignore) {
                     setCommands(json);
                 }
+            })
+            .catch(error => {
+                console.error("Error fetching commands:", error);
             });
 
         return () => {
             ignore = true;
         };
-    }, [ robotId ]);
+    }, [ navigate, robotId ]);
 
     return (
         <div className="form-floating">

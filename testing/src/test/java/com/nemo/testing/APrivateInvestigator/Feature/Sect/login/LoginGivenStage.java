@@ -2,7 +2,7 @@ package com.nemo.testing.APrivateInvestigator.Feature.Sect.login;
 
 import com.nemo.testing.APrivateInvestigator.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.core.Persistence.UserService;
-import com.nemo.webHub.Decibel.UserNotFoundException;
+import com.nemo.rexus.Decibel.UserNotFoundException;
 import com.tngtech.jgiven.annotation.AfterScenario;
 import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.integration.spring.JGivenStage;

@@ -1,4 +1,4 @@
-import logo from "../logo.svg";
+import logo from "../images/logo-complete.png";
 
 import { Container, FormControl, FormGroup, FormLabel, FormText, Row, Col, Image } from "react-bootstrap";
 import { ActionFunctionArgs, Form, redirect, useActionData, useLoaderData } from "react-router-dom";
@@ -55,7 +55,6 @@ export default function LoginPage() {
             <Row>
                 <Col className="text-center">
                     <Image src={logo} fluid />
-                    <p>Welcome to webHub!</p>
                 </Col>
                 <Col>
                     <Form method="post">

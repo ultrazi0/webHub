@@ -4,7 +4,7 @@ import com.nemo.testing.Onion.Feature.AbstractStages.AbstractGivenStage;
 import com.nemo.testing.Onion.Model.AbstractPage;
 import com.nemo.testing.Onion.Model.Sect.RegisterPage;
 import com.nemo.testing.core.Persistence.UserService;
-import com.nemo.webHub.Decibel.UserNotFoundException;
+import com.nemo.rexus.Decibel.UserNotFoundException;
 import com.tngtech.jgiven.annotation.*;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;

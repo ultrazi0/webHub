@@ -8,7 +8,7 @@ services:
     networks:
       - hub
     environment:
-      - DB_URL=jdbc:postgresql://db:5432/webHubDB?currentSchema=bot
+      - DB_URL=jdbc:postgresql://db:5432/rexus-db?currentSchema=bot
     depends_on:
       db:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD", "psql", "-U", "server", "-d", "webHubDB", "-c", "SELECT 1" ]
+      test: [ "CMD", "psql", "-U", "server", "-d", "rexus-db", "-c", "SELECT 1" ]
       interval: 10s
       timeout: 5s
       retries: 5

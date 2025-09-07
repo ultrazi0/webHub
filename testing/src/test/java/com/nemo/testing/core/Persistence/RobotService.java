@@ -2,11 +2,10 @@ package com.nemo.testing.core.Persistence;
 
 import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
-import com.nemo.webHub.Commands.CustomCommandType;
-import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Decibel.RobotNotFoundException;
-import com.nemo.webHub.Decibel.RobotRepository;
-import com.nemo.webHub.User.User;
+import com.nemo.rexus.Commands.CustomCommandType;
+import com.nemo.rexus.Decibel.RobotEntity;
+import com.nemo.rexus.Decibel.RobotNotFoundException;
+import com.nemo.rexus.Decibel.RobotRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStep2;
@@ -25,8 +24,6 @@ import java.util.stream.Stream;
 
 import static org.jooq.generated.Tables.CUSTOM_COMMANDS;
 import static org.jooq.generated.Tables.ROBOTS;
-import static org.jooq.generated.Tables.USERS;
-import static org.jooq.generated.Tables.USER_ROBOT_RELATIONS;
 
 /**
  * The {@code RobotService} class provides functionalities to interact with the robot records

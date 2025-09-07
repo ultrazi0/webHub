@@ -31,7 +31,7 @@ build:
       - .gradle
   artifacts:
     when: on_success
-    name: webHub-backend
+    name: rexus-backend
     paths:
       - webapp/build/libs/*.jar
 
@@ -47,7 +47,7 @@ build-frontend:
   dependencies: []
   artifacts:
     when: on_success
-    name: webHub-frontend
+    name: rexus-frontend
     paths:
       - frontend/dist/
 
@@ -73,7 +73,7 @@ test:
 integration-test:
   stage: integration-test
   variables:
-    DB_NAME: "webHubDB"
+    DB_NAME: "rexus-db"
     DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
     DB_USERNAME: server
     DB_PASSWORD: server
@@ -126,7 +126,7 @@ system-test:
   variables:
     FF_NETWORK_PER_BUILD: 1
     TEST_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHORT_SHA
-    DB_NAME: "webHubDB"
+    DB_NAME: "rexus-db"
     DB_URL: jdbc:postgresql://db:5432/$DB_NAME?currentSchema=bot
     DB_USERNAME: server
     DB_PASSWORD: server
@@ -185,7 +185,7 @@ deploy:
     - name: docker:dind
       alias: docker
   variables:
-    IMAGE: $CI_REGISTRY_IMAGE/webhub
+    IMAGE: $CI_REGISTRY_IMAGE/rexus
   dependencies:
     - build
     - build-frontend

@@ -5,8 +5,8 @@ import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttribut
 import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import com.nemo.testing.core.Persistence.UniqueAttributes.UserUniqueAttributes;
 import com.nemo.testing.core.Persistence.WithPersistence;
-import com.nemo.webHub.Decibel.RobotEntity;
-import com.nemo.webHub.Decibel.UserEntity;
+import com.nemo.rexus.Decibel.RobotEntity;
+import com.nemo.rexus.Decibel.UserEntity;
 import com.tngtech.jgiven.annotation.Hidden;
 import com.tngtech.jgiven.integration.spring.JGivenStage;
 import lombok.extern.slf4j.Slf4j;

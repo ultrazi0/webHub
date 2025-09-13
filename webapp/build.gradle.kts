@@ -1,3 +1,7 @@
+buildscript {
+    extra["databaseDriver"] = "org.postgresql.Driver"
+}
+
 plugins {
     id("org.jooq.jooq-codegen-gradle") version "3.20.6"
     id("org.flywaydb.flyway") version "11.11.2"

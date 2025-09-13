@@ -11,6 +11,18 @@ image: eclipse-temurin:21
 default:
   interruptible: true
 
+.gradle-properties: &gradle-properties
+  before_script:
+    - touch gradle.properties
+    - |
+      echo "
+      databaseName = rexus-db
+      databaseUrl = jdbc:postgresql://localhost:5432/
+      databaseUsername = server
+      databasePassword = server
+      databaseSchema = bot
+      " >> gradle.properties
+
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -18,6 +30,7 @@ workflow:
 
 build:
   stage: build
+  <<: *gradle-properties
   script:
     - chmod +x gradlew
     - ./gradlew --build-cache webapp:assemble
@@ -53,6 +66,7 @@ build-frontend:
 
 test:
   stage: test
+  <<: *gradle-properties
   script:
     - chmod +x gradlew
     - ./gradlew webapp:test
@@ -84,6 +98,7 @@ integration-test:
         POSTGRES_DB: $DB_NAME
         POSTGRES_USER: $DB_USERNAME
         POSTGRES_PASSWORD: $DB_PASSWORD
+  <<: *gradle-properties
   script:
     - chmod +x gradlew
     - ./gradlew webapp:integrationTest
@@ -149,6 +164,7 @@ system-test:
     paths:
       - webapp/build
       - .gradle
+  <<: *gradle-properties
   script:
     - chmod +x gradlew
     - ./gradlew testing:test -Dspring.datasource.url=$DB_URL -Drest-assured.base-uri=http://application/ -Dselenide.base-url=http://application:8080/ -Dselenide.remote=http://chrome:4444 -Dselenide.headless=true

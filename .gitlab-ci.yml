@@ -209,6 +209,6 @@ deploy:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker buildx create --name container-builder --driver docker-container --bootstrap --use
   script:
-    - docker build --pull --push --platform linux/amd64,linux/arm64 --target pre-built -t $IMAGE:$CI_COMMIT_SHORT_SHA -t $IMAGE:latest .
+    - docker buildx build --pull --push --platform linux/amd64,linux/arm64 --target pre-built -t $IMAGE:$CI_COMMIT_SHORT_SHA -t $IMAGE:latest .
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

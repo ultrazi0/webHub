@@ -75,7 +75,7 @@ public class RobotInfoModal extends AbstractModal {
 
     public final String getSharedUserLinkText(int index) {
         return modalElements(ROBOT_SHARED_USERS_ROWS).get(index).find(ROBOT_SHARE_USERNAME_LINK_RELATIVE_TO_ROW)
-            .hover() // As a workaround to wait for the element to be visible
+            .contextClick() // TODO: As a workaround to wait for the element to be visible. Should really think something for it
             .getText();
     }
 

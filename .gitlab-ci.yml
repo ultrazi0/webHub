@@ -17,7 +17,7 @@ default:
     - |
       echo "
       databaseName = rexus-db
-      databaseUrl = jdbc:postgresql://db:5432/rexus-db?currentSchema=bot
+      databaseUrl = jdbc:postgresql://db:5432/
       databaseUsername = server
       databasePassword = server
       databaseSchema = bot

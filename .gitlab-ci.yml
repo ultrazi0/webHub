@@ -36,9 +36,9 @@ build:
     - name: postgres:18-alpine
       alias: db
       variables:
-        POSTGRES_DB: $DB_NAME
-        POSTGRES_USER: $DB_USERNAME
-        POSTGRES_PASSWORD: $DB_PASSWORD
+        POSTGRES_DB: rexus-db
+        POSTGRES_USER: server
+        POSTGRES_PASSWORD: server
   <<: *gradle-properties
   script:
     - chmod +x gradlew

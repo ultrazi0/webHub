@@ -3,11 +3,10 @@ package com.nemo.rexus.Sect.HandshakeInterceptors;
 import com.nemo.rexus.Decibel.RobotEntity;
 import com.nemo.rexus.Decibel.RobotRepository;
 import com.nemo.rexus.Decibel.UserEntity;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -32,15 +31,19 @@ public abstract class AbstractHandshakeInterceptor implements HandshakeIntercept
     }
 
     @Override
-    public abstract boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                                            @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes)
-            throws Exception;
+    public abstract boolean beforeHandshake(
+            @NotNull ServerHttpRequest request,
+            @NotNull ServerHttpResponse response,
+            @NotNull WebSocketHandler wsHandler,
+            @NotNull Map<String, Object> attributes
+    ) throws Exception;
 
     @Override
-    public void afterHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                               @NonNull WebSocketHandler wsHandler, Exception exception) {
-
-    }
+    public void afterHandshake(
+            @NotNull ServerHttpRequest request,
+            @NotNull ServerHttpResponse response,
+            @NotNull WebSocketHandler wsHandler, Exception exception
+    ) {}
 
     @Nullable
     protected Integer getRobotIdFromRequestOrElseNull(@NotNull ServerHttpRequest request) {

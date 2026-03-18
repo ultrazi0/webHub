@@ -1,11 +1,16 @@
 package com.nemo.rexus;
 
 import com.nemo.rexus.Commands.Aim.Math.Matrix;
+import lombok.Getter;
+import lombok.Setter;
 import org.opencv.objdetect.QRCodeDetector;
 import org.springframework.stereotype.Component;
 
+@Getter
+@Setter
 @Component
 public class Config {
+
     private double focus = 0.00304d;
     private double realSideLength = 0.34d;
     private double sensorWidth = 3.68 * Math.pow(10, -3);
@@ -25,55 +30,4 @@ public class Config {
 
     private final QRCodeDetector qrCodeDetector = new QRCodeDetector();
 
-    public QRCodeDetector getQrCodeDetector() {
-        return qrCodeDetector;
-    }
-
-    public double getFocus() {
-        return focus;
-    }
-
-    public void setFocus(double focus) {
-        this.focus = focus;
-    }
-
-    public double getRealSideLength() {
-        return realSideLength;
-    }
-
-    public void setRealSideLength(double realSideLength) {
-        this.realSideLength = realSideLength;
-    }
-
-    public double getSensorWidth() {
-        return sensorWidth;
-    }
-
-    public void setSensorWidth(double sensorWidth) {
-        this.sensorWidth = sensorWidth;
-    }
-
-    public double getSensorHeight() {
-        return sensorHeight;
-    }
-
-    public void setSensorHeight(double sensorHeight) {
-        this.sensorHeight = sensorHeight;
-    }
-
-    public Matrix getK() {
-        return this.K;
-    }
-
-    public void setK(Matrix k) {
-        this.K = k;
-    }
-
-    public Matrix getT() {
-        return this.T;
-    }
-
-    public void setT(Matrix t) {
-        this.T = t;
-    }
 }

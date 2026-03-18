@@ -1,17 +1,15 @@
 package com.nemo.rexus.Onion.Converters;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.nemo.rexus.Commands.CommandType;
 import com.nemo.rexus.Commands.CustomCommandType;
 import com.nemo.rexus.Commands.StandardCommandType;
-
-import java.io.IOException;
+import org.springframework.boot.json.JsonParseException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.node.ArrayNode;
 
 public class CommandTypeDeserializer extends StdDeserializer<CommandType> {
 
@@ -20,19 +18,19 @@ public class CommandTypeDeserializer extends StdDeserializer<CommandType> {
     }
 
     @Override
-    public CommandType deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+    public CommandType deserialize(JsonParser jsonParser, DeserializationContext context) {
         if (jsonParser.currentToken() == JsonToken.START_OBJECT) {
             jsonParser.nextToken();
         }
 
         JsonNode node = context.readTree(jsonParser);
         if (!node.hasNonNull("commandType")) {
-            throw new JsonParseException("No command type provided");
+            throw new JsonParseException(new IllegalArgumentException("No command type provided"));
         }
 
-        String command = node.get("commandType").asText();
+        String command = node.get("commandType").asString();
         if (command.isBlank()) {
-            throw new JsonParseException("Command type cannot be blank");
+            throw new JsonParseException(new IllegalArgumentException("Command type cannot be blank"));
         }
 
         try {
@@ -51,7 +49,7 @@ public class CommandTypeDeserializer extends StdDeserializer<CommandType> {
         }
         String[] commandKeys;
         if (keysNode != null) {
-            commandKeys = keysNode.valueStream().map(JsonNode::asText).filter(key -> !key.isBlank()).toArray(String[]::new);
+            commandKeys = keysNode.valueStream().map(JsonNode::asString).filter(key -> !key.isBlank()).toArray(String[]::new);
         } else {
             commandKeys = new String[0];
         }

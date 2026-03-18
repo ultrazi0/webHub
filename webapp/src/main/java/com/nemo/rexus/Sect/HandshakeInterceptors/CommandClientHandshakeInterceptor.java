@@ -3,10 +3,10 @@ package com.nemo.rexus.Sect.HandshakeInterceptors;
 import com.nemo.rexus.Decibel.RobotRepository;
 import com.nemo.rexus.Decibel.UserEntity;
 import com.nemo.rexus.Sock.OperatorController;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.socket.WebSocketHandler;
 
@@ -34,8 +34,12 @@ public class CommandClientHandshakeInterceptor extends AbstractHandshakeIntercep
     }
 
     @Override
-    public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
+    public boolean beforeHandshake(
+            @NotNull ServerHttpRequest request,
+            @NotNull ServerHttpResponse response,
+            @NotNull WebSocketHandler wsHandler,
+            @NotNull Map<String, Object> attributes
+    ) {
 
         Integer robotId = getRobotIdFromRequestOrElseNull(request);
 

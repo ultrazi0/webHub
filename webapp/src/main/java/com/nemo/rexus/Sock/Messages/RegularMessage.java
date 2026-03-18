@@ -1,8 +1,6 @@
 package com.nemo.rexus.Sock.Messages;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-
-import java.io.IOException;
+import tools.jackson.core.JsonGenerator;
 
 public record RegularMessage(String message) implements JsonMessage {
 
@@ -12,7 +10,7 @@ public record RegularMessage(String message) implements JsonMessage {
     }
 
     @Override
-    public void addImplementationSpecificFields(JsonGenerator jsonGenerator) throws IOException {
-        jsonGenerator.writeStringField("message", message);
+    public void addImplementationSpecificFields(JsonGenerator jsonGenerator) {
+        jsonGenerator.writeStringProperty("message", message);
     }
 }

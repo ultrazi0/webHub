@@ -2,10 +2,10 @@ package com.nemo.rexus.Sect.HandshakeInterceptors;
 
 import com.nemo.rexus.Decibel.RobotEntity;
 import com.nemo.rexus.Sock.Image.ImageSubscribers;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.web.socket.WebSocketHandler;
 
 import java.util.Map;
@@ -28,9 +28,12 @@ public class ImageRobotHandshakeInterceptor extends AbstractHandshakeInterceptor
     }
 
     @Override
-    public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                                   @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes)
-            throws Exception {
+    public boolean beforeHandshake(
+            @NotNull ServerHttpRequest request,
+            @NotNull ServerHttpResponse response,
+            @NotNull WebSocketHandler wsHandler,
+            @NotNull Map<String, Object> attributes
+    ) {
 
         RobotEntity robot = getCurrentRobot();
         

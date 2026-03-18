@@ -2,7 +2,7 @@ package com.nemo.rexus.Sock.Image;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -42,7 +42,7 @@ public class ImageRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) {
+    public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) {
         int robotId = (int) session.getAttributes().get("robotId");
 
         imageSubscribers.removeRobot(robotId);

@@ -11,7 +11,7 @@ plugins {
 dependencies {
 
     /* Spring Boot */
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
@@ -19,11 +19,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jooq")
 
     /* Swagger */
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
 
     /* Database */
-    implementation("org.flywaydb:flyway-core:11.+")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.+")
+    implementation("org.flywaydb:flyway-core:12.+")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:12.+")
     runtimeOnly("org.postgresql:postgresql:42.+")
     jooqCodegen("org.postgresql:postgresql:42.+")
 
@@ -31,7 +31,7 @@ dependencies {
     implementation("org.openpnp:opencv:4.9.0-0")
 
     /* Miscellaneous */
-    compileOnly("org.jetbrains:annotations:26.0.2")
+    compileOnly("org.jetbrains:annotations:26.+")
 
 }
 

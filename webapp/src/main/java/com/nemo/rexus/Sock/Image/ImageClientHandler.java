@@ -1,14 +1,16 @@
 package com.nemo.rexus.Sock.Image;
 
+import static com.nemo.rexus.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
-import org.springframework.web.socket.*;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-
-import static com.nemo.rexus.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
 
 /**
  * Endpoint: /api/image/client/{robotId}
@@ -23,7 +25,7 @@ public class ImageClientHandler extends TextWebSocketHandler {
     private final ImageSubscribers imageSubscribers;
 
     @Override
-    public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
         Object robotId = session.getAttributes().get("robotId");
 
         if (!(robotId instanceof Integer)) {
@@ -40,14 +42,14 @@ public class ImageClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
+    public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         int robotId = (int) session.getAttributes().get("robotId");
 
         imageSubscribers.removeSession(robotId, session);
     }
 
     @Override
-    public void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) throws IOException {
+    public void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) throws IOException {
 
         log.warn("Image websocket is not supposed to receive messages, received: {} from {}", message, session);
 

@@ -42,7 +42,7 @@ build:
   <<: *gradle-properties
   script:
     - chmod +x gradlew
-    - ./gradlew --build-cache jooqCodegen webapp:assemble
+    - ./gradlew --build-cache webapp:assemble
   needs: []
   dependencies: []
   cache:

@@ -107,8 +107,12 @@ tasks {
         }
     }
 
+    compileJava {
+        dependsOn(jooqCodegen)
+    }
+
     jooqCodegen {
-        dependsOn("flywayMigrate")
+        dependsOn(flywayMigrate)
     }
 }
 

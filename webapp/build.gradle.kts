@@ -1,10 +1,13 @@
 buildscript {
     extra["databaseDriver"] = "org.postgresql.Driver"
+    dependencies {
+        classpath("org.flywaydb:flyway-database-postgresql:12+")
+    }
 }
 
 plugins {
-    id("org.jooq.jooq-codegen-gradle") version "3.20.6"
-    id("org.flywaydb.flyway") version "11.11.2"
+    id("org.jooq.jooq-codegen-gradle") version "3.19.30" // Make sure to synchronize this with the version of the jOOQ dependency used by Spring
+    id("org.flywaydb.flyway") version "12.0.2"
     id("io.freefair.lombok") version "8.14.2"
 }
 
@@ -22,8 +25,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
 
     /* Database */
-    implementation("org.flywaydb:flyway-core:12.+")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:12.+")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:12+")
     runtimeOnly("org.postgresql:postgresql:42.+")
     jooqCodegen("org.postgresql:postgresql:42.+")
 
@@ -63,6 +66,9 @@ testing {
 }
 
 sourceSets {
+    main {
+        java.srcDir("build/generated-src/jooq/main")
+    }
     named("integrationTest") {
         compileClasspath += project.sourceSets.main.get().output
         runtimeClasspath += project.sourceSets.main.get().output
@@ -138,7 +144,7 @@ jooq {
             }
             target {
                 packageName = "org.jooq.generated"
-                directory = "src/main/java"
+                directory = "build/generated-src/jooq/main"
             }
         }
     }

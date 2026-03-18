@@ -30,6 +30,8 @@ workflow:
 
 build:
   stage: build
+  variables:
+    FF_NETWORK_PER_BUILD: 1
   services:
     - name: postgres:18-alpine
       alias: db

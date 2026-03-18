@@ -17,7 +17,7 @@ default:
     - |
       echo "
       databaseName = rexus-db
-      databaseUrl = jdbc:postgresql://localhost:5432/
+      databaseUrl = jdbc:postgresql://db:5432/
       databaseUsername = server
       databasePassword = server
       databaseSchema = bot
@@ -30,10 +30,17 @@ workflow:
 
 build:
   stage: build
+  services:
+    - name: postgres
+      alias: db
+      variables:
+        POSTGRES_DB: $DB_NAME
+        POSTGRES_USER: $DB_USERNAME
+        POSTGRES_PASSWORD: $DB_PASSWORD
   <<: *gradle-properties
   script:
     - chmod +x gradlew
-    - ./gradlew --build-cache webapp:assemble
+    - ./gradlew --build-cache jooqCodegen webapp:assemble
   needs: []
   dependencies: []
   cache:

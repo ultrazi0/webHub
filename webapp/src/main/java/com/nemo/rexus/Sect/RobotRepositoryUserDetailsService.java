@@ -4,6 +4,9 @@ import com.nemo.rexus.Decibel.RobotEntity;
 import com.nemo.rexus.Decibel.RobotNotFoundException;
 import com.nemo.rexus.Decibel.RobotRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jooq.Record2;
+import org.jooq.generated.tables.records.RobotsRecord;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,12 +30,13 @@ public class RobotRepositoryUserDetailsService implements UserDetailsService {
     private final RobotRepository robotRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String robotIdString) throws UsernameNotFoundException {
+    public @NotNull UserDetails loadUserByUsername(@NotNull String robotIdString) throws UsernameNotFoundException {
         int robotId;
         RobotEntity robot;
         try {
             robotId = Integer.parseInt(robotIdString);
-            robot = RobotEntity.of(robotRepository.findRobotById(robotId));
+            Record2<@NotNull RobotsRecord, @NotNull String> robotById = robotRepository.findRobotById(robotId);
+            robot = new RobotEntity(robotById.value1(), robotById.value2());
         } catch (NumberFormatException | RobotNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());
         }
@@ -45,18 +49,18 @@ public class RobotRepositoryUserDetailsService implements UserDetailsService {
         private final Set<GrantedAuthority> authorities;
 
         public Robot(RobotEntity robot) {
-            super(robot.getId(), robot.getName(), robot.getPassword(), robot.getCreatedAt(), robot.getOwner().getId());
+            super(robot.getId(), robot.getName(), robot.getPassword(), robot.getCreatedAt(), robot.getOwner());
             this.authorities = new HashSet<>();
             this.authorities.add(new SimpleGrantedAuthority("ROLE_ROBOT"));
         }
 
         @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
+        public @NotNull Collection<? extends GrantedAuthority> getAuthorities() {
             return authorities;
         }
 
         @Override
-        public String getUsername() {
+        public @NotNull String getUsername() {
             return this.getName();
         }
 

@@ -25,7 +25,7 @@ export default function LogoutModal({ fetcher, showModal, setShowModal }: Logout
                 }
                 throw new Error(response.statusText);
             }).then(json => setCsrfToken(json))
-            .catch(error => console.log(error));
+            .catch(error => console.error(error));
         }
     }, [showModal]);
 

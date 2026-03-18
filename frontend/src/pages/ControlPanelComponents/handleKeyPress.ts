@@ -46,7 +46,6 @@ function handleKey(event: KeyboardEvent, sendJsonMessage: SendJsonMessage) {
         case "Escape":
             commands.stop();
             break;
-        default:
-            console.log(event.key);
+        default: {}
     }
 }

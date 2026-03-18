@@ -22,7 +22,7 @@ export async function userLoader(): Promise<UserLoaderData> {
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return null;
     });
 
@@ -39,7 +39,7 @@ export async function logoutAction({ request }: ActionFunctionArgs) {
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return false;
     });
 }

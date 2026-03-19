@@ -1,9 +1,12 @@
 package com.nemo.rexus.Commands.Aim.Math;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
 public class Matrix {
     final int rows, columns;
+    @Getter
     private double[][] matrix;
 
     public Matrix(int n, int m) {
@@ -30,11 +33,7 @@ public class Matrix {
         this.matrix = matrix;
     }
 
-    public double[][] getMatrix() {
-        return this.matrix;
-    }
-
-    public static Matrix identityMatrix(int n) {
+	public static Matrix identityMatrix(int n) {
         Matrix mat = new Matrix(n, n);
 
         for (int i = 0; i < n; i++) {

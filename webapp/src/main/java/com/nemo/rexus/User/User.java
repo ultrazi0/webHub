@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import lombok.ToString;
 public class User {
 
     private final int id;
-    private String username;
+    private @NotNull String username;
 
     @Override
     public boolean equals(Object obj) {

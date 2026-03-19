@@ -1,10 +1,11 @@
 package com.nemo.rexus.Sock.Messages;
 
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.socket.TextMessage;
+import tools.jackson.core.JsonEncoding;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.ObjectWriteContext;
+import tools.jackson.core.json.JsonFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,7 +16,7 @@ public interface JsonMessage {
 
     MessageType getMessageType();
 
-    void addImplementationSpecificFields(JsonGenerator jsonGenerator) throws IOException;
+    void addImplementationSpecificFields(JsonGenerator jsonGenerator);
 
     @NotNull
     default TextMessage toTextMessage() throws IOException {
@@ -23,7 +24,7 @@ public interface JsonMessage {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         JsonFactory jsonFactory = new JsonFactory();
 
-        try (JsonGenerator jsonGenerator = jsonFactory.createGenerator(stream, JsonEncoding.UTF8)) {
+        try (JsonGenerator jsonGenerator = jsonFactory.createGenerator(ObjectWriteContext.empty(), stream, JsonEncoding.UTF8)) {
             writeMessage(jsonGenerator);
         }
 
@@ -32,7 +33,7 @@ public interface JsonMessage {
 
     private void writeMessage(JsonGenerator jsonGenerator) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField(getMessageTypeFieldName(), getMessageType().toString());
+        jsonGenerator.writeStringProperty(getMessageTypeFieldName(), getMessageType().toString());
 
         addImplementationSpecificFields(jsonGenerator);
 
@@ -54,7 +55,7 @@ public interface JsonMessage {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         JsonFactory jsonFactory = new JsonFactory();
 
-        try (JsonGenerator jsonGenerator = jsonFactory.createGenerator(stream, JsonEncoding.UTF8)) {
+        try (JsonGenerator jsonGenerator = jsonFactory.createGenerator(ObjectWriteContext.empty(), stream, JsonEncoding.UTF8)) {
             jsonGenerator.writeStartArray();
 
             for (JsonMessage jsonMessage : messages) {

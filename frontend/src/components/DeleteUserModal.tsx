@@ -11,7 +11,7 @@ export async function deleteUserAction() {
             return response.json();
         }
         throw new Error(response.statusText);
-    }).catch(error => console.log(error));
+    }).catch(error => console.error(error));
 
     headers.append(csrfToken.headerName, csrfToken.token);
 

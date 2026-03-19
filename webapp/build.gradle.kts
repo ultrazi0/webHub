@@ -1,17 +1,20 @@
 buildscript {
     extra["databaseDriver"] = "org.postgresql.Driver"
+    dependencies {
+        classpath("org.flywaydb:flyway-database-postgresql:12+")
+    }
 }
 
 plugins {
-    id("org.jooq.jooq-codegen-gradle") version "3.20.6"
-    id("org.flywaydb.flyway") version "11.11.2"
+    id("org.jooq.jooq-codegen-gradle") version "3.19.30" // Make sure to synchronize this with the version of the jOOQ dependency used by Spring
+    id("org.flywaydb.flyway") version "12.0.2"
     id("io.freefair.lombok") version "8.14.2"
 }
 
 dependencies {
 
     /* Spring Boot */
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
@@ -19,11 +22,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jooq")
 
     /* Swagger */
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
 
     /* Database */
-    implementation("org.flywaydb:flyway-core:11.+")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.+")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:12+")
     runtimeOnly("org.postgresql:postgresql:42.+")
     jooqCodegen("org.postgresql:postgresql:42.+")
 
@@ -31,7 +34,7 @@ dependencies {
     implementation("org.openpnp:opencv:4.9.0-0")
 
     /* Miscellaneous */
-    compileOnly("org.jetbrains:annotations:26.0.2")
+    compileOnly("org.jetbrains:annotations:26.+")
 
 }
 
@@ -47,7 +50,7 @@ testing {
             dependencies {
                 implementation(project())
 
-                implementation("org.springframework.boot:spring-boot-starter-test")
+                implementation("org.springframework.boot:spring-boot-starter-webmvc-test")
                 implementation("org.springframework.security:spring-security-test")
             }
 
@@ -63,6 +66,9 @@ testing {
 }
 
 sourceSets {
+    main {
+        java.srcDir("build/generated-src/jooq/main")
+    }
     named("integrationTest") {
         compileClasspath += project.sourceSets.main.get().output
         runtimeClasspath += project.sourceSets.main.get().output
@@ -101,8 +107,12 @@ tasks {
         }
     }
 
+    compileJava {
+        dependsOn(jooqCodegen)
+    }
+
     jooqCodegen {
-        dependsOn("flywayMigrate")
+        dependsOn(flywayMigrate)
     }
 }
 
@@ -138,7 +148,7 @@ jooq {
             }
             target {
                 packageName = "org.jooq.generated"
-                directory = "src/main/java"
+                directory = "build/generated-src/jooq/main"
             }
         }
     }

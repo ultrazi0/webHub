@@ -14,7 +14,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jooq.generated.tables.records.RobotsRecord;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +34,7 @@ public class RobotEntity {
     @JsonIgnore
     private String password;
     private final OffsetDateTime createdAt;
-    private final User owner;
+    private final @NotNull User owner;
     @ToString.Exclude
     private boolean isOnline = false;
     @NotNull
@@ -39,33 +42,24 @@ public class RobotEntity {
     @Nullable
     private Set<CommandType> commands;
 
-    public RobotEntity(int id, String name, UUID password, OffsetDateTime createdAt, int ownerId) {
-        this(id, name, "{noop}" + password, createdAt, ownerId);
-    }
-
-    public RobotEntity(int id, @NotNull String name, String password, OffsetDateTime createdAt, int ownerId) {
+    public RobotEntity(int id, @NotNull String name, String password, OffsetDateTime createdAt, @NotNull User owner) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.createdAt = createdAt;
-        this.owner = new User(ownerId, null);
+        this.owner = owner;
     }
 
-    public RobotEntity(RobotsRecord robotsRecord) {
+    public RobotEntity(RobotsRecord robotsRecord, @NotNull String ownerName) {
+        this(robotsRecord, new User(robotsRecord.getOwnerId(), ownerName));
+    }
+
+    public RobotEntity(RobotsRecord robotsRecord, @NotNull User owner) {
         this.id = robotsRecord.getRobotId();
         this.name = robotsRecord.getName();
         this.password = "{noop}" + robotsRecord.getPassword();
         this.createdAt = robotsRecord.getCreatedAt();
-        this.owner = new User(robotsRecord.getOwnerId(), null);
-    }
-
-    public static RobotEntity of(RobotsRecord robotsRecord) {
-        return new RobotEntity(robotsRecord);
-    }
-
-    public RobotEntity withOwnerName(String ownerName) {
-        this.owner.setUsername(ownerName);
-        return this;
+        this.owner = owner;
     }
 
     public RobotEntity withIsOnline(boolean isOnline) {

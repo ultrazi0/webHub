@@ -19,7 +19,7 @@ export async function loginLoader(): Promise<LoginLoaderData> {
             return response.json();
         }
         throw new Error(response.statusText);
-    }).catch(error => console.log(error));
+    }).catch(error => console.error(error));
 
     return { csrfToken };
 }
@@ -32,13 +32,11 @@ export async function loginAction({ request }: ActionFunctionArgs): Promise<Acti
         body: await request.formData(),
     }).then(response => {
         if (response.ok) {
-            console.log("Logged in!");
             return true;
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log("UNAUTHORIZED!");
-        console.log(error);
+        console.error(error);
         return false;
     });
 

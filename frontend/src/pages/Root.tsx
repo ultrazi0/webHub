@@ -59,7 +59,7 @@ export async function addRobotAction({ request }: ActionFunctionArgs) {
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return false;
     });
 }
@@ -82,7 +82,7 @@ export async function editRobotAction({ request, params }: ActionFunctionArgs) {
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return false;
     });
 }
@@ -98,7 +98,7 @@ export async function deleteRobotAction({ request, params }: ActionFunctionArgs)
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return false;
     });
 }

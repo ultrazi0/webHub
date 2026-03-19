@@ -100,7 +100,7 @@ export default function EditRobotModal({ fetcher, robotId, setRobotId, csrfToken
                 }
             })
             .catch(error => {
-                console.log(error);
+                console.error(error);
             });
         } else {
             setRobot(null);

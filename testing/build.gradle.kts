@@ -1,5 +1,5 @@
 plugins {
-    id("com.tngtech.jgiven.gradle-plugin") version "1.3.1"
+    id("com.tngtech.jgiven.gradle-plugin") version "2.0.3"
     id("io.freefair.lombok") version "8.14.2"
 }
 
@@ -14,13 +14,13 @@ dependencies {
     testRuntimeOnly("org.postgresql:postgresql:42.+")
 
     /* JGiven */
-    testImplementation("com.tngtech.jgiven:jgiven-spring-junit5:1.3.1")
+    testImplementation("com.tngtech.jgiven:jgiven-spring-junit5:2.0.3")
 
     /* API testing */
-    testImplementation("io.rest-assured:rest-assured:5.5.6")
+    testImplementation("io.rest-assured:rest-assured:6.0.0")
 
     /* UI testing */
-    testImplementation("com.codeborne:selenide:7.10.0")
+    testImplementation("com.codeborne:selenide:7.15.0")
 
 }
 
@@ -55,6 +55,8 @@ tasks {
     }
 
     jgivenTestReport {
+        enabled = true
+
         reports {
             html.title = "Rexus System Report"
             html.customJsFile = projectDir.resolve("src/test/resources/jgiven/custom.js")

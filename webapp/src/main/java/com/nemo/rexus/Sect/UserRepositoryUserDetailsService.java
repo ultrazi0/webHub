@@ -2,7 +2,8 @@ package com.nemo.rexus.Sect;
 
 import com.nemo.rexus.Decibel.UserEntity;
 import com.nemo.rexus.Decibel.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,8 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.*;
-
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Custom {@link UserDetailsService} to hold {@link UserEntity} objects to provide a better
@@ -21,13 +23,13 @@ import java.util.*;
  * to access the user IDs.
  * */
 @Service
+@RequiredArgsConstructor
 public class UserRepositoryUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public @NotNull UserDetails loadUserByUsername(@NotNull String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user found");
@@ -45,7 +47,7 @@ public class UserRepositoryUserDetailsService implements UserDetailsService {
         }
 
         @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
+        public @NotNull Collection<? extends GrantedAuthority> getAuthorities() {
             return authorities;
         }
 

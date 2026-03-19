@@ -1,11 +1,15 @@
 package com.nemo.testing.core.Persistence;
 
-import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
-import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
+import static org.jooq.generated.Tables.CUSTOM_COMMANDS;
+import static org.jooq.generated.Tables.ROBOTS;
+
 import com.nemo.rexus.Commands.CustomCommandType;
 import com.nemo.rexus.Decibel.RobotEntity;
 import com.nemo.rexus.Decibel.RobotNotFoundException;
 import com.nemo.rexus.Decibel.RobotRepository;
+import com.nemo.rexus.Decibel.UserEntity;
+import com.nemo.testing.core.Persistence.UniqueAttributes.AbstractUniqueAttributes;
+import com.nemo.testing.core.Persistence.UniqueAttributes.RobotUniqueAttributes;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStep2;
@@ -22,9 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.jooq.generated.Tables.CUSTOM_COMMANDS;
-import static org.jooq.generated.Tables.ROBOTS;
-
 /**
  * The {@code RobotService} class provides functionalities to interact with the robot records
  * in the database. It includes methods to find, create, and delete robot records, ensuring
@@ -34,175 +35,170 @@ import static org.jooq.generated.Tables.ROBOTS;
 @Service
 public class RobotService implements WithPersistence<RobotEntity> {
 
-    @Autowired
-    private DSLContext db;
-    @Autowired
-    private RobotRepository robotRepository;
+	@Autowired
+	private DSLContext db;
+	@Autowired
+	private RobotRepository robotRepository;
+	@Autowired
+	private UserService userService;
 
-    @Override
-    public RobotEntity getEntityWith(AbstractUniqueAttributes uniqueAttributes) {
-        if (uniqueAttributes instanceof RobotUniqueAttributes robotUniqueAttribute) {
-            RobotsRecord robotsRecord = db
-                .selectFrom(ROBOTS)
-                .where(robotUniqueAttribute.buildWhereClause())
-                .fetchOne();
+	@Override
+	public RobotEntity getEntityWith(AbstractUniqueAttributes uniqueAttributes) {
+		if (uniqueAttributes instanceof RobotUniqueAttributes robotUniqueAttribute) {
+			Record2<RobotsRecord, String> result = db
+					.select(ROBOTS, ROBOTS.users().USERNAME)
+					.from(ROBOTS)
+					.innerJoin(ROBOTS.users())
+					.where(robotUniqueAttribute.buildWhereClause())
+					.fetchOne();
 
-            if (robotsRecord == null) throw new RobotNotFoundException(robotUniqueAttribute.toString());
+			if (result == null) throw new RobotNotFoundException(robotUniqueAttribute.toString());
 
-            return RobotEntity.of(robotsRecord);
-        }
-        throw new IllegalStateException("uniqueAttributes is not an instance of RobotUniqueAttribute");
-    }
+			return new RobotEntity(result.value1(), result.value2());
+		}
+		throw new IllegalStateException("uniqueAttributes is not an instance of RobotUniqueAttribute");
+	}
 
-    @Override
-    public RobotEntity createEntityFrom(Record record) {
-        if (record instanceof RobotsRecord) {
-            RobotsRecord robotsRecord = db.insertInto(ROBOTS)
-                .set(record)
-                .returning()
-                .fetchOne();
+	@Override
+	public RobotEntity createEntityFrom(Record record) {
+		if (record instanceof RobotsRecord) {
+			RobotsRecord robotsRecord = db.insertInto(ROBOTS)
+					.set(record)
+					.returning()
+					.fetchOne();
 
-            if (robotsRecord == null) throw new RuntimeException("No robots were created");
+			if (robotsRecord == null) throw new RuntimeException("No robots were created");
 
-            return RobotEntity.of(robotsRecord);
-        }
-        throw new IllegalStateException("record is not an instance of RobotsRecord");
-    }
+			return new RobotEntity(robotsRecord, userService.getUserById(robotsRecord.getOwnerId()));
+		}
+		throw new IllegalStateException("record is not an instance of RobotsRecord");
+	}
 
 
-    @Override
-    public RobotEntity getFrom(Record record) throws RuntimeException {
-        if (record instanceof RobotsRecord robotsRecord) {
-            if (robotsRecord.getName() != null && robotsRecord.getOwnerId() != null) {
-                return findRobotByName(robotsRecord.getName(), robotsRecord.getOwnerId());
-            }
-            throw new IllegalStateException("not enough unique parameters");
-        }
-        throw new IllegalStateException("record is not an instance of RobotsRecord");
-    }
+	@Override
+	public RobotEntity getFrom(Record record) throws RuntimeException {
+		if (record instanceof RobotsRecord robotsRecord) {
+			if (robotsRecord.getName() != null && robotsRecord.getOwnerId() != null) {
+				return findRobotByName(robotsRecord.getName(), robotsRecord.getOwnerId());
+			}
+			throw new IllegalStateException("not enough unique parameters");
+		}
+		throw new IllegalStateException("record is not an instance of RobotsRecord");
+	}
 
-    public RobotEntity findRobotByName(String robotName, int ownerId) throws RuntimeException {
-        RobotsRecord robotsRecord = db
-            .selectFrom(ROBOTS)
-            .where(ROBOTS.NAME.eq(robotName).and(ROBOTS.OWNER_ID.eq(ownerId)))
-            .fetchOne();
+	public RobotEntity findRobotByName(String robotName, int ownerId) throws RuntimeException {
+		Record2<RobotsRecord, String> result = db
+				.select(ROBOTS, ROBOTS.users().USERNAME)
+				.from(ROBOTS)
+				.innerJoin(ROBOTS.users())
+				.where(ROBOTS.NAME.eq(robotName).and(ROBOTS.OWNER_ID.eq(ownerId)))
+				.fetchOne();
 
-        if (robotsRecord == null) throw new RobotNotFoundException(robotName);
+		if (result == null) throw new RobotNotFoundException(robotName);
 
-        return RobotEntity.of(robotsRecord);
-    }
+		return new RobotEntity(result.value1(), result.value2());
+	}
 
-    public int getRobotOwnerIdByRobotId(int robotId) throws RobotNotFoundException {
-        Integer ownerId = db
-            .select(ROBOTS.OWNER_ID)
-            .from(ROBOTS)
-            .where(ROBOTS.ROBOT_ID.eq(robotId))
-            .fetchOne(ROBOTS.OWNER_ID);
+	public int getRobotOwnerIdByRobotId(int robotId) throws RobotNotFoundException {
+		Integer ownerId = db
+				.select(ROBOTS.OWNER_ID)
+				.from(ROBOTS)
+				.where(ROBOTS.ROBOT_ID.eq(robotId))
+				.fetchOne(ROBOTS.OWNER_ID);
 
-        if (ownerId == null) {
-            throw new RobotNotFoundException(robotId);
-        }
+		if (ownerId == null) {
+			throw new RobotNotFoundException(robotId);
+		}
 
-        return ownerId;
-    }
+		return ownerId;
+	}
 
-    public List<CustomCommandType> getCustomRobotCommands(int robotId) throws RobotNotFoundException {
-        Stream<CustomCommandsRecord> customCommandsRecordStream = db
-            .selectFrom(CUSTOM_COMMANDS)
-            .where(CUSTOM_COMMANDS.ROBOT_ID.eq(robotId))
-            .fetchStream();
+	public List<CustomCommandType> getCustomRobotCommands(int robotId) throws RobotNotFoundException {
+		Stream<CustomCommandsRecord> customCommandsRecordStream = db
+				.selectFrom(CUSTOM_COMMANDS)
+				.where(CUSTOM_COMMANDS.ROBOT_ID.eq(robotId))
+				.fetchStream();
 
-        return customCommandsRecordStream.map(CustomCommandType::of).toList();
-    }
+		return customCommandsRecordStream.map(CustomCommandType::of).toList();
+	}
 
-    public List<String> getSharedUsersUsernames(RobotEntity robot) {
-        return getSharedUsersUsernames(robot.getId(), robot.getOwner().getId());
-    }
+	public List<String> getSharedUsersUsernames(RobotEntity robot) {
+		return getSharedUsersUsernames(robot.getId(), robot.getOwner().getId());
+	}
 
-    public List<String> getSharedUsersUsernames(int robotId, int ownerId) {
-        return robotRepository.getSharedUsers(robotId, ownerId)
-            .map(Record2::value2).toList();
-    }
+	public List<String> getSharedUsersUsernames(int robotId, int ownerId) {
+		return robotRepository.getSharedUsers(robotId, ownerId)
+				.map(Record2::value2).toList();
+	}
 
-    public RobotEntity createNewRobot(String robotName, int ownerId) {
-        RobotsRecord robotsRecord = db
-            .insertInto(ROBOTS)
-            .columns(ROBOTS.NAME, ROBOTS.OWNER_ID)
-            .values(robotName, ownerId)
-            .returning()
-            .fetchOne();
+	public List<RobotEntity> createNewRobots(List<String> robotNames, int ownerId) {
+		if (robotNames == null || robotNames.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-        if (robotsRecord == null) {
-            throw new RuntimeException("No robots were created");
-        }
+		InsertValuesStep2<RobotsRecord, String, Integer> insertQuery = db.insertInto(ROBOTS)
+				.columns(ROBOTS.NAME, ROBOTS.OWNER_ID);
 
-        return RobotEntity.of(robotsRecord);
-    }
+		for (String robotName : robotNames) {
+			insertQuery = insertQuery.values(robotName, ownerId);
+		}
 
-    public List<RobotEntity> createNewRobots(List<String> robotNames, int ownerId) {
-        if (robotNames == null || robotNames.isEmpty()) {
-            return Collections.emptyList();
-        }
+		RobotsRecord[] robotsRecords = insertQuery.returning().fetchArray();
 
-        InsertValuesStep2<RobotsRecord, String, Integer> insertQuery = db.insertInto(ROBOTS)
-            .columns(ROBOTS.NAME, ROBOTS.OWNER_ID);
+		UserEntity owner = userService.getUserById(ownerId);
 
-        for (String robotName : robotNames) {
-            insertQuery = insertQuery.values(robotName, ownerId);
-        }
+		return Arrays.stream(robotsRecords)
+				.map(robotsRecord -> new RobotEntity(robotsRecord, owner))
+				.toList();
+	}
 
-        RobotsRecord[] robotsRecords = insertQuery.returning().fetchArray();
+	public void createCustomCommands(int robotId, Collection<CustomCommandType> customCommands) {
+		if (customCommands == null || customCommands.isEmpty()) {
+			return;
+		}
 
-        return Arrays.stream(robotsRecords).map(RobotEntity::of).toList();
-    }
+		db.batchInsert(
+				customCommands.stream()
+						.map(customCommand ->
+								new CustomCommandsRecord(robotId, customCommand.getCommandType(), customCommand.getKeys()))
+						.toList()
+		).execute();
+	}
 
-    public void createCustomCommands(int robotId, Collection<CustomCommandType> customCommands) {
-        if (customCommands == null || customCommands.isEmpty()) {
-            return;
-        }
+	public void deleteRobotById(int id) {
+		int deleted = db.deleteFrom(ROBOTS).where(ROBOTS.ROBOT_ID.equal(id)).execute();
 
-        db.batchInsert(
-            customCommands.stream()
-                .map(customCommand ->
-                    new CustomCommandsRecord(robotId, customCommand.getCommandType(), customCommand.getKeys()))
-                .toList()
-            ).execute();
-    }
+		if (deleted < 1) {
+			throw new RuntimeException(id + " not found");
+		}
+	}
 
-    public void deleteRobotById(int id) {
-        int deleted = db.deleteFrom(ROBOTS).where(ROBOTS.ROBOT_ID.equal(id)).execute();
+	public void deleteAllByIds(Collection<Integer> ids) {
+		int deleted = db.
+				deleteFrom(ROBOTS)
+				.where(ROBOTS.ROBOT_ID.in(ids))
+				.execute();
 
-        if (deleted < 1) {
-            throw new RuntimeException(id + " not found");
-        }
-    }
+		if (deleted < 1) {
+			log.warn("No robots were deleted, for there were none with id in {}", ids);
+		}
+	}
 
-    public void deleteAllByIds(Collection<Integer> ids) {
-        int deleted = db.
-            deleteFrom(ROBOTS)
-            .where(ROBOTS.ROBOT_ID.in(ids))
-            .execute();
+	public boolean shareRobotWithUser(int robotId, int userId, Collection<String> usernames) {
+		return robotRepository.shareRobot(robotId, userId, usernames);
+	}
 
-        if (deleted < 1) {
-            log.warn("No robots were deleted, for there were none with id in {}", ids);
-        }
-    }
+	@Override
+	public void delete(Object entity) {
+		if (entity instanceof RobotEntity robotEntity) {
+			deleteRobotById(robotEntity.getId());
+		}
+		throw new IllegalArgumentException(
+				"entity must be an instance of RobotEntity class, provided: " + entity);
+	}
 
-    public boolean shareRobotWithUser(int robotId, int userId, Collection<String> usernames) {
-        return robotRepository.shareRobot(robotId, userId, usernames);
-    }
-
-    @Override
-    public void delete(Object entity) {
-        if (entity instanceof RobotEntity robotEntity) {
-            deleteRobotById(robotEntity.getId());
-        }
-        throw new IllegalArgumentException(
-            "entity must be an instance of RobotEntity class, provided: " + entity);
-    }
-
-    @Override
-    public void deleteAll(Collection<RobotEntity> entities) {
-        deleteAllByIds(entities.stream().map(RobotEntity::getId).toList());
-    }
+	@Override
+	public void deleteAll(Collection<RobotEntity> entities) {
+		deleteAllByIds(entities.stream().map(RobotEntity::getId).toList());
+	}
 }

@@ -17,7 +17,7 @@ default:
     - |
       echo "
       databaseName = rexus-db
-      databaseUrl = jdbc:postgresql://localhost:5432/
+      databaseUrl = jdbc:postgresql://db:5432/
       databaseUsername = server
       databasePassword = server
       databaseSchema = bot
@@ -30,6 +30,15 @@ workflow:
 
 build:
   stage: build
+  variables:
+    FF_NETWORK_PER_BUILD: 1
+  services:
+    - name: postgres:18-alpine
+      alias: db
+      variables:
+        POSTGRES_DB: rexus-db
+        POSTGRES_USER: server
+        POSTGRES_PASSWORD: server
   <<: *gradle-properties
   script:
     - chmod +x gradlew
@@ -69,7 +78,7 @@ test:
   <<: *gradle-properties
   script:
     - chmod +x gradlew
-    - ./gradlew webapp:test
+    - ./gradlew webapp:test -x jooqCodegen
   needs:
     - build
   dependencies: []
@@ -92,7 +101,7 @@ integration-test:
     DB_USERNAME: server
     DB_PASSWORD: server
   services:
-    - name: postgres
+    - name: postgres:18-alpine
       alias: db
       variables:
         POSTGRES_DB: $DB_NAME
@@ -101,7 +110,7 @@ integration-test:
   <<: *gradle-properties
   script:
     - chmod +x gradlew
-    - ./gradlew webapp:integrationTest
+    - ./gradlew webapp:integrationTest -x jooqCodegen
   needs:
     - build
   dependencies: []
@@ -146,7 +155,7 @@ system-test:
     DB_USERNAME: server
     DB_PASSWORD: server
   services:
-    - name: postgres
+    - name: postgres:18-alpine
       alias: db
       variables:
         POSTGRES_DB: $DB_NAME

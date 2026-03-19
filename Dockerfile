@@ -19,7 +19,7 @@ COPY webapp/src/main/resources/db/initDB.sql /app/webapp/src/main/resources/db/i
 
 RUN gradle webapp:processResources
 
-FROM postgres AS db
+FROM postgres:18-alpine AS db
 
 COPY --from=db-processor /app/webapp/build/resources/main/db/initDB.sql /docker-entrypoint-initdb.d
 

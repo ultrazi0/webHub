@@ -6,7 +6,7 @@ import com.nemo.rexus.Robot.RobotConnectionService;
 import com.nemo.rexus.Sock.OperatorController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.nemo.rexus.Sock.Messages.JsonMessage.createRegularJsonTextMessage;
-
 
 /**
  * Endpoint: /api/command/client/{robotId}
@@ -66,7 +65,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws RuntimeException, IOException {
+    public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) throws RuntimeException, IOException {
 
         Integer robotId = operatorController.getRobotId(session.getId());
 
@@ -83,7 +82,7 @@ public class CommandClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws IOException {
+    protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) throws IOException {
         log.trace("Transmitting message from client: {}", message.getPayload());
 
         int robotId = operatorController.getRobotId(session.getId());

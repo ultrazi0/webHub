@@ -1,6 +1,5 @@
 package com.nemo.rexus.Sock.Image;
 
-import com.fasterxml.jackson.core.*;
 import com.nemo.rexus.Sock.Messages.JsonMessage;
 import com.nemo.rexus.Sock.Messages.MessageType;
 import jakarta.annotation.Nullable;
@@ -9,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.core.ObjectReadContext;
+import tools.jackson.core.json.JsonFactory;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +28,10 @@ public class JsonImage implements JsonMessage {
     private boolean aimImage = false;
 
     @Nullable
-    public static JsonImage createFromJson(String json) throws IOException {
+    public static JsonImage createFromJson(String json) {
         JsonFactory jsonFactory = new JsonFactory();
 
-        try (JsonParser jsonParser = jsonFactory.createParser(json)) {
+        try (JsonParser jsonParser = jsonFactory.createParser(ObjectReadContext.empty(), json)) {
 
             String image = null;
 
@@ -37,7 +40,7 @@ public class JsonImage implements JsonMessage {
 
                 if (JsonMessage.getMessageTypeFieldName().equals(fieldName)) {
                     jsonParser.nextToken();
-                    if (!MessageType.IMAGE.toString().equals(jsonParser.getText())) {
+                    if (!MessageType.IMAGE.toString().equals(jsonParser.getString())) {
                         // If messageType says a message is not an image, no need to parse further
                         return null;
                     }
@@ -45,7 +48,7 @@ public class JsonImage implements JsonMessage {
 
                 if ("image".equals(fieldName)) {
                     jsonParser.nextToken();
-                    image = jsonParser.getText();
+                    image = jsonParser.getString();
                 }
             }
 
@@ -68,8 +71,8 @@ public class JsonImage implements JsonMessage {
     }
 
     @Override
-    public void addImplementationSpecificFields(JsonGenerator jsonGenerator) throws IOException {
-        jsonGenerator.writeStringField("image", encode(image));
+    public void addImplementationSpecificFields(JsonGenerator jsonGenerator) {
+        jsonGenerator.writeStringProperty("image", encode(image));
     }
 
     private static Mat decode(String encodedString) {

@@ -116,7 +116,6 @@ function SharedUsers({ robot, expandedClass, csrfToken }: SharedUsersProps) {
         setUsersToShare(prevUsers => prevUsers.filter(userId => userId !== id));
 
     const sharedUsers = fetcher.data === undefined ? robot?.sharedUsers : fetcher.data;
-    console.log(sharedUsers);
 
     return (
         <div className={`shared-users-block ${expandedClass}`}>
@@ -246,7 +245,7 @@ export const sendShareRobotRequest = async ({ request, params }: ActionFunctionA
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return [];
     });
 };
@@ -263,7 +262,7 @@ export const sendUnshareRobotRequery = async ({ request, params }: ActionFunctio
         }
         throw new Error(response.statusText);
     }).catch(error => {
-        console.log(error);
+        console.error(error);
         return [];
     });
 };

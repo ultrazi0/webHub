@@ -1,7 +1,5 @@
 package com.nemo.rexus.Sock.Command;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nemo.rexus.Robot.Robot;
 import com.nemo.rexus.Robot.RobotConnectionService;
 import com.nemo.rexus.Sock.Messages.JsonMessage;
@@ -9,11 +7,13 @@ import com.nemo.rexus.Sock.Messages.MessageType;
 import com.nemo.rexus.Sock.OperatorController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -62,7 +62,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) throws RuntimeException, IOException {
+    public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) throws RuntimeException, IOException {
 
         // Here "robotId" cannot be anything but an Integer,
         // because otherwise an exception would have been thrown in afterConnectionEstablished
@@ -82,7 +82,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, @NonNull TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, @NotNull TextMessage message) throws Exception {
         // Upon checking if a message is a JSON, redirects it to all subscribers
 
         int robotId = (int) session.getAttributes().get("robotId");
@@ -101,7 +101,7 @@ public class CommandRobotHandler extends TextWebSocketHandler {
 
         if (messageType == null) {
             throw new NoSuchFieldException("Message type not provided, revise your JSON");
-        } else if (messageType.asText().equals(MessageType.FEEDBACK.toString())) {
+        } else if (messageType.asString().equals(MessageType.FEEDBACK.toString())) {
 
             if (!messageNode.has("feedback")) {
                 throw new NoSuchFieldException(

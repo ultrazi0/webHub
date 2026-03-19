@@ -39,7 +39,7 @@ public abstract class AbstractThenStage<T extends AbstractThenStage<T>> extends 
 
     @BeforeStage
     private void setValidatableResponse() {
-        validatableResponse = response.then();
+        validatableResponse = response == null ? null : response.then();
     }
 
     /**

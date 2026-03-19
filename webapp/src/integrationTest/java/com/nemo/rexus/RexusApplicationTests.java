@@ -7,7 +7,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 class RexusApplicationTests {
 
     @Test
-    void test() {
-
-    }
+    void contextLoads() {}
 }

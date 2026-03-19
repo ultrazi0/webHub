@@ -50,7 +50,7 @@ testing {
             dependencies {
                 implementation(project())
 
-                implementation("org.springframework.boot:spring-boot-starter-test")
+                implementation("org.springframework.boot:spring-boot-starter-webmvc-test")
                 implementation("org.springframework.security:spring-security-test")
             }
 

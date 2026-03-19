@@ -78,7 +78,7 @@ test:
   <<: *gradle-properties
   script:
     - chmod +x gradlew
-    - ./gradlew webapp:test
+    - ./gradlew webapp:test -x jooqCodegen
   needs:
     - build
   dependencies: []
@@ -110,7 +110,7 @@ integration-test:
   <<: *gradle-properties
   script:
     - chmod +x gradlew
-    - ./gradlew webapp:integrationTest
+    - ./gradlew webapp:integrationTest -x jooqCodegen
   needs:
     - build
   dependencies: []

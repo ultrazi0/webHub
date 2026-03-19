@@ -95,6 +95,10 @@ tasks {
         useJUnitPlatform()
     }
 
+    check {
+        dependsOn(withType<Test>())
+    }
+
     withType<ProcessResources> {
         filesMatching(listOf("**/application.properties", "**/initDB.sql")) {
             expand(project.properties)

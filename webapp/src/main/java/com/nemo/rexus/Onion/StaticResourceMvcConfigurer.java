@@ -10,7 +10,7 @@ public class StaticResourceMvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-            .addResourceLocations("file:/app/frontend/")
+            .addResourceLocations("file:/app/frontend/", "classpath:/public/")
             .setCachePeriod(3600 * 6);
     }
 

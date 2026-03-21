@@ -1,60 +1,131 @@
 # Project Rexus
 
-Project Rexus is a web application that allows users to manage and control their robots remotely (one such robot is called a "Rex").
+Project Rexus is a web application designed to manage and control robots remotely (one such robot is called a "Rex").
 
 ---
 
-## Setting up
-It is possible to skip most of the setup by directly pulling the Docker images from the GitLab registry.
-However, to be able to do so, you need to ask for credentials ;)
+## Tech Stack
 
-### 1. The database
-Project Rexus uses Postgres. It is possible to set it up in three ways:
+- **Backend:** Java 21, Spring Boot 4.0.3, Spring Security, Flyway, jOOQ
+- **Frontend:** React 19, Vite, TypeScript, React Bootstrap, React Router 7, WebSockets
+- **Database:** PostgreSQL
+- **Build Tool:** Gradle (Backend), npm (Frontend)
+- **Testing:** JUnit 5, Selenide (UI), RestAssured (API), JGiven (BDD), Flyway (Migrations)
+- **Infrastructure:** Docker, Docker Compose
 
-1. Pulling the pre-configured Docker image from the GitLab registry (should be used **only** for running locally or testing)
-    - Username: `server`
-    - Password: `server`
-    - Database name: `rexus-db`
-    - Schema: `bot`
-2. Building the image using the docker-compose.yml file (the easiest way, but requires cloning the repo)
-    - The following variables in the `gradle.properties` file must be set (refer to the example below):
-      - `databaseName`
-      - `databaseUrl`
-      - `databaseUsername`
-      - `databasePassword`
-      - `databaseSchema`
-
-3. Manually setting up the container
-    - The `gradle.properties` file must still be configured if running the development server
-
-### 2. Project Rexus
-As with the database, there are three ways to get it running:
-
-1. Pulling the Docker image from the GitLab registry (unlike the database, this is the best way to run the production server)
-    - Requires configuring the database connection by providing the following environmental variables:
-      - `DB_URL` (example: `jdbc:postgresql://db:5432/rexus-db?currentSchema=bot`)
-      - `DB_USERNAME` (defaults to `server`)
-      - `DB_PASSWORD` (defaults to `server`)
-2. Building the image using the docker-compose.yml file (requires cloning the repo)
-    - This still creates a production-ready image but does not require asking me for credentials ;)
-    - The `gradle.properties` file must be configured
-    - This option is kind of expecting that the database is also run using the `docker-compose.yml` file
-3. Running locally (kind of expects IntelliJ, but any other IDE will suffice)
-    - The `gradle.properties` file must be configured (refer to the database section, option 2 or to the example below)
-    - In IntelliJ settings (Build, Execution, Deployment → Build Tools → Gradle),
-make sure that the project is run with Gradle, as it requires the `processResources` task to be executed
-    - Run the pre-configured `Rexus | BE` and `Rexus | FE` run configurations
-
-### 3. The Rex client
-Project Rexus manages robots, so, in order for the application to be useful, users must also set up the Rex client.
-Ultimately, this task falls to the users of the application.
+The E2E test results are available [here](https://ultrazi0.github.io/Rexus/).
 
 ---
-### Example of a `gradle.properties` file
-```properties
-databaseName = rexus-db
-databaseUrl = jdbc:postgresql://localhost:5432/
-databaseUsername = server
-databasePassword = server
-databaseSchema = bot
+
+## Requirements
+
+- **JDK 21** (Temurin recommended)
+- **Node.js 24+** (for frontend development)
+- **Docker & Docker Compose**
+- **PostgreSQL** (if running locally without Docker)
+
+---
+
+## Project Structure
+
+```text
+rexus/
+├── frontend/           # React frontend (Vite, TypeScript)
+├── webapp/             # Spring Boot backend (Core logic, DB migrations)
+├── testing/            # System and E2E tests (Selenide, RestAssured, JGiven)
+├── gradle/             # Gradle wrapper and configuration
+├── docker-compose.yml  # Local development infrastructure
+└── Dockerfile          # Multi-stage build for backend, frontend, and DB
 ```
+
+---
+
+## Setup & Running
+
+### 1. Database Setup
+
+Project Rexus uses PostgreSQL. You can set it up in several ways:
+
+#### Option A: Docker Compose (Recommended)
+This is the easiest way to get everything running, including the database and the application.
+1. **Configure `gradle.properties`**: Create or update `gradle.properties` in the root directory.
+   ```properties
+   databaseName = rexus-db
+   databaseUrl = jdbc:postgresql://localhost:5432/
+   databaseUsername = server
+   databasePassword = server
+   databaseSchema = bot
+   ```
+2. Run `./gradlew processResources`
+3. Use Docker compose
+   ```bash
+   docker compose up --build
+   ```
+
+#### Option B: Manual PostgreSQL Setup
+1. Create a database named `rexus-db`.
+2. Configure a schema named `bot`.
+3. Update `gradle.properties` with your credentials (see example below).
+
+### 2. Running the Application
+
+#### Local Development (IDE)
+1. **Configure `gradle.properties`**. Should be already done in the previous step
+2. **Backend**: Run the Spring Boot application (e.g., via IntelliJ `Rexus | BE` configuration or `./gradlew :webapp:bootRun`).
+3. **Frontend**: Use the `Rexus | FE` run configurations or use commands:
+   ```bash
+   cd frontend
+   npm install
+   npm run start
+   ```
+
+#### Production (Docker)
+Pull or build the Docker image. The application requires these environment variables for database connection:
+- `DB_URL` (e.g., `jdbc:postgresql://db:5432/rexus-db?currentSchema=bot`)
+- `DB_USERNAME` (defaults to `server`)
+- `DB_PASSWORD` (defaults to `server`)
+
+---
+
+## Scripts & Commands
+
+### Backend (Gradle)
+- `./gradlew :webapp:assemble`: Build the backend JAR.
+- `./gradlew :webapp:test`: Run unit tests.
+- `./gradlew :webapp:integrationTest`: Run integration tests.
+- `./gradlew :webapp:flywayMigrate`: Run database migrations.
+- `./gradlew :webapp:jooqCodegen`: Generate jOOQ classes from the database schema.
+
+### Frontend (npm)
+- `npm run start`: Start Vite development server.
+- `npm run build`: Build the frontend for production.
+- `npm run check`: Run TypeScript type checking.
+- `npm run preview`: Preview the production build locally.
+
+### System Testing
+- `./gradlew :testing:test`: Run E2E/System tests using Selenide and RestAssured. Generates a JGiven report.
+
+---
+
+## Environment Variables
+
+| Variable      | Description             | Default  |
+|---------------|-------------------------|----------|
+| `DB_URL`      | JDBC URL for PostgreSQL | -        |
+| `DB_USERNAME` | Database username       | `server` |
+| `DB_PASSWORD` | Database password       | `server` |
+
+---
+
+## Tests
+
+- **Unit Tests**: Located in `webapp/src/test`.
+- **Integration Tests**: Located in `webapp/src/integrationTest`.
+- **System Tests**: Located in `testing/src/test`. These include UI tests (Selenide) and API tests (RestAssured) with BDD reporting via JGiven.
+
+---
+
+## The Rex Client
+
+Project Rexus manages robots. To make the application useful, users must also set up the **Rex client** on their robots.
+Documentation for the client setup is [TODO: Add link or instructions].

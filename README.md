@@ -13,8 +13,6 @@ Project Rexus is a web application designed to manage and control robots remotel
 - **Testing:** JUnit 5, Selenide (UI), RestAssured (API), JGiven (BDD), Flyway (Migrations)
 - **Infrastructure:** Docker, Docker Compose
 
-The E2E test results are available [here](https://ultrazi0.github.io/Rexus/).
-
 ---
 
 ## Requirements
@@ -103,7 +101,7 @@ Pull or build the Docker image. The application requires these environment varia
 - `npm run preview`: Preview the production build locally.
 
 ### System Testing
-- `./gradlew :testing:test`: Run E2E/System tests using Selenide and RestAssured. Generates a JGiven report.
+- `./gradlew :testing:test`: Run E2E/System tests using Selenide and RestAssured. Generates a [JGiven report](https://ultrazi0.github.io/Rexus/).
 
 ---
 

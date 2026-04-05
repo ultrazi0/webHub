@@ -18,6 +18,7 @@ enum SignalType {
 	OFFER("offer", OfferSignalHandler::new),
 	ANSWER("answer", BaseSignalHandler::new),
 	ICE_CANDIDATE("iceCandidate", IceCandidateHandler::new),
+	DISCONNECT("disconnect", BaseSignalHandler::new),
 	TEXT("text", null),
 	ERROR("error", null);
 

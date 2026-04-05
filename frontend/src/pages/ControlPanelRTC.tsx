@@ -1,18 +1,18 @@
 import img from "../images/no-camera-stream.png";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useWebSocket from "react-use-websocket";
 import { useParams } from "react-router-dom";
-import { Alert, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { TriangleAlert } from "lucide-react";
 import Commands from "./ControlPanelComponents/Controls";
 import FormButton from "../components/FormButton";
-
 
 enum SignalType {
 	Offer = "offer",
 	Answer = "answer",
 	IceCandidate = "iceCandidate",
+	Disconnect = "disconnect",
 	Text = "text",
 	Error = "error",
 }
@@ -24,6 +24,12 @@ type SignalMessage = {
 } | {
 	type: SignalType.IceCandidate,
 	payload: RTCIceCandidateInit,
+	robotId: string,
+} | {
+	type: SignalType.Disconnect,
+	payload: {
+		timestamp: number,
+	},
 	robotId: string,
 } | {
 	type: SignalType.Text | SignalType.Error,
@@ -54,9 +60,89 @@ function ControlPanelRTC() {
 		}
 
 		const newPeerConnection = new RTCPeerConnection(configuration);
+		// Listen for local ICE candidates on the local RTCPeerConnection
+		newPeerConnection.onicecandidate = (event) => {
+			if (!robotId) {
+				console.error("No robotId provided");
+				return;
+			}
+
+			if (event.candidate) {
+				sendJsonMessage<SignalMessage>({
+					type: SignalType.IceCandidate,
+					payload: event.candidate,
+					robotId: robotId,
+				});
+			}
+		};
+
+		// Listen for connectionstatechange on the local RTCPeerConnection
+		newPeerConnection.onconnectionstatechange = (event) => {
+			switch (newPeerConnection.connectionState) {
+				case "connected": {
+					console.log("Connected to peer.", event);
+					setConnected(true);
+					setConnecting(false);
+					break;
+				}
+				case "disconnected":
+				case "closed":
+				case "failed": {
+					handleDisconnect();
+					break;
+				}
+			}
+		};
+
+		newPeerConnection.ontrack = (event: RTCTrackEvent) => {
+			const [ remoteStream ] = event.streams;
+			if (remoteVideoRef.current) {
+				remoteVideoRef.current.srcObject = remoteStream;
+			}
+		};
+
 		peerConnectionRef.current = newPeerConnection;
 		return newPeerConnection;
 	};
+
+	function handleDisconnect() {
+		const peerConnection = peerConnectionRef.current;
+		if (peerConnection) {
+			// Stop all tracks
+			peerConnection.getSenders().forEach(sender => {
+				if (sender.track) {
+					sender.track.stop();
+				}
+			});
+
+			peerConnection.getReceivers().forEach(receiver => {
+				if (receiver.track) {
+					receiver.track.stop();
+				}
+			});
+
+			// Remove event listeners
+			peerConnection.onconnectionstatechange = null;
+			peerConnection.ondatachannel = null;
+			peerConnection.onicecandidate = null;
+			peerConnection.onicecandidateerror = null;
+			peerConnection.oniceconnectionstatechange = null;
+			peerConnection.onicegatheringstatechange = null;
+			peerConnection.onnegotiationneeded = null;
+			peerConnection.onsignalingstatechange = null;
+			peerConnection.ontrack = null;
+
+			// Close the peer connection
+			peerConnection.close();
+		}
+
+		// Reset the peer connection reference
+		peerConnectionRef.current = null;
+		if (remoteVideoRef.current) {
+			remoteVideoRef.current.srcObject = null;
+		}
+		setConnected(false);
+	}
 
 	const { sendJsonMessage } = useWebSocket<SignalMessage>(WS_URL, {
 		shouldReconnect: () => false,
@@ -98,6 +184,10 @@ function ControlPanelRTC() {
 					}
 					break;
 				}
+				case SignalType.Disconnect: {
+					handleDisconnect();
+					break;
+				}
 				case SignalType.Error: {
 					console.error("Error received:", data.payload);
 					setConnecting(false);
@@ -106,43 +196,6 @@ function ControlPanelRTC() {
 			}
 		},
 	});
-
-	useEffect(() => {
-		const peerConnection = getPeerConnection();
-
-		// Listen for local ICE candidates on the local RTCPeerConnection
-		peerConnection.addEventListener("icecandidate", event => {
-			if (!robotId) {
-				console.error("No robotId provided");
-				return;
-			}
-
-			if (event.candidate) {
-				sendJsonMessage<SignalMessage>({
-					type: SignalType.IceCandidate,
-					payload: event.candidate,
-					robotId: robotId,
-				});
-			}
-		});
-
-		// Listen for connectionstatechange on the local RTCPeerConnection
-		peerConnection.addEventListener("connectionstatechange", event => {
-			if (peerConnection.connectionState === "connected") {
-				console.log("Connected to peer.", event);
-				setConnected(true);
-				setConnecting(false);
-			}
-		});
-
-		peerConnection.addEventListener("track", (event) => {
-			const [ remoteStream ] = event.streams;
-			if (remoteVideoRef.current) {
-				remoteVideoRef.current.srcObject = remoteStream;
-			}
-		});
-
-	}, [ robotId, sendJsonMessage ]);
 
 	async function connect() {
 		if (!robotId) {
@@ -180,13 +233,13 @@ function ControlPanelRTC() {
 								onClick={connect}
 								isLoading={connecting}
 							>
-								Try again
+								Connect
 							</FormButton>
 						</Alert>
 					</Col>
 				</Row>
 			)}
-			<Row>
+			<Row className="row-gap-3">
 				<Col xs={12} lg={9} className="d-flex align-items-start justify-content-center">
 					<video
 						ref={remoteVideoRef}
@@ -198,6 +251,22 @@ function ControlPanelRTC() {
 				<Col className="d-flex flex-column gap-3" xs={12} lg={3}>
 					<textarea className="form-control" readOnly={true} rows={10} placeholder="No messages yet" />
 					<Commands robotId={robotId ?? null} sendCommand={sendJsonMessage} />
+					<Button
+						variant="danger"
+						onClick={() => {
+							sendJsonMessage<SignalMessage>({
+								type: SignalType.Disconnect,
+								payload: {
+									timestamp: new Date().valueOf(),
+								},
+								robotId: robotId!,
+							});
+							handleDisconnect();
+						}}
+						disabled={!connected}
+					>
+						Disconnect
+					</Button>
 				</Col>
 			</Row>
 		</Container>

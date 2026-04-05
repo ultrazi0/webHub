@@ -6,18 +6,29 @@ import com.nemo.rexus.Decibel.UserEntity;
 import com.nemo.rexus.Sock.Signal.SignalContext;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
-import org.springframework.web.socket.TextMessage;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
 class BaseSignalHandler implements SignalHandler {
 
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
 	@Override
 	@SuppressWarnings("resource")
 	public void handleForOperator(@NotNull SignalMessage message, @NotNull UserEntity user, @NotNull SignalContext context) throws IOException {
+		verifyOperatorMessage(message, user, context);
+		Integer robotId = message.getRobotId();
+
+		if (context.robotSessions().containsKey(robotId)) {
+			context.robotSessions().get(robotId).sendMessage(message.toTextMessage());
+		} else {
+			context.session().sendMessage(
+					new SignalMessage(SignalType.ERROR, "The robot is not connected").toTextMessage()
+			);
+		}
+
+	}
+
+	/// This method **mutates** {@code message}!
+	protected static void verifyOperatorMessage(@NotNull SignalMessage message, @NotNull UserEntity user, @NotNull SignalContext context) {
 		Integer robotId = message.getRobotId();
 		if (robotId == null) {
 			throw new IllegalArgumentException("Robot ID is not provided");
@@ -26,14 +37,7 @@ class BaseSignalHandler implements SignalHandler {
 		int allowedRobotId = context.robotRepository().findRobotIdByRobotIdAndUserIdIfAllowed(robotId, user.getId());
 		Assert.isTrue(robotId.equals(allowedRobotId), "IDs must match");
 
-		if (context.robotSessions().containsKey(robotId)) {
-			context.robotSessions().get(robotId).sendMessage(context.originalMessage());
-		} else {
-			context.session().sendMessage(new TextMessage(OBJECT_MAPPER.writeValueAsString(
-					new SignalMessage(SignalType.ERROR, "The robot is not connected")
-			)));
-		}
-
+		message.setOperatorId(user.getId());
 	}
 
 	@Override
@@ -49,6 +53,8 @@ class BaseSignalHandler implements SignalHandler {
 			throw new IllegalArgumentException("Operator is not connected to this robot");
 		}
 
-		context.operatorSessions().get(operatorId).sendMessage(context.originalMessage());
+		message.setRobotId(robot.getId());
+
+		context.operatorSessions().get(operatorId).sendMessage(message.toTextMessage());
 	}
 }

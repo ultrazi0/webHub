@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.web.socket.TextMessage;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.StringNode;
 
 import java.io.IOException;
@@ -18,6 +20,8 @@ import java.io.IOException;
 @Setter(AccessLevel.PACKAGE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SignalMessage {
+
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private @NotNull SignalType type;
 	private @NotNull JsonNode payload;
@@ -32,6 +36,10 @@ public class SignalMessage {
 
 	public void handle(@NotNull SignalContext context) throws IOException {
 		type.handle(this, context);
+	}
+
+	public @NotNull TextMessage toTextMessage() {
+		return new TextMessage(OBJECT_MAPPER.writeValueAsString(this));
 	}
 
 }

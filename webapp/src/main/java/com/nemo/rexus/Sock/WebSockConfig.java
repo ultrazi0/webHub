@@ -12,6 +12,7 @@ import com.nemo.rexus.Sock.Command.CommandRobotHandler;
 import com.nemo.rexus.Sock.Image.ImageClientHandler;
 import com.nemo.rexus.Sock.Image.ImageRobotHandler;
 import com.nemo.rexus.Sock.Image.ImageSubscribers;
+import com.nemo.rexus.Sock.Signal.SignalSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,6 +49,9 @@ public class WebSockConfig implements WebSocketConfigurer {
 
         registry.addHandler(commandClientHandler(), "/api/command/client/{robotId}")
                 .addInterceptors(new CommandClientHandshakeInterceptor(robotRepository, operatorController)).setAllowedOrigins("*");
+
+        registry.addHandler(new SignalSocketHandler(robotRepository), "/api/signal")
+                .setAllowedOrigins("*");
     }
 
     private WebSocketHandler imageClientHandler() {

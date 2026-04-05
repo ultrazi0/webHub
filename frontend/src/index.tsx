@@ -12,6 +12,7 @@ import UserPage, { loadUser } from "./pages/UserPage";
 import EditUserPage, { editUserAction } from "./pages/EditUserPage";
 import { deleteUserAction } from "./components/DeleteUserModal";
 import { sendShareRobotRequest, sendUnshareRobotRequery } from "./pages/RootComponents/RobotInfoModal";
+import ControlPanelRTC from "./pages/ControlPanelRTC";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -48,8 +49,12 @@ const router = createBrowserRouter([
             action: sendUnshareRobotRequery,
           },
           {
-            path: "control-panel/:robotId",
+            path: "control-panel-old/:robotId",
             element: <ControlPanel />,
+          },
+          {
+            path: "control-panel/:robotId",
+            element: <ControlPanelRTC />,
           },
           {
             path: "login",

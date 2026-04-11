@@ -205,10 +205,10 @@ function ControlPanelRTC() {
 		setConnecting(true);
 
 		const peerConnection = getPeerConnection();
-		const offer = await peerConnection.createOffer({
-			offerToReceiveAudio: true,
-			offerToReceiveVideo: true,
-		});
+		peerConnection.addTransceiver("video", { direction: "recvonly" });
+		peerConnection.addTransceiver("audio", { direction: "recvonly" });
+
+		const offer = await peerConnection.createOffer();
 		await peerConnection.setLocalDescription(offer);
 
 		sendJsonMessage<SignalMessage>({

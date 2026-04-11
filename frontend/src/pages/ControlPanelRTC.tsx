@@ -30,7 +30,7 @@ type SignalMessage = {
 	payload: {
 		timestamp: number,
 	},
-	robotId: string,
+	robotId?: string | null,
 } | {
 	type: SignalType.Text | SignalType.Error,
 	payload: string,

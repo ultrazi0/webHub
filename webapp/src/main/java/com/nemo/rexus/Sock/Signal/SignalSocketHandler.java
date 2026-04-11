@@ -38,7 +38,6 @@ public class SignalSocketHandler extends TextWebSocketHandler {
 
 		signalMessage.handle(new SignalContext(
 				session,
-				message,
 				robotSessions,
 				operatorSessions,
 				robotRepository
@@ -57,11 +56,27 @@ public class SignalSocketHandler extends TextWebSocketHandler {
 	}
 
 	@Override
-	public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
+	public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) throws IOException {
 		Object principal = extractPrincipal(session);
 		switch (principal) {
-			case RobotEntity robotPrincipal -> robotSessions.remove(robotPrincipal.getId(), session);
-			case UserEntity userPrincipal -> operatorSessions.remove(userPrincipal.getId(), session);
+			case RobotEntity robotPrincipal -> {
+				WebSocketSession operatorSession = operatorSessions.get(robotPrincipal.getId());
+				if (operatorSession != null) {
+					operatorSession.sendMessage(
+							SignalMessage.disconnected().toTextMessage()
+					);
+				}
+				robotSessions.remove(robotPrincipal.getId(), session);
+			}
+			case UserEntity userPrincipal -> {
+				WebSocketSession robotSession = robotSessions.get(userPrincipal.getId());
+				if (robotSession != null) {
+					robotSession.sendMessage(
+							SignalMessage.disconnected().toTextMessage()
+					);
+				}
+				operatorSessions.remove(userPrincipal.getId(), session);
+			}
 			case null -> log.warn("No principal found when closing connection");
 			default -> log.warn("Unknown principal type when closing connection: {}", principal.getClass().getName());
 		}

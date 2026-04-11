@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { CommandType, CustomCommandType, MessageType, StandardCommand } from "./index";
 import { Button, FormSelect, Table } from "react-bootstrap";
-import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
 import { useNavigate } from "react-router-dom";
 
 import "../../css/Controls.scss";
@@ -108,7 +107,11 @@ function CommandValues({ inputValues, onChange }: CommandValuesProps) {
     );
 }
 
-export default function Commands({ robotId, sendCommand }: { robotId: string | null, sendCommand: SendJsonMessage }) {
+export default function Commands({ robotId, sendCommand, disabled = false }: {
+    robotId: string | null,
+    sendCommand: (message: unknown) => void, // TODO: add type
+    disabled?: boolean,
+}) {
     const [ selectedCommand, setSelectedCommand ] = useState<CommandType | null>(null);
     const [ inputValues, setInputValues ] = useState<InputValuesType<CommandType> | null>(null);
 
@@ -129,7 +132,14 @@ export default function Commands({ robotId, sendCommand }: { robotId: string | n
                 setInputValues(command ? getInitialInputValues(command) : null);
             }} />
             <CommandValues inputValues={inputValues} onChange={(newInputValues: InputValuesType<CommandType>) => setInputValues(newInputValues)} />
-            <Button className="send-command-button" variant="primary" onClick={handleCommandSend}>Send</Button>
+            <Button
+                variant="primary"
+                className="send-command-button"
+                disabled={selectedCommand == null || disabled}
+                onClick={handleCommandSend}
+            >
+                Send
+            </Button>
         </>
     );
 }

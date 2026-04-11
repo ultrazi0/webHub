@@ -48,9 +48,12 @@ function ControlPanelRTC() {
 	const WS_URL = `ws://${window.location.host}/api/signal`;
 
 	const peerConnectionRef = useRef<RTCPeerConnection>(null);
+	const dataChannelRef = useRef<RTCDataChannel>(null);
 	const remoteVideoRef = useRef<HTMLVideoElement>(null);
+	const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
 	const [ connected, setConnected ] = useState(false);
+	const [ dataChannelOpen, setDataChannelOpen ] = useState(false);
 	const [ connecting, setConnecting ] = useState(false);
 
 	const getPeerConnection = () => {
@@ -94,6 +97,7 @@ function ControlPanelRTC() {
 			}
 		};
 
+		// Set remote tracks
 		newPeerConnection.ontrack = (event: RTCTrackEvent) => {
 			const [ remoteStream ] = event.streams;
 			if (remoteVideoRef.current) {
@@ -101,8 +105,42 @@ function ControlPanelRTC() {
 			}
 		};
 
+		crateDataChannel(newPeerConnection);
+
 		peerConnectionRef.current = newPeerConnection;
 		return newPeerConnection;
+	};
+
+	const crateDataChannel = (peerConnection: RTCPeerConnection) => {
+		if (dataChannelRef.current) {
+			// If a data channel already exists, close it before creating a new one
+			dataChannelRef.current.close();
+			dataChannelRef.current.onopen = null;
+			dataChannelRef.current.onclose = null;
+			dataChannelRef.current = null;
+		}
+
+		const dataChannel = peerConnection.createDataChannel("dataChannel-" + robotId);
+
+		dataChannel.onopen = () => {
+			setDataChannelOpen(true);
+		};
+
+		dataChannel.onclose = () => {
+			setDataChannelOpen(false);
+			dataChannelRef.current = null;
+		};
+
+		dataChannel.onmessage = (event) => {
+			if (feedbackTextAreaRef.current) {
+				const message = event.data;
+				feedbackTextAreaRef.current.value += message + "\n";
+			}
+		};
+
+		dataChannelRef.current = dataChannel;
+
+		return dataChannel;
 	};
 
 	function handleDisconnect() {
@@ -249,8 +287,20 @@ function ControlPanelRTC() {
 					/>
 				</Col>
 				<Col className="d-flex flex-column gap-3" xs={12} lg={3}>
-					<textarea className="form-control" readOnly={true} rows={10} placeholder="No messages yet" />
-					<Commands robotId={robotId ?? null} sendCommand={sendJsonMessage} />
+					<textarea
+						className="form-control"
+						ref={feedbackTextAreaRef}
+						placeholder="No messages yet"
+						rows={10}
+						readOnly
+					/>
+					<Commands
+						robotId={robotId ?? null}
+						disabled={!dataChannelOpen}
+						sendCommand={(message) => {
+							dataChannelRef.current?.send(JSON.stringify(message));
+						}}
+					/>
 					<Button
 						variant="danger"
 						onClick={() => {
